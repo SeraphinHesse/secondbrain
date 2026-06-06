@@ -5,7 +5,7 @@ Indie video game producer/project manager and boutique marketing agency startup 
 Timezone: Europe/Berlin. Based in Germany. GitHub: SeraphinHesse.
 
 ## Active Projects
-- **HTBH** — current game prototype in active development (`projects/htbh/`)
+- **HTBH (How To Be Human)** — isometric tower-defense in pygame-ce; spend *love* to unlock tiles and place musicians/defenders protecting "the hole" from napoleonic-soldier enemy waves. Active development (`projects/htbh/`)
 - **Marketing Agency** — boutique agency in startup phase (`agency/`)
 - **Disclaw** — Discord ↔ Claude Code bridge for async agent control (see `disclaw-setup-plan.md`)
 
@@ -65,10 +65,10 @@ When asked for a daily briefing or when starting a session in the morning:
 - For follow-ups: check sent threads and flag ones with no reply after 3 days
 
 ### Game Prototype Work (HTBH and others)
-- All code goes in `projects/htbh/` or the relevant project folder
-- Use GitHub MCP for issues and tracking
+- HTBH codebase has its own `CLAUDE.md` — always read that first when working on game code
+- Key HTBH rules: all balance changes go in BOTH `balancing.py` AND `balancing.json`; placement must go through `Game.place_building()`; verify by running `py main.py` — no automated test suite
 - When I say "prototype X mechanic" — build the simplest possible playable version first
-- Keep a `devlog.md` in each project folder updated after major sessions
+- Keep `projects/htbh/README.md` devlog updated after major sessions
 
 ### Marketing Agency
 - Lead research: use deep-research skill + web search to build lead profiles

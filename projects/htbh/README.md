@@ -1,20 +1,35 @@
-# Project: HTBH
+# Project: How To Be Human (HTBH)
 
 **Status**: active
-**Started**: 2026
 **Type**: game
+**Engine**: pygame-ce (Python 3)
 
 ## What it is
-<!-- Fill in: genre, core mechanic, platform target -->
+An isometric tower-defense where you spend *love* (the currency) to unlock tiles and place musicians/defenders that protect "the hole" (your base) from waves of enemies. Napoleonic-soldier enemy aesthetic, procedurally generated sprites.
 
-## Goal
-<!-- What does the prototype need to demonstrate? -->
+## Run / build
+- `py main.py` from the project root
+- `pip install -r requirements.txt`
+- `build.bat` for a PyInstaller `.exe` → `dist/`
+
+## Repo
+<!-- Add GitHub URL when known -->
+
+## Core architecture
+- `src/game.py` — god-object, start here for gameplay changes
+- `balancing.py` / `balancing.json` — ALL numeric tuning (JSON wins at runtime)
+- `src/constants.py` — enums, grid dims, screen sizes
+- `src/buildings/` — building hierarchy
+- `src/enemies/` — raider, siege cannon
+- `src/ui/` — HUD, construct panel, levelup window
+
+See the project's own `CLAUDE.md` for the full architecture reference.
 
 ## Current phase
-<!-- Design / prototype / vertical slice / alpha / beta -->
+<!-- Prototype / vertical slice / alpha / beta -->
 
 ## Open tasks
 - [ ]
 
 ## Devlog
-<!-- Append after each session -->
+<!-- Append after each session: date + what happened + what's next -->
