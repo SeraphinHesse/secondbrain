@@ -5,7 +5,7 @@ Indie video game producer/project manager and boutique marketing agency startup 
 Timezone: Europe/Berlin. Based in Germany. GitHub: SeraphinHesse.
 
 ## Active Projects
-- **HTBH (How To Be Human)** — isometric tower-defense in pygame-ce; spend *love* to unlock tiles and place musicians/defenders protecting "the hole" from napoleonic-soldier enemy waves. Active development (`projects/htbh/`)
+- **HTBH (How To Be Human)** — isometric tower-defense in pygame-ce. Lives in its own repo; use this secondbrain only for design notes, ideas, and task tracking related to it
 - **Marketing Agency** — boutique agency in startup phase (`agency/`)
 - **Disclaw** — Discord ↔ Claude Code bridge for async agent control (see `disclaw-setup-plan.md`)
 
@@ -23,7 +23,6 @@ Timezone: Europe/Berlin. Based in Germany. GitHub: SeraphinHesse.
 secondbrain/
 ├── inbox/              # Drop zone: raw ideas, voice memo transcripts, unprocessed notes
 ├── projects/
-│   ├── htbh/           # HTBH game project files, design docs, task tracking
 │   └── _template/      # Copy this when starting a new project
 ├── agency/
 │   ├── clients/        # One folder per client: brief, comms log, deliverables
@@ -55,8 +54,7 @@ When asked for a daily briefing or when starting a session in the morning:
 1. Use Google Calendar MCP to get today's events
 2. Use Gmail MCP to surface any urgent/unread threads
 3. Check `inbox/` for unprocessed items
-4. Check `projects/htbh/` for any open tasks
-5. Format as the template in `templates/daily-briefing.md`
+4. Format as the template in `templates/daily-briefing.md`
 
 ### Email Management
 - For drafting outreach to leads: use the tone guide in `agency/templates/outreach-tone.md`
@@ -64,11 +62,10 @@ When asked for a daily briefing or when starting a session in the morning:
 - Use Gmail labels to organize: flag anything that needs my decision as "needs-reply"
 - For follow-ups: check sent threads and flag ones with no reply after 3 days
 
-### Game Prototype Work (HTBH and others)
-- HTBH codebase has its own `CLAUDE.md` — always read that first when working on game code
-- Key HTBH rules: all balance changes go in BOTH `balancing.py` AND `balancing.json`; placement must go through `Game.place_building()`; verify by running `py main.py` — no automated test suite
-- When I say "prototype X mechanic" — build the simplest possible playable version first
-- Keep `projects/htbh/README.md` devlog updated after major sessions
+### Game Dev (ideas & design — code lives in the HTBH repo, not here)
+- Use `ideas/game-dev/` for mechanics experiments, design notes, and feature briefs
+- When I describe a mechanic or system idea, structure it as an `idea-note.md` and file it there
+- If I need a standalone prototype of something, create it under `projects/` with its own folder
 
 ### Marketing Agency
 - Lead research: use deep-research skill + web search to build lead profiles
