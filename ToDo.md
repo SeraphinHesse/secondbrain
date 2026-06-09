@@ -38,8 +38,8 @@
 * Ideation: More Defence Buildings
 * Life loss feedback unclear
 * Ideation: life loss display
-* Sunscorch beam scales visually
 * Show died-last-round indicator
+* Move Balancing GUI outside of balancing folder and cleanup root folder
 
 
 
@@ -54,13 +54,16 @@
 * !First Levelup Glitch: First levelup only painter even though mortar should be available
 * Hole HP upgrade not available in lives mode
 * Come up with more generic upgrades
-* Move Balancing GUI outside of balancing folder and cleanup root folder
-* !Make Balancing Config history get cloned to the build version
 * Switch Button to Confirm construction with cancel
+  WHen building buildings in the stat confirm window, Confirm should be on the right, cancel should be on the left switch these, then put a book into UIbalancing defaulted to true that is ConfirmOnRightSide
+* Switch Button to Confirm construction with cancel
+  In Building construction stats preview, confirm should be on the right, and cancel on the left
+this should be toggleable in balancing gui
 * Range and Building Preview on hover
 * Implement Tile Conditions
 * Lives in base building UI
 * Tile weight reduction by damage
+* Sunscorch beam scales visually
 
 
 
