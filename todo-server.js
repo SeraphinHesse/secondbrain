@@ -1,0 +1,153 @@
+#!/usr/bin/env node
+// Secondbrain Todo Dashboard Server — no npm needed, Node stdlib only
+// Run: node todo-server.js
+// Then open: http://localhost:8765
+
+const http = require('http');
+const fs   = require('fs');
+const path = require('path');
+
+const PORT     = 8765;
+const BASE_DIR = __dirname;
+const TODO     = path.join(BASE_DIR, 'ToDo.md');
+const HTML     = path.join(BASE_DIR, 'todo-dashboard.html');
+
+const CAT_MAP = {
+  'HTBH / Producing':       ['##### How to be Human', '###### Producing'],
+  'HTBH / Design':          ['##### How to be Human', '###### Design'],
+  'HTBH / Claude Build':    ['##### How to be Human', '###### Claude Build'],
+  'HTBH / Balancing':       ['##### How to be Human', '###### Balancing'],
+  'Addictive Media Agency': ['##### Addictive Media Agency', null],
+  'Admin':                  ['##### Admin', null],
+  'University':             ['##### University', null],
+  'Bureaucracy & Chores':   ['##### Bureaucracy \\& Chores', null],
+};
+
+function parseTodo() {
+  const lines = fs.readFileSync(TODO, 'utf8').split('\n');
+  const tasks = [];
+  let id = 1, project = null, sub = null;
+
+  for (const raw of lines) {
+    const s = raw.trim();
+    if (s.startsWith('###### '))      { sub = s.slice(7).trim(); }
+    else if (s.startsWith('##### ')) { const l = s.slice(6).trim(); if (l) project = l; sub = null; }
+    else if (s.startsWith('* ')) {
+      let text = s.slice(2).trim();
+      if (!text) continue;
+      const high = text.startsWith('!');
+      if (high) text = text.slice(1).trim();
+      const proj = (project || 'General').replace('How to be Human', 'HTBH').replace(/\\&/g, '&');
+      const cat  = sub ? `${proj} / ${sub}` : proj;
+      tasks.push({ id: id++, cat, text, high });
+    }
+  }
+  return tasks;
+}
+
+function addTask(text, cat, high) {
+  const lines  = fs.readFileSync(TODO, 'utf8').split('\n');
+  const entry  = CAT_MAP[cat] || [`##### ${cat}`, null];
+  const [parentH, subH] = entry;
+  const newLine = (high ? '* !' : '* ') + text;
+
+  // Find insertion index
+  let targetIdx = -1;
+  if (subH) {
+    let inParent = false;
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].trim() === parentH.trim()) inParent = true;
+      else if (inParent && lines[i].trim() === subH.trim()) { targetIdx = i; break; }
+    }
+  } else {
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].trim() === parentH.trim()) { targetIdx = i; break; }
+    }
+  }
+
+  if (targetIdx === -1) {
+    // Section not found — append at end
+    lines.push('', parentH, '', ...(subH ? [subH, ''] : []), newLine, '');
+  } else {
+    // Find last task line in section, insert after it
+    let insertPos = targetIdx + 1;
+    for (let i = targetIdx + 1; i < lines.length; i++) {
+      const s = lines[i].trim();
+      if (subH  && /^#{5,6} /.test(s) && i !== targetIdx) break;
+      if (!subH && /^#{5} /.test(s)   && i !== targetIdx) break;
+      if (s.startsWith('* ')) insertPos = i + 1;
+    }
+    lines.splice(insertPos, 0, newLine);
+  }
+
+  fs.writeFileSync(TODO, lines.join('\n'), 'utf8');
+}
+
+function cors(res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+}
+
+const server = http.createServer((req, res) => {
+  cors(res);
+
+  if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
+
+  if (req.url === '/api/tasks' && req.method === 'GET') {
+    try {
+      const tasks = parseTodo();
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(tasks));
+    } catch (e) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: e.message }));
+    }
+    return;
+  }
+
+  if (req.url === '/api/tasks' && req.method === 'POST') {
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const { text, cat, high } = JSON.parse(body);
+        if (!text || !text.trim()) { res.writeHead(400); res.end('text required'); return; }
+        addTask(text.trim(), cat, !!high);
+        const tasks = parseTodo();
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(tasks));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
+  if ((req.url === '/' || req.url === '/todo-dashboard.html') && req.method === 'GET') {
+    try {
+      const html = fs.readFileSync(HTML);
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(html);
+    } catch (e) {
+      res.writeHead(404); res.end('dashboard not found');
+    }
+    return;
+  }
+
+  res.writeHead(404); res.end();
+});
+
+server.listen(PORT, 'localhost', () => {
+  const url = `http://localhost:${PORT}`;
+  console.log(`  Secondbrain Dashboard → ${url}`);
+  console.log(`  Ctrl+C to stop\n`);
+
+  // Try to open browser cross-platform
+  const { exec } = require('child_process');
+  const cmd = process.platform === 'win32' ? `start ${url}`
+            : process.platform === 'darwin' ? `open ${url}`
+            : `xdg-open ${url}`;
+  exec(cmd);
+});
