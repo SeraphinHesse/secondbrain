@@ -37,6 +37,9 @@
   Define the milestone path to vertical slice: (1) a roadmap showing the phases and milestones needed to reach VS, and (2) a deliverables checklist scoped to VS. Done when both documents exist and tasks can be broken out from them.
 * !Agenda Planning
 
+* Vertical Slice Deliverables Internal Presentation
+  Prepare and deliver an internal presentation covering the vertical slice deliverables — what they are, current status, and what done looks like. Done when the team has a shared, aligned picture of VS scope and next steps.
+
 
 
 ###### Design
