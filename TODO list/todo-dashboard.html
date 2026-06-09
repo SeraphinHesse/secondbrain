@@ -913,6 +913,7 @@ const API = 'http://localhost:8765/api/tasks';
 const K_DONE         = 'sb-done';
 const K_DONE_AT      = 'sb-done-at';
 const K_BACKLOG      = 'sb-backlog';
+const K_PAIRS        = 'sb-rem-pairs';
 const K_COLLAPSED    = 'sb-collapsed';
 const K_URGENT_COL   = 'sb-urgent-col';
 const K_CUSTOM_CATS  = 'sb-custom-cats';
@@ -962,6 +963,8 @@ function getDone()         { return new Set(JSON.parse(localStorage.getItem(K_DO
 function setDone(s)        { localStorage.setItem(K_DONE, JSON.stringify([...s])); }
 function getDoneAt()       { return JSON.parse(localStorage.getItem(K_DONE_AT) || '{}'); }
 function setDoneAt(o)      { localStorage.setItem(K_DONE_AT, JSON.stringify(o)); }
+function getPairs()        { return JSON.parse(localStorage.getItem(K_PAIRS)   || '{}'); }
+function setPairs(o)       { localStorage.setItem(K_PAIRS, JSON.stringify(o)); }
 function getBacklog()      { return JSON.parse(localStorage.getItem(K_BACKLOG) || '[]'); }
 function setBacklog(a)     { localStorage.setItem(K_BACKLOG, JSON.stringify(a)); }
 function getCollapsed()    { return new Set(JSON.parse(localStorage.getItem(K_COLLAPSED) || '[]')); }
@@ -1080,6 +1083,9 @@ async function checkAndArchive() {
       } catch (_) {}
     }
 
+    const pairs = getPairs();
+    const pairedKey = pairs[key];
+    if (pairedKey) { delete pairs[pairedKey]; delete pairs[key]; setPairs(pairs); }
     done.delete(key);
     delete doneAt[key];
   }
@@ -1137,6 +1143,17 @@ function toggleDone(key) {
   }
   setDone(s);
   setDoneAt(doneAt);
+
+  // Sync paired reminder↔task
+  const pairs = getPairs();
+  const pairedKey = pairs[key];
+  if (pairedKey) {
+    const s2 = getDone(); const doneAt2 = getDoneAt();
+    if (wasDone) { s2.delete(pairedKey); delete doneAt2[pairedKey]; }
+    else { s2.add(pairedKey); doneAt2[pairedKey] = Date.now(); }
+    setDone(s2); setDoneAt(doneAt2);
+  }
+
   render();
   toast(!wasDone ? '✓ Marked done' : '↩ Reopened');
 }
@@ -1294,6 +1311,8 @@ function renderRemindersZone(withDone) {
 }
 
 async function clearReminder(id) {
+  const remTask = Object.values(taskMap).find(t => t.id === id);
+  const remKey  = remTask ? doneKey(remTask) : null;
   try {
     const res = await fetch(API, {
       method: 'DELETE',
@@ -1302,6 +1321,11 @@ async function clearReminder(id) {
     });
     if (!res.ok) throw new Error(await res.text());
     tasks = await res.json();
+    if (remKey) {
+      const pairs = getPairs();
+      const pairedKey = pairs[remKey];
+      if (pairedKey) { delete pairs[pairedKey]; delete pairs[remKey]; setPairs(pairs); }
+    }
     render();
     toast('Reminder cleared ✓');
   } catch (e) {
@@ -1409,6 +1433,15 @@ function handleAddReminderOverlayClick(e) {
   if (e.target === e.currentTarget) closeAddReminderModal();
 }
 
+// Maps reminder category to the regular task category for paired task creation
+const REM_TO_TASK_CAT = {
+  'Reminders / General':              'Admin',
+  'Reminders / HTBH':                 'HTBH / Producing',
+  'Reminders / Agency':               'Addictive Media Agency',
+  'Reminders / Admin':                'Admin',
+  'Reminders / Bureaucracy & Chores': 'Bureaucracy & Chores',
+};
+
 async function submitAddReminder() {
   const text = document.getElementById('ar-text').value.trim();
   const date = document.getElementById('ar-date').value;
@@ -1422,15 +1455,39 @@ async function submitAddReminder() {
   // Format: [YYYY-MM-DD HH:MM] text
   const prefix = (date && time) ? `[${date} ${time}] ` : '';
   const fullText = prefix + text;
+  const taskCat  = REM_TO_TASK_CAT[cat] || 'Admin';
 
   try {
-    const res = await fetch(API, {
+    // Save reminder entry
+    const remRes = await fetch(API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: fullText, cat, high: false, desc: '' }),
     });
-    if (!res.ok) throw new Error(await res.text());
-    tasks = await res.json();
+    if (!remRes.ok) throw new Error(await remRes.text());
+    tasks = await remRes.json();
+
+    // Save paired task entry
+    const taskRes = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, cat: taskCat, high: false, desc: '' }),
+    });
+    if (!taskRes.ok) throw new Error(await taskRes.text());
+    tasks = await taskRes.json();
+
+    // Store bidirectional pair so done-state syncs in both directions
+    const remTask  = [...tasks].reverse().find(t => t.reminder && t.cat === cat && t.text === fullText);
+    const taskTask = [...tasks].reverse().find(t => !t.reminder && t.cat === taskCat && t.text === text);
+    if (remTask && taskTask) {
+      const remKey  = doneKey(remTask);
+      const taskKey = doneKey(taskTask);
+      const pairs = getPairs();
+      pairs[remKey]  = taskKey;
+      pairs[taskKey] = remKey;
+      setPairs(pairs);
+    }
+
     render();
     closeAddReminderModal();
     toast('Reminder saved ✓');
@@ -1791,6 +1848,15 @@ async function saveModal() {
           if (ts) { delete doneAt[currentModalKey]; doneAt[newKey] = ts; }
           setDone(done); setDoneAt(doneAt);
         }
+        // Update pair references to the new key
+        const pairs = getPairs();
+        const pairedKey = pairs[currentModalKey];
+        if (pairedKey) {
+          pairs[newKey] = pairedKey;
+          pairs[pairedKey] = newKey;
+          delete pairs[currentModalKey];
+          setPairs(pairs);
+        }
       }
       // Clean up any legacy localStorage desc
       localStorage.removeItem('sb-desc::' + currentModalKey);
@@ -1823,6 +1889,9 @@ async function deleteTaskFromModal() {
     const done = getDone(); const doneAt = getDoneAt();
     done.delete(currentModalKey); delete doneAt[currentModalKey];
     setDone(done); setDoneAt(doneAt);
+    const pairs = getPairs();
+    const pairedKey = pairs[currentModalKey];
+    if (pairedKey) { delete pairs[pairedKey]; delete pairs[currentModalKey]; setPairs(pairs); }
     localStorage.removeItem('sb-desc::' + currentModalKey);
     closeModal();
     render();
