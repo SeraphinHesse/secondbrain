@@ -1174,6 +1174,51 @@ async function clearReminder(id) {
   }
 }
 
+// --- REMINDER MODAL ---
+let currentReminderTaskId = null;
+
+function openReminderModal(id) {
+  const t = tasks.find(t => t.id === id);
+  if (!t) return;
+  currentReminderTaskId = id;
+  const { timeLabel, text } = parseReminderText(t.text);
+  const cat = t.cat.replace(/^Reminders\s*\/\s*/, '');
+  document.getElementById('rem-modal-cat').textContent = cat;
+  document.getElementById('rem-modal-title').textContent = text || t.text;
+  const timeEl = document.getElementById('rem-modal-time');
+  const timeWrap = document.getElementById('rem-modal-time-wrap');
+  if (timeLabel) { timeEl.textContent = timeLabel; timeWrap.style.display = ''; }
+  else { timeWrap.style.display = 'none'; }
+  document.getElementById('rem-modal-desc').value = localStorage.getItem('sb-desc::rem-' + id) || '';
+  document.getElementById('reminder-modal').classList.add('open');
+  setTimeout(() => document.getElementById('rem-modal-desc').focus(), 50);
+}
+
+function closeReminderModal() {
+  document.getElementById('reminder-modal').classList.remove('open');
+  currentReminderTaskId = null;
+}
+
+function handleReminderOverlayClick(e) {
+  if (e.target === e.currentTarget) closeReminderModal();
+}
+
+function saveReminderModal() {
+  if (!currentReminderTaskId) return;
+  const desc = document.getElementById('rem-modal-desc').value.trim();
+  const key = 'sb-desc::rem-' + currentReminderTaskId;
+  if (desc) localStorage.setItem(key, desc); else localStorage.removeItem(key);
+  closeReminderModal();
+  toast('Saved ✓');
+}
+
+async function clearReminderFromModal() {
+  if (!currentReminderTaskId) return;
+  const id = currentReminderTaskId;
+  closeReminderModal();
+  await clearReminder(id);
+}
+
 function renderGrid(withDone) {
   const grid = document.getElementById('categories-grid');
   grid.innerHTML = '';
@@ -1240,10 +1285,17 @@ function renderGrid(withDone) {
 
 // --- EVENT DELEGATION ---
 document.addEventListener('click', e => {
-  // Reminder clear button
+  // Reminder clear button (quick ✕ — no modal)
   const remClearBtn = e.target.closest('.reminder-clear-btn');
   if (remClearBtn) {
     clearReminder(parseInt(remClearBtn.dataset.remId, 10));
+    return;
+  }
+
+  // Reminder item click — open modal
+  const reminderItem = e.target.closest('.reminder-item');
+  if (reminderItem) {
+    openReminderModal(parseInt(reminderItem.dataset.remId, 10));
     return;
   }
 
@@ -1326,7 +1378,10 @@ document.addEventListener('click', e => {
 });
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && currentModalKey) closeModal();
+  if (e.key === 'Escape') {
+    if (currentModalKey) closeModal();
+    if (currentReminderTaskId) closeReminderModal();
+  }
 });
 
 // --- COLLAPSE ALL ---
