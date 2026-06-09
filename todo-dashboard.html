@@ -543,6 +543,70 @@
   @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.2)} }
   @keyframes pulse-dot-red { 0%,100%{opacity:1;box-shadow:0 0 4px var(--red)} 50%{opacity:.7;box-shadow:0 0 8px var(--red)} }
 
+  /* REMINDERS ZONE */
+  .reminders-zone {
+    border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem;
+    border: 1.5px solid rgba(251,191,36,0.3);
+    background: rgba(251,191,36,0.03);
+    display: none;
+  }
+  .reminders-zone.has-reminders { display: block; }
+  .reminders-header {
+    display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.85rem;
+    cursor: pointer; user-select: none;
+  }
+  .reminders-icon { font-size: 1.1rem; }
+  .reminders-title {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.95rem;
+    color: #fbbf24; text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .reminders-count {
+    background: rgba(251,191,36,0.15); color: #fbbf24;
+    font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;
+  }
+  .reminders-chevron { margin-left: auto; font-size: 0.7rem; color: rgba(251,191,36,0.5); }
+  .reminders-zone.zone-collapsed .reminders-body { display: none; }
+  .rem-cat-group { margin-bottom: 0.5rem; }
+  .rem-cat-group:last-child { margin-bottom: 0; }
+  .rem-cat-divider {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.3rem 0 0.35rem;
+    border-bottom: 1px solid rgba(251,191,36,0.15);
+    margin-bottom: 0.4rem; cursor: pointer; user-select: none;
+  }
+  .rem-cat-divider:hover { opacity: 0.85; }
+  .rem-cat-icon-sm { font-size: 0.85rem; }
+  .rem-cat-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; }
+  .rem-cat-ct { font-size: 0.65rem; color: rgba(251,191,36,0.5); margin-left: 0.25rem; }
+  .rem-cat-chevron {
+    margin-left: auto; font-size: 0.65rem; color: rgba(251,191,36,0.4);
+    background: none; border: none; cursor: pointer; padding: 0.15rem 0.3rem;
+    border-radius: 4px; transition: background 0.15s, color 0.15s; line-height: 1;
+  }
+  .rem-cat-items { display: flex; flex-direction: column; gap: 0.4rem; padding-bottom: 0.35rem; }
+  .reminder-item {
+    display: flex; align-items: flex-start; gap: 0.65rem;
+    padding: 0.55rem 0.875rem;
+    background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.18);
+    border-radius: var(--radius-sm); font-size: 0.875rem;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    cursor: pointer;
+  }
+  .reminder-item:hover { background: rgba(251,191,36,0.12); border-color: rgba(251,191,36,0.3); transform: translateX(3px); }
+  .reminder-time {
+    font-size: 0.68rem; font-weight: 600; color: #fbbf24;
+    background: rgba(251,191,36,0.1); border-radius: 4px;
+    padding: 0.15rem 0.45rem; white-space: nowrap; flex-shrink: 0; margin-top: 1px;
+  }
+  .reminder-text { flex: 1; color: var(--text); line-height: 1.4; }
+  .reminder-clear-btn {
+    background: none; border: none; color: rgba(251,191,36,0.35);
+    font-size: 0.75rem; cursor: pointer; padding: 0.1rem 0.35rem;
+    border-radius: 3px; line-height: 1; flex-shrink: 0; margin-top: 1px;
+    transition: color 0.15s, background 0.15s; font-family: 'Inter', sans-serif;
+  }
+  .reminder-clear-btn:hover { color: #fbbf24; background: rgba(251,191,36,0.1); }
+
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
@@ -589,6 +653,19 @@
       <span class="urgent-count" id="urgent-count">—</span>
     </div>
     <div id="urgent-items"><div class="empty-state" style="text-align:left;padding:0">Loading…</div></div>
+  </div>
+
+  <!-- REMINDERS ZONE -->
+  <div class="reminders-zone" id="reminders-zone">
+    <div class="reminders-header" onclick="toggleRemindersCollapse()">
+      <span class="reminders-icon">🔔</span>
+      <span class="reminders-title">Reminders</span>
+      <span class="reminders-count" id="reminders-count">0</span>
+      <span class="reminders-chevron" id="reminders-chevron">▾</span>
+    </div>
+    <div class="reminders-body" id="reminders-body">
+      <div id="reminders-items"></div>
+    </div>
   </div>
 
   <!-- ADD FORM -->
@@ -665,6 +742,29 @@
   </div>
 </div>
 
+<!-- REMINDER DETAIL MODAL -->
+<div id="reminder-modal" class="modal-overlay" onclick="handleReminderOverlayClick(event)">
+  <div class="modal-card">
+    <div class="modal-header">
+      <span class="modal-cat-badge" id="rem-modal-cat"></span>
+      <button class="modal-close" onclick="closeReminderModal()">✕</button>
+    </div>
+    <div id="rem-modal-time-wrap" style="margin-bottom:0.6rem">
+      <span class="reminder-time" id="rem-modal-time"></span>
+    </div>
+    <div class="modal-task-name" id="rem-modal-title"></div>
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea class="modal-desc" id="rem-modal-desc" placeholder="Add notes or details…" rows="3"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-danger" style="margin-right:auto" onclick="clearReminderFromModal()">✕ Clear</button>
+      <button class="btn-secondary" onclick="closeReminderModal()">Close</button>
+      <button class="btn-primary" onclick="saveReminderModal()">Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- BACKLOG MODAL -->
 <div id="backlog-modal" class="modal-overlay" onclick="handleBacklogOverlayClick(event)">
   <div class="backlog-modal-card">
@@ -692,6 +792,8 @@ const K_BACKLOG      = 'sb-backlog';
 const K_COLLAPSED    = 'sb-collapsed';
 const K_URGENT_COL   = 'sb-urgent-col';
 const K_CUSTOM_CATS  = 'sb-custom-cats';
+const K_REM_COL      = 'sb-rem-col';
+const K_REM_ZONE     = 'sb-rem-zone';
 const ARCHIVE_MS     = 12 * 60 * 60 * 1000; // 12 hours
 
 // --- Default category metadata ---
@@ -733,6 +835,10 @@ function getCollapsed()    { return new Set(JSON.parse(localStorage.getItem(K_CO
 function setCollapsed(s)   { localStorage.setItem(K_COLLAPSED, JSON.stringify([...s])); }
 function getUrgentCol()    { return new Set(JSON.parse(localStorage.getItem(K_URGENT_COL) || '[]')); }
 function setUrgentCol(s)   { localStorage.setItem(K_URGENT_COL, JSON.stringify([...s])); }
+function getRemCol()       { return new Set(JSON.parse(localStorage.getItem(K_REM_COL) || '[]')); }
+function setRemCol(s)      { localStorage.setItem(K_REM_COL, JSON.stringify([...s])); }
+function getRemZoneCollapsed() { return localStorage.getItem(K_REM_ZONE) === '1'; }
+function setRemZoneCollapsed(v) { localStorage.setItem(K_REM_ZONE, v ? '1' : '0'); }
 function getCustomCats()   { return JSON.parse(localStorage.getItem(K_CUSTOM_CATS) || '[]'); }
 function setCustomCats(a)  { localStorage.setItem(K_CUSTOM_CATS, JSON.stringify(a)); }
 
@@ -918,6 +1024,7 @@ function render() {
   document.getElementById('stat-urgent').textContent = urgentCount + ' urgent';
 
   renderUrgentZone(withDone);
+  renderRemindersZone(withDone);
   renderGrid(withDone);
   updateBacklogBadge();
   if (currentModalKey) updateModalDoneBtn();
@@ -971,15 +1078,111 @@ function renderUrgentZone(withDone) {
   document.getElementById('urgent-items').innerHTML = html;
 }
 
+function parseReminderText(raw) {
+  const m = raw.match(/^\[(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})\]\s*(.+)/);
+  if (!m) return { timeLabel: null, text: raw };
+  const date = m[1], time = m[2], text = m[3];
+  const today    = new Date().toISOString().slice(0, 10);
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+  const timeLabel = date === today    ? `Today ${time}`
+                  : date === tomorrow ? `Tomorrow ${time}`
+                  : `${date.slice(5).replace('-', '/')} ${time}`;
+  return { timeLabel, text };
+}
+
+function toggleRemindersCollapse() {
+  const zone = document.getElementById('reminders-zone');
+  const chevron = document.getElementById('reminders-chevron');
+  const isNowCollapsed = !zone.classList.contains('zone-collapsed');
+  zone.classList.toggle('zone-collapsed', isNowCollapsed);
+  chevron.textContent = isNowCollapsed ? '▸' : '▾';
+  setRemZoneCollapsed(isNowCollapsed);
+}
+
+function renderRemindersZone(withDone) {
+  const reminders = withDone.filter(t => t.reminder);
+  const zone = document.getElementById('reminders-zone');
+  const countEl = document.getElementById('reminders-count');
+
+  if (!reminders.length) {
+    zone.classList.remove('has-reminders');
+    return;
+  }
+  zone.classList.add('has-reminders');
+  countEl.textContent = reminders.length;
+
+  const wasCollapsed = getRemZoneCollapsed();
+  zone.classList.toggle('zone-collapsed', wasCollapsed);
+  document.getElementById('reminders-chevron').textContent = wasCollapsed ? '▸' : '▾';
+
+  // Group by display category (strip "Reminders / " prefix)
+  const groups = {};
+  const catOrder = [];
+  reminders.forEach(t => {
+    const displayCat = t.cat.replace(/^Reminders\s*\/\s*/, '');
+    if (!groups[displayCat]) { groups[displayCat] = []; catOrder.push(displayCat); }
+    groups[displayCat].push(t);
+  });
+
+  const remCol = getRemCol();
+  let html = '';
+  catOrder.forEach(displayCat => {
+    const catTasks = groups[displayCat];
+    const fullCat = catTasks[0].cat;
+    const meta = CATEGORY_META[fullCat] || { icon: '🔔', color: '#fbbf24' };
+    const isCol = remCol.has(displayCat);
+
+    html += `
+      <div class="rem-cat-group">
+        <div class="rem-cat-divider" data-rem-cat="${esc(displayCat)}">
+          <span class="rem-cat-icon-sm">${meta.icon}</span>
+          <span class="rem-cat-label" style="color:${meta.color}">${esc(displayCat)}</span>
+          <span class="rem-cat-ct">${catTasks.length}</span>
+          <span class="rem-cat-chevron">${isCol ? '▸' : '▾'}</span>
+        </div>
+        ${isCol ? '' : `
+          <div class="rem-cat-items">
+            ${catTasks.map(t => {
+              const { timeLabel, text } = parseReminderText(t.text);
+              return `
+              <div class="reminder-item" data-rem-id="${t.id}">
+                ${timeLabel ? `<span class="reminder-time">${esc(timeLabel)}</span>` : ''}
+                <span class="reminder-text">${esc(text)}</span>
+                <button class="reminder-clear-btn" data-rem-id="${t.id}" title="Clear reminder">✕</button>
+              </div>`;
+            }).join('')}
+          </div>`}
+      </div>`;
+  });
+
+  document.getElementById('reminders-items').innerHTML = html;
+}
+
+async function clearReminder(id) {
+  try {
+    const res = await fetch(API, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    tasks = await res.json();
+    render();
+    toast('Reminder cleared ✓');
+  } catch (e) {
+    toast('⚠ Clear failed: ' + e.message);
+  }
+}
+
 function renderGrid(withDone) {
   const grid = document.getElementById('categories-grid');
   grid.innerHTML = '';
   const catOrder = Object.keys(CATEGORY_META);
-  const allCats = [...new Set([...catOrder, ...tasks.map(t => t.cat)])];
+  const allCats = [...new Set([...catOrder, ...tasks.filter(t => !t.reminder).map(t => t.cat)])];
   const collapsed = getCollapsed();
 
   allCats.forEach(cat => {
-    const catTasks = withDone.filter(t => t.cat === cat);
+    const catTasks = withDone.filter(t => t.cat === cat && !t.reminder);
     if (!catTasks.length && !openAddForms.has(cat)) return;
 
     const meta = CATEGORY_META[cat] || { icon: '📌', color: '#94a3b8' };
@@ -1037,6 +1240,26 @@ function renderGrid(withDone) {
 
 // --- EVENT DELEGATION ---
 document.addEventListener('click', e => {
+  // Reminder clear button
+  const remClearBtn = e.target.closest('.reminder-clear-btn');
+  if (remClearBtn) {
+    clearReminder(parseInt(remClearBtn.dataset.remId, 10));
+    return;
+  }
+
+  // Reminder category divider collapse
+  const remCatDiv = e.target.closest('.rem-cat-divider');
+  if (remCatDiv) {
+    const cat = remCatDiv.dataset.remCat;
+    const s = getRemCol();
+    s.has(cat) ? s.delete(cat) : s.add(cat);
+    setRemCol(s);
+    const done = getDone();
+    const withDone = tasks.map(t => ({ ...t, done: done.has(doneKey(t)) }));
+    renderRemindersZone(withDone);
+    return;
+  }
+
   // Urgent category divider collapse
   const urgentDiv = e.target.closest('.urgent-cat-divider');
   if (urgentDiv) {
@@ -1109,7 +1332,7 @@ document.addEventListener('keydown', e => {
 // --- COLLAPSE ALL ---
 function toggleCollapseAll() {
   const catOrder = Object.keys(CATEGORY_META);
-  const allCats = [...new Set([...catOrder, ...tasks.map(t => t.cat)])];
+  const allCats = [...new Set([...catOrder, ...tasks.filter(t => !t.reminder).map(t => t.cat)])];
   const s = getCollapsed();
   const btn = document.getElementById('collapse-all-btn');
   const anyExpanded = allCats.some(c => !s.has(c));

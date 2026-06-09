@@ -21,17 +21,26 @@ const CAT_MAP = {
   'Admin':                  ['##### Admin', null],
   'University':             ['##### University', null],
   'Bureaucracy & Chores':   ['##### Bureaucracy \\& Chores', null],
+  'Reminders / General':              ['##### Reminders', '###### General'],
+  'Reminders / HTBH':                ['##### Reminders', '###### HTBH'],
+  'Reminders / Agency':              ['##### Reminders', '###### Agency'],
+  'Reminders / Admin':               ['##### Reminders', '###### Admin'],
+  'Reminders / Bureaucracy & Chores':['##### Reminders', '###### Bureaucracy & Chores'],
 };
 
 function parseTodo() {
   const lines = fs.readFileSync(TODO, 'utf8').split('\n');
   const tasks = [];
-  let id = 1, project = null, sub = null;
+  let id = 1, project = null, sub = null, inReminders = false;
 
   for (let lineNo = 0; lineNo < lines.length; lineNo++) {
     const s = lines[lineNo].trim();
     if (s.startsWith('###### '))      { sub = s.slice(7).trim(); }
-    else if (s.startsWith('##### ')) { const l = s.slice(6).trim(); if (l) project = l; sub = null; }
+    else if (s.startsWith('##### ')) {
+      const l = s.slice(6).trim();
+      if (l) { project = l; inReminders = l === 'Reminders'; }
+      sub = null;
+    }
     else if (s.startsWith('* ')) {
       let text = s.slice(2).trim();
       if (!text) continue;
@@ -39,7 +48,7 @@ function parseTodo() {
       if (high) text = text.slice(1).trim();
       const proj = (project || 'General').replace('How to be Human', 'HTBH').replace(/\\&/g, '&');
       const cat  = sub ? `${proj} / ${sub}` : proj;
-      tasks.push({ id: id++, cat, text, high, lineNo });
+      tasks.push({ id: id++, cat, text, high, reminder: inReminders, lineNo });
     }
   }
   return tasks;

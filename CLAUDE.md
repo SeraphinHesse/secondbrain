@@ -76,12 +76,22 @@ When asked for a daily briefing or when starting a session in the morning:
 - Client work lives in `agency/clients/[client-name]/`
 - When I describe what a client needs, draft a scope of work using `templates/scope-of-work.md`
 
+### Reminders — /remind skill
+When I say "remind me to X" or "remind me at Y to X", always use the `/remind` skill — do NOT just add it as a task. The skill creates a Google Calendar event AND adds the item to the `##### Reminders` section of `ToDo.md`, which renders in its own amber zone on the dashboard.
+
+Category mapping for `/remind`:
+- **HTBH** — game dev, prototype, HTBH, WBS, Taiga, mechanics, design, Johann, balancing
+- **Agency** — client, lead, marketing, agency, campaign, outreach
+- **Admin** — admin, tax, invoice, paperwork, government, bureaucracy
+- **Bureaucracy & Chores** — Pfand, bottles, recycling, chores, cleaning, laundry, groceries, shopping, household, errands
+- **General** — everything else
+
 ### Task Capture — ToDo.md
 `ToDo.md` in the repo root is the master task list. `todo-dashboard.html` renders it as an interactive dashboard.
 
 **Always add to `ToDo.md` when:**
 - I drop anything in `inbox/` (after routing the idea, also add the resulting action item under the right section)
-- I say "I want to do X", "I need to do X", "remind me to X", or describe any future intention
+- I say "I want to do X", "I need to do X", or describe any future intention (but NOT "remind me" — use /remind for that)
 - Inbox processing surfaces an action that needs doing
 
 **Rules for adding tasks:**
@@ -110,6 +120,10 @@ When I say "process inbox" or "clear inbox":
 ## Recurring Tasks (via /loop skill)
 - **Daily briefing**: mornings at 08:00 Europe/Berlin — pull calendar + email + inbox status
 - **Lead follow-up check**: Mondays — scan Gmail for unanswered outreach threads
+
+## Git & GitHub
+- Always push to `main` directly — no confirmation needed, it's a solo repo
+- Never ask "should I push?" — just push after committing when it makes sense
 
 ## Key Context
 - Discord user ID: `525357928979365889`

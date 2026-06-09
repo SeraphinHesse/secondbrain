@@ -4,6 +4,14 @@
 
 !taskname = high importance task
 
+##### Reminders
+
+###### Bureaucracy & Chores
+
+* [2026-06-09 13:45] Bring Pfand bottles away — deadline 2pm
+
+
+
 ##### 
 
 ##### How to be Human
@@ -66,10 +74,12 @@
 ##### Admin
 
 * Dashboard for secondbrain
+* Dashboard: Reminder System
 
 
 
 ##### University
+* Talk to Sammy About Internship presentation slots
 
 
 
