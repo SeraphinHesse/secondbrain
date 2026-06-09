@@ -10,6 +10,10 @@
 
 * [2026-06-09 13:45] Bring Pfand bottles away — deadline 2pm
 
+###### HTBH
+
+* [2026-06-09 12:30] Review tile conditions ideation notes in inbox
+
 
 
 ##### 
