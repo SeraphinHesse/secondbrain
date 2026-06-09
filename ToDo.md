@@ -18,6 +18,7 @@
 * [2026-06-09 23:38] Check if First Levelup Glitch fix ran
   (AOE_DEF_UNLOCK_MIN_VILLAGE_LEVEL: 2→1)
 * [2026-06-15 09:00] Next Sprint Planning & Taiga
+* [2026-06-10 09:00] Work on WBS
 
 
 
