@@ -15,6 +15,7 @@
 
 ###### HTBH
 * [2026-06-11 17:00] Meet Johann
+* [2026-06-09 23:38] Check if First Levelup Glitch fix ran (AOE_DEF_UNLOCK_MIN_VILLAGE_LEVEL: 2→1)
 
 
 
