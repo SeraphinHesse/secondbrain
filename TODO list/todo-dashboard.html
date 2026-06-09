@@ -649,7 +649,7 @@
 
   <div class="error-banner" id="error-banner">
     ⚠ Could not reach the server at <strong>localhost:8765</strong>.
-    In your secondbrain folder, run:
+    In your <em>TODO list</em> folder, run:
     <code style="background:rgba(255,255,255,0.08);padding:0.1em 0.4em;border-radius:4px;margin:0 4px">node todo-server.js</code>
     — then reload.
   </div>
@@ -682,6 +682,10 @@
     <div class="form-group" style="flex:2;min-width:200px">
       <label>Task</label>
       <input type="text" id="new-task" placeholder="What needs to be done?" />
+    </div>
+    <div class="form-group" style="flex:3;min-width:220px">
+      <label>Description <span style="font-weight:400;opacity:0.5">(optional)</span></label>
+      <input type="text" id="new-desc" placeholder="Context, why, what done looks like…" />
     </div>
     <div class="form-group">
       <label>Category</label>
@@ -740,8 +744,8 @@
       <select class="modal-input" id="modal-cat-select"></select>
     </div>
     <div class="form-group">
-      <label>Notes</label>
-      <textarea class="modal-desc" id="modal-desc" placeholder="Add notes or details…" rows="3"></textarea>
+      <label>Description</label>
+      <textarea class="modal-desc" id="modal-desc" placeholder="Context, why, what done looks like…" rows="3"></textarea>
     </div>
     <div class="modal-row">
       <label class="priority-toggle" style="padding-bottom:0">
@@ -778,8 +782,8 @@
       <select class="modal-input" id="rem-modal-cat-select"></select>
     </div>
     <div class="form-group">
-      <label>Notes</label>
-      <textarea class="modal-desc" id="rem-modal-desc" placeholder="Add notes or details…" rows="3"></textarea>
+      <label>Description</label>
+      <textarea class="modal-desc" id="rem-modal-desc" placeholder="Context or notes…" rows="3"></textarea>
     </div>
     <div class="modal-footer">
       <button class="btn-danger" style="margin-right:auto" onclick="clearReminderFromModal()">✕ Clear</button>
@@ -831,6 +835,15 @@ const DEFAULT_CAT_META = {
   'University':             { icon: '🎓', color: '#818cf8' },
   'Bureaucracy & Chores':   { icon: '🔧', color: '#6b7280' },
 };
+
+// Reminder categories — mirrored from server CAT_MAP
+const REMINDER_CATS = [
+  'Reminders / General',
+  'Reminders / HTBH',
+  'Reminders / Agency',
+  'Reminders / Admin',
+  'Reminders / Bureaucracy & Chores',
+];
 
 const CAT_PALETTE = [
   '#a78bfa','#60a5fa','#34d399','#fbbf24','#f472b6',
@@ -953,9 +966,10 @@ async function checkAndArchive() {
 
     backlog.push({
       key,
-      text: task ? task.text : catText.text,
-      cat:  task ? task.cat  : catText.cat,
-      high: task ? task.high : false,
+      text:  task ? task.text  : catText.text,
+      cat:   task ? task.cat   : catText.cat,
+      high:  task ? task.high  : false,
+      desc:  task ? (task.desc || '') : '',
       doneAt: doneAt[key],
     });
 
@@ -988,6 +1002,7 @@ async function addTask() {
   const text = textEl.value.trim();
   const cat  = document.getElementById('new-category').value;
   const high = document.getElementById('new-priority').checked;
+  const desc = document.getElementById('new-desc').value.trim();
   if (!text) { textEl.focus(); return; }
 
   const btn = document.getElementById('add-btn');
@@ -996,12 +1011,13 @@ async function addTask() {
     const res = await fetch(API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, cat, high }),
+      body: JSON.stringify({ text, cat, high, desc }),
     });
     if (!res.ok) throw new Error(await res.text());
     tasks = await res.json();
     render();
     textEl.value = '';
+    document.getElementById('new-desc').value = '';
     document.getElementById('new-priority').checked = false;
     toast('Saved to ToDo.md' + (high ? ' 🔴' : ' ✓'));
   } catch (e) {
@@ -1064,7 +1080,6 @@ function renderUrgentZone(withDone) {
     return;
   }
 
-  // Group by category
   const groups = {};
   const catOrder = [];
   urgentTasks.forEach(t => {
@@ -1139,7 +1154,6 @@ function renderRemindersZone(withDone) {
   zone.classList.toggle('zone-collapsed', wasCollapsed);
   document.getElementById('reminders-chevron').textContent = wasCollapsed ? '▸' : '▾';
 
-  // Group by display category (strip "Reminders / " prefix)
   const groups = {};
   const catOrder = [];
   reminders.forEach(t => {
@@ -1216,7 +1230,9 @@ function openReminderModal(id) {
   const timeWrap = document.getElementById('rem-modal-time-wrap');
   if (timeLabel) { timeEl.textContent = timeLabel; timeWrap.style.display = ''; }
   else { timeWrap.style.display = 'none'; }
-  document.getElementById('rem-modal-desc').value = localStorage.getItem('sb-desc::rem-' + id) || '';
+  // Use server-side desc; fall back to legacy localStorage for migration
+  const lsDesc = localStorage.getItem('sb-desc::rem-' + id) || '';
+  document.getElementById('rem-modal-desc').value = t.desc || lsDesc;
   populateReminderCatDropdown(t.cat);
   document.getElementById('reminder-modal').classList.add('open');
   setTimeout(() => document.getElementById('rem-modal-title-input').focus(), 50);
@@ -1242,19 +1258,18 @@ async function saveReminderModal() {
   const newCat     = document.getElementById('rem-modal-cat-select').value;
   const newFullText = newTextRaw ? (currentReminderPrefix + newTextRaw) : t.text;
 
-  if (desc) localStorage.setItem('sb-desc::rem-' + id, desc);
-  else localStorage.removeItem('sb-desc::rem-' + id);
-
-  const changed = newFullText !== t.text || newCat !== t.cat;
+  const changed = newFullText !== t.text || newCat !== t.cat || desc !== (t.desc || '');
   if (changed) {
     try {
       const res = await fetch(API, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, text: newFullText, cat: newCat }),
+        body: JSON.stringify({ id, text: newFullText, cat: newCat, desc }),
       });
       if (!res.ok) throw new Error(await res.text());
       tasks = await res.json();
+      // Clean up legacy localStorage desc
+      localStorage.removeItem('sb-desc::rem-' + id);
       toast('Reminder saved ✓');
     } catch (e) {
       toast('⚠ Save failed: ' + e.message);
@@ -1309,13 +1324,13 @@ function renderGrid(withDone) {
       <div class="task-list">
         ${catTasks.length
           ? catTasks.map(t => {
-              const hasDesc = !!localStorage.getItem('sb-desc::' + doneKey(t));
+              const hasDesc = !!(t.desc && t.desc.trim());
               return `
               <div class="task-item ${t.done ? 'done' : ''}" data-key="${esc(doneKey(t))}" data-id="${t.id}">
                 ${t.high ? '<span class="high-dot"></span>' : ''}
                 <span class="task-checkbox"></span>
                 <span class="task-text">${esc(t.text)}</span>
-                ${hasDesc ? '<span class="desc-indicator" title="Has notes"></span>' : ''}
+                ${hasDesc ? '<span class="desc-indicator" title="Has description"></span>' : ''}
               </div>`;
             }).join('')
           : '<div class="empty-state">No tasks — add one below</div>'}
@@ -1340,21 +1355,18 @@ function renderGrid(withDone) {
 
 // --- EVENT DELEGATION ---
 document.addEventListener('click', e => {
-  // Reminder clear button (quick ✕ — no modal)
   const remClearBtn = e.target.closest('.reminder-clear-btn');
   if (remClearBtn) {
     clearReminder(parseInt(remClearBtn.dataset.remId, 10));
     return;
   }
 
-  // Reminder item click — open modal
   const reminderItem = e.target.closest('.reminder-item');
   if (reminderItem) {
     openReminderModal(parseInt(reminderItem.dataset.remId, 10));
     return;
   }
 
-  // Reminder category divider collapse
   const remCatDiv = e.target.closest('.rem-cat-divider');
   if (remCatDiv) {
     const cat = remCatDiv.dataset.remCat;
@@ -1367,7 +1379,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // Urgent category divider collapse
   const urgentDiv = e.target.closest('.urgent-cat-divider');
   if (urgentDiv) {
     const cat = urgentDiv.dataset.urgentCat;
@@ -1380,7 +1391,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // Card collapse toggle
   const collapseBtn = e.target.closest('.card-collapse-btn');
   if (collapseBtn) {
     const cat = collapseBtn.dataset.cat;
@@ -1397,11 +1407,9 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // Card inline add — toggle button
   const addToggle = e.target.closest('.card-add-toggle');
   if (addToggle) { toggleCardAdd(addToggle.dataset.cat); return; }
 
-  // Card inline add — submit button
   const addSubmit = e.target.closest('.card-add-submit');
   if (addSubmit) {
     const form = addSubmit.closest('.card-add-form');
@@ -1409,7 +1417,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // Task item
   const taskItem = e.target.closest('.task-item');
   if (taskItem) {
     if (e.target.closest('.task-checkbox')) {
@@ -1420,7 +1427,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // Urgent item
   const urgentItem = e.target.closest('.urgent-item');
   if (urgentItem) {
     if (e.target.closest('.urgent-check')) {
@@ -1465,7 +1471,6 @@ function toggleCardAdd(cat) {
     openAddForms.delete(cat);
   } else {
     openAddForms.add(cat);
-    // Expand card if collapsed
     const s = getCollapsed();
     if (s.has(cat)) {
       s.delete(cat);
@@ -1514,7 +1519,7 @@ async function submitCardAdd(cat, form) {
     const res = await fetch(API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, cat, high }),
+      body: JSON.stringify({ text, cat, high, desc: '' }),
     });
     if (!res.ok) throw new Error(await res.text());
     tasks = await res.json();
@@ -1538,8 +1543,7 @@ function populateModalCatDropdown(currentCat) {
 
 function populateReminderCatDropdown(currentCat) {
   const sel = document.getElementById('rem-modal-cat-select');
-  const cats = Object.keys(CAT_MAP).filter(c => c.startsWith('Reminders'));
-  sel.innerHTML = cats.map(c =>
+  sel.innerHTML = REMINDER_CATS.map(c =>
     `<option value="${esc(c)}"${c === currentCat ? ' selected' : ''}>${esc(c.replace(/^Reminders\s*\/\s*/, ''))}</option>`
   ).join('');
 }
@@ -1551,7 +1555,9 @@ function openTaskModal(key) {
   currentModalKey = key;
   document.getElementById('modal-cat').textContent       = t.cat;
   document.getElementById('modal-title-input').value     = t.text;
-  document.getElementById('modal-desc').value            = localStorage.getItem('sb-desc::' + key) || '';
+  // Use server-side desc; fall back to legacy localStorage for migration
+  const lsDesc = localStorage.getItem('sb-desc::' + key) || '';
+  document.getElementById('modal-desc').value            = t.desc || lsDesc;
   document.getElementById('modal-high').checked          = t.high;
   populateModalCatDropdown(t.cat);
   updateModalDoneBtn();
@@ -1592,20 +1598,17 @@ async function saveModal() {
   const newCat  = document.getElementById('modal-cat-select').value;
   const newHigh = document.getElementById('modal-high').checked;
 
-  if (desc) localStorage.setItem('sb-desc::' + currentModalKey, desc);
-  else localStorage.removeItem('sb-desc::' + currentModalKey);
-
-  const changed = newText !== t.text || newCat !== t.cat || newHigh !== t.high;
+  const changed = newText !== t.text || newCat !== t.cat || newHigh !== t.high || desc !== (t.desc || '');
   if (changed) {
     try {
       const res = await fetch(API, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: t.id, text: newText, cat: newCat, high: newHigh }),
+        body: JSON.stringify({ id: t.id, text: newText, cat: newCat, high: newHigh, desc }),
       });
       if (!res.ok) throw new Error(await res.text());
       tasks = await res.json();
-      // Migrate done state & desc key if identity changed
+      // Migrate done state if identity changed
       const newKey = `${newCat}::${newText}`;
       if (currentModalKey !== newKey) {
         const done = getDone(); const doneAt = getDoneAt();
@@ -1615,15 +1618,16 @@ async function saveModal() {
           if (ts) { delete doneAt[currentModalKey]; doneAt[newKey] = ts; }
           setDone(done); setDoneAt(doneAt);
         }
-        if (desc) { localStorage.setItem('sb-desc::' + newKey, desc); localStorage.removeItem('sb-desc::' + currentModalKey); }
       }
+      // Clean up any legacy localStorage desc
+      localStorage.removeItem('sb-desc::' + currentModalKey);
       toast('Saved' + (newHigh ? ' 🔴' : ' ✓'));
     } catch (e) {
       toast('⚠ Save failed: ' + e.message);
       closeModal(); render(); return;
     }
   } else {
-    toast(desc ? 'Notes saved' : 'Saved');
+    toast('No changes');
   }
 
   closeModal();
@@ -1685,7 +1689,6 @@ function renderBacklog() {
     return;
   }
 
-  // Group by category
   const groups = {};
   const catOrder = [];
   backlog.forEach((item, idx) => {
@@ -1720,7 +1723,7 @@ async function restoreFromBacklog(idx) {
     const res = await fetch(API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: item.text, cat: item.cat, high: item.high }),
+      body: JSON.stringify({ text: item.text, cat: item.cat, high: item.high, desc: item.desc || '' }),
     });
     if (!res.ok) throw new Error(await res.text());
     tasks = await res.json();
@@ -1799,7 +1802,6 @@ buildColorSwatches();
 updateBacklogBadge();
 loadTasks();
 
-// Periodically check for tasks to archive (every 30 min while page is open)
 setInterval(checkAndArchive, 30 * 60 * 1000);
 </script>
 </body>

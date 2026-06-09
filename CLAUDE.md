@@ -21,7 +21,17 @@ Timezone: Europe/Berlin. Based in Germany. GitHub: SeraphinHesse.
 ## Workspace Structure
 ```
 secondbrain/
+├── ToDo.md             # Master task list — source of truth for all tasks
 ├── inbox/              # Drop zone: raw ideas, voice memo transcripts, unprocessed notes
+├── TODO list/          # Dashboard GUI and server (see TODO list/CLAUDE.md)
+│   ├── todo-dashboard.html
+│   ├── todo-server.js
+│   ├── todo-server.py
+│   ├── launch-dashboard.bat
+│   ├── restart-dashboard.bat
+│   ├── setup-autostart.bat
+│   ├── Todolistconventions.md
+│   └── CLAUDE.md
 ├── projects/
 │   ├── htbh/           # HTBH game project files, design docs, task tracking
 │   └── _template/      # Copy this when starting a new project
@@ -70,6 +80,11 @@ When asked for a daily briefing or when starting a session in the morning:
 - When I say "prototype X mechanic" — build the simplest possible playable version first
 - Keep a `devlog.md` in each project folder updated after major sessions
 
+### HTBH Task Classification
+- **Design tasks** = brainstorming, ideation, concept exploration, design decisions — these go under `###### Design` in ToDo.md
+- **Implementation tasks** = anything to build, code, or prototype — these go under `###### Claude Build` in ToDo.md
+- When routing HTBH tasks, always classify by this distinction first
+
 ### Marketing Agency
 - Lead research: use deep-research skill + web search to build lead profiles
 - Store each lead as a file in `agency/leads/[company-name].md` using `templates/lead-profile.md`
@@ -87,7 +102,7 @@ Category mapping for `/remind`:
 - **General** — everything else
 
 ### Task Capture — ToDo.md
-`ToDo.md` in the repo root is the master task list. `todo-dashboard.html` renders it as an interactive dashboard.
+`ToDo.md` in the repo root is the master task list. `TODO list/todo-dashboard.html` renders it as an interactive dashboard (served by `TODO list/todo-server.js`).
 
 **Always add to `ToDo.md` when:**
 - I drop anything in `inbox/` (after routing the idea, also add the resulting action item under the right section)
@@ -98,8 +113,19 @@ Category mapping for `/remind`:
 - Place under the correct section (`##### How to be Human`, `##### Addictive Media Agency`, `##### Admin`, etc.)
 - Use the right subsection (`###### Producing`, `###### Design`, `###### Claude Build`, `###### Balancing`, or create a new one if needed)
 - Prefix with `!` for high-importance tasks
+- **Always include a description** on the line immediately after the task, indented with 2 spaces
+- Description should explain: what needs to happen, why it matters, and what done looks like
 - Never add duplicates — scan existing items first
 - After adding, confirm the task was added and under which section
+
+**Task format:**
+```markdown
+* Task name
+  Description — context, why, and what done looks like.
+
+* !High priority task name
+  Why this is urgent and what it requires.
+```
 
 ### Inbox Processing
 When I say "process inbox" or "clear inbox":
@@ -107,8 +133,14 @@ When I say "process inbox" or "clear inbox":
 2. Classify and route each one to the right location
 3. Structure unstructured notes
 4. Delete from inbox after moving
-5. Add any resulting action items to `ToDo.md` under the right section
+5. Add any resulting action items to `ToDo.md` under the right section (with descriptions)
 6. Give me a summary of what was filed where and what was added to ToDo
+
+## Dashboard GUI Development
+- All dashboard/server code lives in `TODO list/` — see `TODO list/CLAUDE.md` for full coding guide
+- **GUI changes must go on a separate branch** — never modify `ToDo.md` in a dashboard feature branch
+- Branch naming: `claude/dashboard-<feature>`
+- `ToDo.md` must only ever be touched on `main` — it's live user data
 
 ## Tone & Style
 - Be direct and concise — I'm a busy founder, not a student
@@ -124,6 +156,7 @@ When I say "process inbox" or "clear inbox":
 ## Git & GitHub
 - Always push to `main` directly — no confirmation needed, it's a solo repo
 - Never ask "should I push?" — just push after committing when it makes sense
+- Exception: dashboard GUI branches — these go to separate branches and PRs
 
 ## Key Context
 - Discord user ID: `525357928979365889`

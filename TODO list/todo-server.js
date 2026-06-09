@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Secondbrain Todo Dashboard Server — no npm needed, Node stdlib only
-// Run: node todo-server.js
+// Run: node "todo-server.js" from the "TODO list" folder
 // Then open: http://localhost:8765
 
 const http = require('http');
@@ -9,7 +9,7 @@ const path = require('path');
 
 const PORT     = 8765;
 const BASE_DIR = __dirname;
-const TODO     = path.join(BASE_DIR, 'ToDo.md');
+const TODO     = path.join(BASE_DIR, '..', 'ToDo.md');   // one level up
 const HTML     = path.join(BASE_DIR, 'todo-dashboard.html');
 
 const CAT_MAP = {
@@ -21,13 +21,15 @@ const CAT_MAP = {
   'Admin':                  ['##### Admin', null],
   'University':             ['##### University', null],
   'Bureaucracy & Chores':   ['##### Bureaucracy \\& Chores', null],
-  'Reminders / General':              ['##### Reminders', '###### General'],
-  'Reminders / HTBH':                ['##### Reminders', '###### HTBH'],
-  'Reminders / Agency':              ['##### Reminders', '###### Agency'],
-  'Reminders / Admin':               ['##### Reminders', '###### Admin'],
-  'Reminders / Bureaucracy & Chores':['##### Reminders', '###### Bureaucracy & Chores'],
+  'Reminders / General':               ['##### Reminders', '###### General'],
+  'Reminders / HTBH':                  ['##### Reminders', '###### HTBH'],
+  'Reminders / Agency':                ['##### Reminders', '###### Agency'],
+  'Reminders / Admin':                 ['##### Reminders', '###### Admin'],
+  'Reminders / Bureaucracy & Chores':  ['##### Reminders', '###### Bureaucracy & Chores'],
 };
 
+// Returns tasks with lineNo, descLine, desc fields.
+// Description convention: an indented line (2+ spaces) immediately after a * task line.
 function parseTodo() {
   const lines = fs.readFileSync(TODO, 'utf8').split('\n');
   const tasks = [];
@@ -48,7 +50,14 @@ function parseTodo() {
       if (high) text = text.slice(1).trim();
       const proj = (project || 'General').replace('How to be Human', 'HTBH').replace(/\\&/g, '&');
       const cat  = sub ? `${proj} / ${sub}` : proj;
-      tasks.push({ id: id++, cat, text, high, reminder: inReminders, lineNo });
+
+      // Check next line for a description (indented with 2+ spaces, not another task or header)
+      const nextLine = lines[lineNo + 1];
+      const descMatch = nextLine !== undefined ? nextLine.match(/^  +(.+)/) : null;
+      const desc     = descMatch ? descMatch[1].trim() : '';
+      const descLine = descMatch ? lineNo + 1 : -1;
+
+      tasks.push({ id: id++, cat, text, high, reminder: inReminders, lineNo, desc, descLine });
     }
   }
   return tasks;
@@ -65,27 +74,41 @@ function updateTask(id, updates) {
   const newHigh = updates.high !== undefined ? !!updates.high : task.high;
   const newCat  = (updates.cat !== undefined && updates.cat !== null)
     ? updates.cat : task.cat;
+  const newDesc = updates.desc !== undefined ? (updates.desc || '').trim() : task.desc;
 
   if (newCat !== task.cat) {
+    // Category change: remove old task+desc, insert in new section
     const lines = fs.readFileSync(TODO, 'utf8').split('\n');
+    if (task.descLine >= 0) lines.splice(task.descLine, 1); // desc first (higher index)
     lines.splice(task.lineNo, 1);
     fs.writeFileSync(TODO, lines.join('\n'), 'utf8');
-    addTask(newText, newCat, newHigh);
+    addTask(newText, newCat, newHigh, newDesc);
   } else {
     const lines = fs.readFileSync(TODO, 'utf8').split('\n');
+
+    // Handle description changes (desc is always at lineNo+1, so these ops don't shift lineNo)
+    if (task.descLine >= 0) {
+      if (newDesc) {
+        lines[task.descLine] = '  ' + newDesc;
+      } else {
+        lines.splice(task.descLine, 1);
+      }
+    } else if (newDesc) {
+      lines.splice(task.lineNo + 1, 0, '  ' + newDesc);
+    }
+
     lines[task.lineNo] = (newHigh ? '* !' : '* ') + newText;
     fs.writeFileSync(TODO, lines.join('\n'), 'utf8');
   }
   return true;
 }
 
-function addTask(text, cat, high) {
+function addTask(text, cat, high, desc) {
   const lines  = fs.readFileSync(TODO, 'utf8').split('\n');
   const entry  = CAT_MAP[cat] || [`##### ${cat}`, null];
   const [parentH, subH] = entry;
   const newLine = (high ? '* !' : '* ') + text;
 
-  // Find insertion index
   let targetIdx = -1;
   if (subH) {
     let inParent = false;
@@ -100,18 +123,25 @@ function addTask(text, cat, high) {
   }
 
   if (targetIdx === -1) {
-    // Section not found — append at end
-    lines.push('', parentH, '', ...(subH ? [subH, ''] : []), newLine, '');
+    lines.push('', parentH, '', ...(subH ? [subH, ''] : []), newLine);
+    if (desc) lines.push('  ' + desc);
+    lines.push('');
   } else {
-    // Find last task line in section, insert after it
     let insertPos = targetIdx + 1;
     for (let i = targetIdx + 1; i < lines.length; i++) {
       const s = lines[i].trim();
       if (subH  && /^#{5,6} /.test(s) && i !== targetIdx) break;
       if (!subH && /^#{5} /.test(s)   && i !== targetIdx) break;
-      if (s.startsWith('* ')) insertPos = i + 1;
+      if (s.startsWith('* ')) {
+        insertPos = i + 1;
+        // Skip past the task's description line if present
+        if (i + 1 < lines.length && lines[i + 1].match(/^  +\S/)) {
+          insertPos = i + 2;
+        }
+      }
     }
     lines.splice(insertPos, 0, newLine);
+    if (desc) lines.splice(insertPos + 1, 0, '  ' + desc);
   }
 
   fs.writeFileSync(TODO, lines.join('\n'), 'utf8');
@@ -122,6 +152,7 @@ function deleteTask(id) {
   const task  = tasks.find(t => t.id === id);
   if (!task) return false;
   const lines = fs.readFileSync(TODO, 'utf8').split('\n');
+  if (task.descLine >= 0) lines.splice(task.descLine, 1); // desc first (higher index)
   lines.splice(task.lineNo, 1);
   fs.writeFileSync(TODO, lines.join('\n'), 'utf8');
   return true;
@@ -140,7 +171,7 @@ const server = http.createServer((req, res) => {
 
   if (req.url === '/api/tasks' && req.method === 'GET') {
     try {
-      const tasks = parseTodo().map(({ lineNo, ...t }) => t);
+      const tasks = parseTodo().map(({ lineNo, descLine, ...t }) => t);
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(tasks));
     } catch (e) {
@@ -155,10 +186,10 @@ const server = http.createServer((req, res) => {
     req.on('data', d => body += d);
     req.on('end', () => {
       try {
-        const { id, high, text, cat } = JSON.parse(body);
+        const { id, high, text, cat, desc } = JSON.parse(body);
         if (typeof id !== 'number') { res.writeHead(400); res.end('id required'); return; }
-        updateTask(id, { high, text, cat });
-        const tasks = parseTodo().map(({ lineNo, ...t }) => t);
+        updateTask(id, { high, text, cat, desc });
+        const tasks = parseTodo().map(({ lineNo, descLine, ...t }) => t);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(tasks));
       } catch (e) {
@@ -174,10 +205,10 @@ const server = http.createServer((req, res) => {
     req.on('data', d => body += d);
     req.on('end', () => {
       try {
-        const { text, cat, high } = JSON.parse(body);
+        const { text, cat, high, desc } = JSON.parse(body);
         if (!text || !text.trim()) { res.writeHead(400); res.end('text required'); return; }
-        addTask(text.trim(), cat, !!high);
-        const tasks = parseTodo().map(({ lineNo, ...t }) => t);
+        addTask(text.trim(), cat, !!high, (desc || '').trim());
+        const tasks = parseTodo().map(({ lineNo, descLine, ...t }) => t);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(tasks));
       } catch (e) {
@@ -196,7 +227,7 @@ const server = http.createServer((req, res) => {
         const { id } = JSON.parse(body);
         if (typeof id !== 'number') { res.writeHead(400); res.end('id required'); return; }
         deleteTask(id);
-        const tasks = parseTodo().map(({ lineNo, ...t }) => t);
+        const tasks = parseTodo().map(({ lineNo, descLine, ...t }) => t);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(tasks));
       } catch (e) {
@@ -224,9 +255,9 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, 'localhost', () => {
   const url = `http://localhost:${PORT}`;
   console.log(`  Secondbrain Dashboard → ${url}`);
+  console.log(`  ToDo.md: ${TODO}`);
   console.log(`  Ctrl+C to stop\n`);
 
-  // Try to open browser cross-platform
   const { exec } = require('child_process');
   const cmd = process.platform === 'win32' ? `start ${url}`
             : process.platform === 'darwin' ? `open ${url}`

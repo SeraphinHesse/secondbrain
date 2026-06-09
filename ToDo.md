@@ -92,7 +92,6 @@
 
 
 ##### University
-* Talk to Sammy About Internship presentation slots
 
 
 
@@ -100,5 +99,4 @@
 
 ##### Bureaucracy \& Chores
 
-* ! Pfand Bottles — today 14:00
 

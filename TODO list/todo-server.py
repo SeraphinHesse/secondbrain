@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Secondbrain Todo Dashboard Server
-Run: python3 todo-server.py
+Secondbrain Todo Dashboard Server (Python fallback)
+Run: python3 "todo-server.py" from the "TODO list" folder
 Then open: http://localhost:8765
 """
 import json, os, re, webbrowser
@@ -9,10 +9,9 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 PORT = 8765
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TODO_PATH = os.path.join(BASE_DIR, 'ToDo.md')
+TODO_PATH = os.path.join(BASE_DIR, '..', 'ToDo.md')   # one level up
 HTML_PATH = os.path.join(BASE_DIR, 'todo-dashboard.html')
 
-# Maps dashboard category names → exact header strings in ToDo.md
 CAT_MAP = {
     'HTBH / Producing':        ('##### How to be Human', '###### Producing'),
     'HTBH / Design':           ('##### How to be Human', '###### Design'),
@@ -22,6 +21,11 @@ CAT_MAP = {
     'Admin':                   ('##### Admin', None),
     'University':              ('##### University', None),
     'Bureaucracy & Chores':    ('##### Bureaucracy \\& Chores', None),
+    'Reminders / General':               ('##### Reminders', '###### General'),
+    'Reminders / HTBH':                  ('##### Reminders', '###### HTBH'),
+    'Reminders / Agency':                ('##### Reminders', '###### Agency'),
+    'Reminders / Admin':                 ('##### Reminders', '###### Admin'),
+    'Reminders / Bureaucracy & Chores':  ('##### Reminders', '###### Bureaucracy & Chores'),
 }
 
 
@@ -37,8 +41,9 @@ def parse_todo():
 
     current_project = None
     current_sub = None
+    in_reminders = False
 
-    for line in lines:
+    for i, line in enumerate(lines):
         s = line.strip()
         if s.startswith('###### '):
             current_sub = s[7:].strip()
@@ -46,6 +51,7 @@ def parse_todo():
             label = s[6:].strip()
             if label:
                 current_project = label
+                in_reminders = (label == 'Reminders')
             current_sub = None
         elif s.startswith('* '):
             text = s[2:].strip()
@@ -55,33 +61,39 @@ def parse_todo():
             if high:
                 text = text[1:].strip()
 
-            # Build dashboard category name
             proj = current_project or 'General'
-            proj_short = proj.replace('How to be Human', 'HTBH')
-            # Unescape markdown backslash-ampersand
-            proj_short = proj_short.replace('\\&', '&')
+            proj_short = proj.replace('How to be Human', 'HTBH').replace('\\&', '&')
             cat = f"{proj_short} / {current_sub}" if current_sub else proj_short
+
+            # Check next line for description (indented with 2+ spaces)
+            desc = ''
+            if i + 1 < len(lines):
+                m = re.match(r'^  +(.+)', lines[i + 1])
+                if m:
+                    desc = m.group(1).strip()
 
             tasks.append({
                 'id': task_id,
                 'cat': cat,
                 'text': text,
                 'high': high,
+                'reminder': in_reminders,
+                'desc': desc,
             })
             task_id += 1
 
     return tasks
 
 
-def add_task(text, cat, high):
+def add_task(text, cat, high, desc=''):
     parent_h, sub_h = CAT_MAP.get(cat, (f'##### {cat}', None))
     prefix = '* !' if high else '* '
     new_line = prefix + text + '\n'
+    desc_line = ('  ' + desc + '\n') if desc else None
 
     with open(TODO_PATH, encoding='utf-8') as f:
         lines = f.readlines()
 
-    # Find the target section header index
     target_idx = None
     if sub_h:
         in_parent = False
@@ -98,27 +110,31 @@ def add_task(text, cat, high):
                 break
 
     if target_idx is None:
-        # Section missing — append at end
         if not lines[-1].endswith('\n'):
             lines.append('\n')
         lines.append(f'\n{parent_h}\n\n')
         if sub_h:
             lines.append(f'\n{sub_h}\n\n')
         lines.append(new_line)
+        if desc_line:
+            lines.append(desc_line)
         lines.append('\n')
     else:
-        # Scan forward to find last task line in this section
         insert_pos = target_idx + 1
         for i in range(target_idx + 1, len(lines)):
             s = lines[i].strip()
-            # Stop at next section header of same or higher level
             if sub_h and re.match(r'^#{5,6} ', s) and i != target_idx:
                 break
             if not sub_h and re.match(r'^#{5} ', s) and i != target_idx:
                 break
             if s.startswith('* '):
                 insert_pos = i + 1
+                # Skip past description line if present
+                if i + 1 < len(lines) and re.match(r'^  +\S', lines[i + 1]):
+                    insert_pos = i + 2
         lines.insert(insert_pos, new_line)
+        if desc_line:
+            lines.insert(insert_pos + 1, desc_line)
 
     with open(TODO_PATH, 'w', encoding='utf-8') as f:
         f.writelines(lines)
@@ -126,7 +142,7 @@ def add_task(text, cat, high):
 
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):
-        pass  # silence request logs
+        pass
 
     def send_json(self, data, status=200):
         body = json.dumps(data).encode()
@@ -173,11 +189,12 @@ class Handler(BaseHTTPRequestHandler):
             text = body.get('text', '').strip()
             cat  = body.get('cat', 'Admin')
             high = bool(body.get('high', False))
+            desc = body.get('desc', '').strip()
             if not text:
                 self.send_json({'error': 'text required'}, 400)
                 return
             try:
-                add_task(text, cat, high)
+                add_task(text, cat, high, desc)
                 self.send_json(parse_todo())
             except Exception as e:
                 self.send_json({'error': str(e)}, 500)
@@ -190,7 +207,7 @@ if __name__ == '__main__':
     server = HTTPServer(('localhost', PORT), Handler)
     url = f'http://localhost:{PORT}'
     print(f'  Secondbrain Dashboard → {url}')
-    print(f'  Serving from: {BASE_DIR}')
+    print(f'  ToDo.md: {TODO_PATH}')
     print(f'  Ctrl+C to stop\n')
     webbrowser.open(url)
     try:
