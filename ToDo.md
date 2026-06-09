@@ -36,9 +36,12 @@
 * Ideation: More Enemy types
 * Ideation: More Economy Buildings
 * Ideation: More Defence Buildings
-* Life loss feedback unclear — when a life is lost nothing makes it clear; needs a fix
-* Ideation: life loss display — options: animate the base, or have the enemy path back out of the base
-* Show died-last-round indicator — in the per-creature damage stats, note whether it died last round
+* Life loss feedback unclear
+  When a life is lost nothing makes it clear; needs a fix
+* Ideation: life loss display
+  Options: animate the base, or have the enemy path back out of the base
+* Show died-last-round indicator
+  In the per-creature damage stats, note whether it died last round
 * Move Balancing GUI outside of balancing folder and cleanup root folder
 
 
@@ -61,9 +64,12 @@
 this should be toggleable in balancing gui
 * Range and Building Preview on hover
 * Implement Tile Conditions
-* Lives in base building UI — clicking the base building should show current lives in its info UI panel
-* Tile weight reduction by damage — after ~round 10, top 3 damage-dealing buildings reduce tile weights on their tiles; enemies more likely to path over them (feels like enemies target whoever hurt them most)
-* Sunscorch beam scales visually — beam gets fatter each level; at laser beam tier it should be very fat and red
+* Lives in base building UI
+  Clicking the base building should show current lives in its info UI panel
+* Tile weight reduction by damage
+  After ~round 10, top 3 damage-dealing buildings reduce tile weights on their tiles; enemies more likely to path over them (feels like enemies target whoever hurt them most)
+* Sunscorch beam scales visually
+  Beam gets fatter each level; at laser beam tier it should be very fat and red
 
 
 
@@ -73,11 +79,16 @@ this should be toggleable in balancing gui
 * Slinger too strong
 * Levelling too Fast: Sheets Predictions not accurate
 * First levelup should be slightly later
-* Flute player needs more HP — currently only has two hit points, needs a bump
-* Musicians too strong — overall generating too much gold/income
-* Harp too cheap/strong — harp player specifically is either too cheap to build or generates too much yield (or both)
-* Sunscorch nerf + pricier upgrade — Sunscorch generally too strong; upgrade cost needs to go up
-* Raise all building upkeep — upkeep across the board is too low
+* Flute player needs more HP
+  Currently only has two hit points, needs a bump
+* Musicians too strong
+  Overall generating too much gold/income
+* Harp too cheap/strong
+  Harp player is either too cheap to build or generates too much yield (or both)
+* Sunscorch nerf + pricier upgrade
+  Sunscorch generally too strong; upgrade cost needs to go up
+* Raise all building upkeep
+  Upkeep across the board is too low
 
 
 
