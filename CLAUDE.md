@@ -76,13 +76,29 @@ When asked for a daily briefing or when starting a session in the morning:
 - Client work lives in `agency/clients/[client-name]/`
 - When I describe what a client needs, draft a scope of work using `templates/scope-of-work.md`
 
+### Task Capture — ToDo.md
+`ToDo.md` in the repo root is the master task list. `todo-dashboard.html` renders it as an interactive dashboard.
+
+**Always add to `ToDo.md` when:**
+- I drop anything in `inbox/` (after routing the idea, also add the resulting action item under the right section)
+- I say "I want to do X", "I need to do X", "remind me to X", or describe any future intention
+- Inbox processing surfaces an action that needs doing
+
+**Rules for adding tasks:**
+- Place under the correct section (`##### How to be Human`, `##### Addictive Media Agency`, `##### Admin`, etc.)
+- Use the right subsection (`###### Producing`, `###### Design`, `###### Claude Build`, `###### Balancing`, or create a new one if needed)
+- Prefix with `!` for high-importance tasks
+- Never add duplicates — scan existing items first
+- After adding, confirm the task was added and under which section
+
 ### Inbox Processing
 When I say "process inbox" or "clear inbox":
 1. Read every file in `inbox/`
 2. Classify and route each one to the right location
 3. Structure unstructured notes
 4. Delete from inbox after moving
-5. Give me a summary of what was filed where
+5. Add any resulting action items to `ToDo.md` under the right section
+6. Give me a summary of what was filed where and what was added to ToDo
 
 ## Tone & Style
 - Be direct and concise — I'm a busy founder, not a student

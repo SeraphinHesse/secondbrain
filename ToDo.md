@@ -13,16 +13,17 @@
 * WBS update
 * WBS full tasks
 * Taiga update
+* Call Johann
 
 
 
-###### Design 
+###### Design
 
 * XP cards: Finish GDD
 * !Ideation: Tile conditions
 * Ideation: More Boss types
 * Ideation: More Enemy types
-* Ideation: More Economy Buildings 
+* Ideation: More Economy Buildings
 * Ideation: More Defence Buildings
 
 
@@ -35,12 +36,12 @@
 * Maybe make the mortar shoot where the enemies will go? maybe put this on a bool in balancing
 * !Range Impacts the pathfinding of the enemies
 * Infinite money cheat, unlock all tech cheat
-* !First Levelup Glitch: First levelup only painter even though mortar should be available 
-* Hole HP upgrade not available in lives mode 
+* !First Levelup Glitch: First levelup only painter even though mortar should be available
+* Hole HP upgrade not available in lives mode
 * Come up with more generic upgrades
-* Move Balancing GUI outside of balancing folder and cleanup root folder 
+* Move Balancing GUI outside of balancing folder and cleanup root folder
 * !Make Balancing Config history get cloned to the build version
-* Switch Button to Confirm construction with cancel 
+* Switch Button to Confirm construction with cancel
 * Range and Building Preview on hover
 * Implement Tile Conditions
 
@@ -64,7 +65,6 @@
 
 ##### Admin
 
-* !Add todo list to claude.md of second brain repo
 * Dashboard for secondbrain
 
 
@@ -76,8 +76,4 @@
 
 
 ##### Bureaucracy \& Chores
-
-
-
-
 
