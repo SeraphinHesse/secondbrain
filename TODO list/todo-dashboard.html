@@ -666,6 +666,39 @@
     transition: color 0.15s, background 0.15s; font-family: 'Inter', sans-serif;
   }
   .reminder-clear-btn:hover { color: #fbbf24; background: rgba(251,191,36,0.1); }
+  .reminder-item.high { border-color: rgba(255,59,92,0.35); background: rgba(255,59,92,0.06); }
+  .reminder-item.high:hover { border-color: rgba(255,59,92,0.5); background: rgba(255,59,92,0.1); transform: translateX(3px); }
+  .reminder-item.high .reminder-text { color: #ff8fa3; }
+  .reminder-item.high .reminder-clear-btn:hover { color: var(--red); background: rgba(255,59,92,0.1); }
+  .reminder-item.done { opacity: 0.38; }
+  .reminder-item.done .reminder-text { text-decoration: line-through; }
+  .reminder-check {
+    width: 15px; height: 15px; border-radius: 50%; border: 2px solid rgba(251,191,36,0.4);
+    flex-shrink: 0; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+    margin-top: 2px;
+  }
+  .reminder-item:hover .reminder-check { border-color: rgba(251,191,36,0.75); }
+  .reminder-item.high .reminder-check { border-color: rgba(255,59,92,0.45); }
+  .reminder-item.high:hover .reminder-check { border-color: var(--red); }
+  .reminder-check.checked { background: rgba(251,191,36,0.55); border-color: #fbbf24; }
+  .reminder-item.high .reminder-check.checked { background: rgba(255,59,92,0.55); border-color: var(--red); }
+  .rem-priority-toggle {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.78rem; color: var(--text-muted); cursor: pointer; user-select: none;
+  }
+  .rem-priority-toggle input { display: none; }
+  .rem-priority-toggle .toggle-track {
+    width: 28px; height: 16px; border-radius: 999px;
+    border: 1.5px solid var(--border2); background: transparent;
+    position: relative; transition: background 0.2s, border-color 0.2s; cursor: pointer;
+  }
+  .rem-priority-toggle .toggle-track::after {
+    content: ''; position: absolute; left: 2px; top: 2px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--text-dim); transition: transform 0.2s, background 0.2s;
+  }
+  .rem-priority-toggle input:checked + .toggle-track { background: rgba(255,59,92,0.2); border-color: var(--red); }
+  .rem-priority-toggle input:checked + .toggle-track::after { transform: translateX(12px); background: var(--red); }
 
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -843,6 +876,13 @@
       <label>Description</label>
       <textarea class="modal-desc" id="rem-modal-desc" placeholder="Context or notes…" rows="3"></textarea>
     </div>
+    <div style="margin-bottom:0.875rem">
+      <label class="rem-priority-toggle">
+        <input type="checkbox" id="rem-modal-high">
+        <span class="toggle-track"></span>
+        High priority
+      </label>
+    </div>
     <div class="modal-footer">
       <button class="btn-danger" style="margin-right:auto" onclick="clearReminderFromModal()">✕ Clear</button>
       <button class="btn-secondary" onclick="closeReminderModal()">Close</button>
@@ -872,15 +912,16 @@
         <input type="time" class="modal-input" id="ar-time" />
       </div>
     </div>
-    <div class="form-group" style="margin-bottom:0">
+    <div class="form-group" style="margin-bottom:0.875rem">
       <label>Category</label>
-      <select class="modal-input" id="ar-cat">
-        <option value="Reminders / General">General</option>
-        <option value="Reminders / HTBH">HTBH</option>
-        <option value="Reminders / Agency">Agency</option>
-        <option value="Reminders / Admin">Admin</option>
-        <option value="Reminders / Bureaucracy &amp; Chores">Bureaucracy &amp; Chores</option>
-      </select>
+      <select class="modal-input" id="ar-cat"></select>
+    </div>
+    <div style="margin-bottom:0">
+      <label class="rem-priority-toggle">
+        <input type="checkbox" id="ar-high">
+        <span class="toggle-track"></span>
+        High priority
+      </label>
     </div>
     <div class="add-reminder-footer">
       <button class="btn-secondary" onclick="closeAddReminderModal()">Cancel</button>
@@ -934,13 +975,6 @@ const DEFAULT_CAT_META = {
 };
 
 // Reminder categories — mirrored from server CAT_MAP
-const REMINDER_CATS = [
-  'Reminders / General',
-  'Reminders / HTBH',
-  'Reminders / Agency',
-  'Reminders / Admin',
-  'Reminders / Bureaucracy & Chores',
-];
 
 const CAT_PALETTE = [
   '#a78bfa','#60a5fa','#34d399','#fbbf24','#f472b6',
@@ -1256,7 +1290,7 @@ function renderRemindersZone(withDone) {
   const zone = document.getElementById('reminders-zone');
   const countEl = document.getElementById('reminders-count');
 
-  countEl.textContent = reminders.length;
+  countEl.textContent = reminders.filter(t => !t.done).length;
 
   if (!reminders.length) {
     document.getElementById('reminders-items').innerHTML =
@@ -1289,15 +1323,17 @@ function renderRemindersZone(withDone) {
         <div class="rem-cat-divider" data-rem-cat="${esc(displayCat)}">
           <span class="rem-cat-icon-sm">${meta.icon}</span>
           <span class="rem-cat-label" style="color:${meta.color}">${esc(displayCat)}</span>
-          <span class="rem-cat-ct">${catTasks.length}</span>
+          <span class="rem-cat-ct">${catTasks.filter(t => !t.done).length}</span>
           <span class="rem-cat-chevron">${isCol ? '▸' : '▾'}</span>
         </div>
         ${isCol ? '' : `
           <div class="rem-cat-items">
-            ${catTasks.map(t => {
+            ${[...catTasks].sort((a, b) => (b.high ? 1 : 0) - (a.high ? 1 : 0)).map(t => {
               const { timeLabel, text } = parseReminderText(t.text);
+              const cls = ['reminder-item', t.high ? 'high' : '', t.done ? 'done' : ''].filter(Boolean).join(' ');
               return `
-              <div class="reminder-item" data-rem-id="${t.id}">
+              <div class="${cls}" data-rem-id="${t.id}">
+                <span class="reminder-check${t.done ? ' checked' : ''}" data-rem-check-id="${t.id}"></span>
                 ${timeLabel ? `<span class="reminder-time">${esc(timeLabel)}</span>` : ''}
                 <span class="reminder-text">${esc(text)}</span>
                 <button class="reminder-clear-btn" data-rem-id="${t.id}" title="Clear reminder">✕</button>
@@ -1354,6 +1390,7 @@ function openReminderModal(id) {
   // Use server-side desc; fall back to legacy localStorage for migration
   const lsDesc = localStorage.getItem('sb-desc::rem-' + id) || '';
   document.getElementById('rem-modal-desc').value = t.desc || lsDesc;
+  document.getElementById('rem-modal-high').checked = !!t.high;
   populateReminderCatDropdown(t.cat);
   document.getElementById('reminder-modal').classList.add('open');
   setTimeout(() => document.getElementById('rem-modal-title-input').focus(), 50);
@@ -1377,15 +1414,16 @@ async function saveReminderModal() {
   const desc       = document.getElementById('rem-modal-desc').value.trim();
   const newTextRaw = document.getElementById('rem-modal-title-input').value.trim();
   const newCat     = document.getElementById('rem-modal-cat-select').value;
+  const newHigh    = document.getElementById('rem-modal-high').checked;
   const newFullText = newTextRaw ? (currentReminderPrefix + newTextRaw) : t.text;
 
-  const changed = newFullText !== t.text || newCat !== t.cat || desc !== (t.desc || '');
+  const changed = newFullText !== t.text || newCat !== t.cat || newHigh !== t.high || desc !== (t.desc || '');
   if (changed) {
     try {
       const res = await fetch(API, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, text: newFullText, cat: newCat, desc }),
+        body: JSON.stringify({ id, text: newFullText, cat: newCat, high: newHigh, desc }),
       });
       if (!res.ok) throw new Error(await res.text());
       tasks = await res.json();
@@ -1413,14 +1451,18 @@ async function clearReminderFromModal() {
 // --- ADD REMINDER MODAL ---
 function openAddReminderModal() {
   const now = new Date();
-  // Default: tomorrow at 09:00
   const tomorrow = new Date(now);
   tomorrow.setDate(tomorrow.getDate() + 1);
   const dateStr = tomorrow.toISOString().slice(0, 10);
   document.getElementById('ar-date').value = dateStr;
   document.getElementById('ar-time').value = '09:00';
   document.getElementById('ar-text').value = '';
-  document.getElementById('ar-cat').value = 'Reminders / General';
+  document.getElementById('ar-high').checked = false;
+  // Populate category dropdown from task categories
+  const taskCats = Object.keys(CATEGORY_META).filter(c => !c.startsWith('Reminders'));
+  const sel = document.getElementById('ar-cat');
+  sel.innerHTML = taskCats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  sel.value = taskCats.includes('Admin') ? 'Admin' : (taskCats[0] || '');
   document.getElementById('add-reminder-modal').classList.add('open');
   setTimeout(() => document.getElementById('ar-text').focus(), 50);
 }
@@ -1433,36 +1475,27 @@ function handleAddReminderOverlayClick(e) {
   if (e.target === e.currentTarget) closeAddReminderModal();
 }
 
-// Maps reminder category to the regular task category for paired task creation
-const REM_TO_TASK_CAT = {
-  'Reminders / General':              'Admin',
-  'Reminders / HTBH':                 'HTBH / Producing',
-  'Reminders / Agency':               'Addictive Media Agency',
-  'Reminders / Admin':                'Admin',
-  'Reminders / Bureaucracy & Chores': 'Bureaucracy & Chores',
-};
-
 async function submitAddReminder() {
-  const text = document.getElementById('ar-text').value.trim();
-  const date = document.getElementById('ar-date').value;
-  const time = document.getElementById('ar-time').value;
-  const cat  = document.getElementById('ar-cat').value;
+  const text    = document.getElementById('ar-text').value.trim();
+  const date    = document.getElementById('ar-date').value;
+  const time    = document.getElementById('ar-time').value;
+  const taskCat = document.getElementById('ar-cat').value;  // direct task category
+  const high    = document.getElementById('ar-high').checked;
   if (!text) { document.getElementById('ar-text').focus(); return; }
 
   const btn = document.getElementById('ar-save-btn');
   btn.disabled = true; btn.textContent = 'Saving…';
 
-  // Format: [YYYY-MM-DD HH:MM] text
-  const prefix = (date && time) ? `[${date} ${time}] ` : '';
-  const fullText = prefix + text;
-  const taskCat  = REM_TO_TASK_CAT[cat] || 'Admin';
+  const prefix      = (date && time) ? `[${date} ${time}] ` : '';
+  const fullText    = prefix + text;
+  const reminderCat = 'Reminders / ' + taskCat;
 
   try {
     // Save reminder entry
     const remRes = await fetch(API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: fullText, cat, high: false, desc: '' }),
+      body: JSON.stringify({ text: fullText, cat: reminderCat, high, desc: '' }),
     });
     if (!remRes.ok) throw new Error(await remRes.text());
     tasks = await remRes.json();
@@ -1471,13 +1504,13 @@ async function submitAddReminder() {
     const taskRes = await fetch(API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, cat: taskCat, high: false, desc: '' }),
+      body: JSON.stringify({ text, cat: taskCat, high, desc: '' }),
     });
     if (!taskRes.ok) throw new Error(await taskRes.text());
     tasks = await taskRes.json();
 
     // Store bidirectional pair so done-state syncs in both directions
-    const remTask  = [...tasks].reverse().find(t => t.reminder && t.cat === cat && t.text === fullText);
+    const remTask  = [...tasks].reverse().find(t => t.reminder && t.cat === reminderCat && t.text === fullText);
     const taskTask = [...tasks].reverse().find(t => !t.reminder && t.cat === taskCat && t.text === text);
     if (remTask && taskTask) {
       const remKey  = doneKey(remTask);
@@ -1581,6 +1614,13 @@ function renderGrid(withDone) {
 
 // --- EVENT DELEGATION ---
 document.addEventListener('click', e => {
+  const remCheckEl = e.target.closest('.reminder-check');
+  if (remCheckEl) {
+    const t = tasks.find(t2 => t2.id === parseInt(remCheckEl.dataset.remCheckId, 10));
+    if (t) toggleDone(doneKey(t));
+    return;
+  }
+
   const remClearBtn = e.target.closest('.reminder-clear-btn');
   if (remClearBtn) {
     clearReminder(parseInt(remClearBtn.dataset.remId, 10));
@@ -1773,8 +1813,10 @@ function populateModalCatDropdown(currentCat) {
 
 function populateReminderCatDropdown(currentCat) {
   const sel = document.getElementById('rem-modal-cat-select');
-  sel.innerHTML = REMINDER_CATS.map(c =>
-    `<option value="${esc(c)}"${c === currentCat ? ' selected' : ''}>${esc(c.replace(/^Reminders\s*\/\s*/, ''))}</option>`
+  const taskCats = Object.keys(CATEGORY_META).filter(c => !c.startsWith('Reminders'));
+  const currentTaskCat = currentCat.replace(/^Reminders\s*\/\s*/, '');
+  sel.innerHTML = taskCats.map(c =>
+    `<option value="${esc('Reminders / ' + c)}"${c === currentTaskCat ? ' selected' : ''}>${esc(c)}</option>`
   ).join('');
 }
 
