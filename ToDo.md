@@ -15,7 +15,8 @@
 
 ###### HTBH
 * [2026-06-11 17:00] Meet Johann
-* [2026-06-09 23:38] Check if First Levelup Glitch fix ran (AOE_DEF_UNLOCK_MIN_VILLAGE_LEVEL: 2→1)
+* [2026-06-09 23:38] Check if First Levelup Glitch fix ran
+  (AOE_DEF_UNLOCK_MIN_VILLAGE_LEVEL: 2→1)
 
 
 
@@ -61,6 +62,7 @@
 * Ideation: life loss display
   Options: animate the base, or have the enemy path back out of the base
 * Come up with more generic upgrades
+* Booster Limits Explanations
 
 
 
@@ -85,7 +87,7 @@
 * !First Levelup Glitch: First levelup only painter even though mortar should be available
   At the very first level-up (after round 0), only the Painter appears as an unlock option — the Mortar never shows up even though it should be available from round 0 onward. Investigate the unlock-pool logic that populates the three choices and fix whatever is filtering the Mortar out.
 
-* Hole HP upgrade not available in lives mode
+* !Hole HP upgrade not available in lives mode
   The HP/hole-upgrade technology card is meaningless in lives mode (lives are tracked differently). Remove it from the upgrade pool when the game is running in lives mode so it never appears as a level-up option.
 * Switch Button to Confirm construction with cancel
   WHen building buildings in the stat confirm window, Confirm should be on the right, cancel should be on the left switch these, then put a book into UIbalancing defaulted to true that is ConfirmOnRightSide
@@ -101,10 +103,10 @@ this should be toggleable in balancing gui
 * !Boss Enemy
   https://docs.google.com/document/d/1KszfyyrXJBXUo8kMW9GGmMaiDflqj5JNKP8BPM0Cvow/edit?tab=t.0#heading=h.w6ikow374bm6
 
-* !Add Meditator building
+* Add Meditator building
   Economy building that generates yield each turn like the Musician. Core mechanic: a streak counter tracks consecutive undisturbed turns — each uninterrupted turn the yield increases (compounding). If the building is attacked or disturbed, the streak resets. Ties into the three-tier design (Meditator → Shaman → Sun Priest). Done when the building is placeable, upgradeable, and the streak/yield logic works correctly.
 
-* !Add wall building
+* Add wall building
   Add walls as a placeable structure. Walls should block or redirect enemy pathing by acting as impassable (or high-weight) tiles in the pathfinding system. Done when a wall tile can be built, integrates with the existing tile-weight/pathfinding system, and enemies route around it.
 
 * !Add Boost buildings (4 aura support buildings)
@@ -112,7 +114,6 @@ this should be toggleable in balancing gui
 * Show died-last-round indicator
   In the per-creature damage stats, note whether it died last round
 * See Attack speed in building stats
-* Booster Limits Explanations
 * Stats need to update with boost value
 * Move Balancing GUI outside of balancing folder and cleanup root folder
 * Boost building range visual representation
