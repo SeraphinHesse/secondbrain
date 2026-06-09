@@ -14,7 +14,6 @@
 * [2026-06-13 22:00] Fly to Italy
 
 ###### HTBH
-* [2026-06-09 16:30] Hendrik Pulling Up
 * [2026-06-11 17:00] Meet Johann
 
 
@@ -60,8 +59,6 @@
   When a life is lost nothing makes it clear; needs a fix
 * Ideation: life loss display
   Options: animate the base, or have the enemy path back out of the base
-* Show died-last-round indicator
-  In the per-creature damage stats, note whether it died last round
 * Move Balancing GUI outside of balancing folder and cleanup root folder
 * Come up with more generic upgrades
 
@@ -70,7 +67,7 @@
 ###### Claude Build
 
 * !Update .gitignore for HTBH prototype section
-* !Range of building should update visually immediately on upgrade, not on the next select
+* Range of building should update visually immediately on upgrade, not on the next select
   When upgrading a building, the range indicator stays at the old value until the building is deselected and reselected. Fix it so the range visualisation refreshes in-place the moment the upgrade is confirmed — especially important when range increases on upgrade.
 
 * shift click to select multiple tiles of the same type
@@ -79,7 +76,7 @@
 * Maybe make the mortar shoot where the enemies will go? maybe put this on a bool in balancing
   Instead of firing at an enemy's current position, the Mortar predicts the enemy's movement vector and leads the shot so the projectile lands where the enemy will be. Expose a balancing toggle (bool) and a lead-factor scalar in the balancing GUI so the behaviour can be tuned or disabled.
 
-* !Range Impacts the pathfinding of the enemies
+* Range Impacts the pathfinding of the enemies
   Every tile covered by the attack range of a non-Mortar defence building (e.g. Stone Thrower, Sunscorch) should have its pathfinding tile weight increased by a configurable amount, making enemies prefer routes that avoid those tiles. They will still walk through covered tiles if forced, but will route around them otherwise. Add a global on/off toggle and a weight-increase scalar to the balancing GUI under the building/pathfinding section.
 
 * Infinite money cheat, unlock all tech cheat
@@ -111,6 +108,11 @@ this should be toggleable in balancing gui
 
 * !Add Boost buildings (4 aura support buildings)
   Four new support buildings that each emit a passive aura buffing all defense buildings in adjacent/surrounding tiles. One per stat: (1) Attack range boost, (2) HP boost, (3) Damage boost, (4) Attack speed boost. Buff values should be configurable in the balancing GUI. Done when all four are placeable, their auras apply correctly to nearby defense buildings, and buffs update dynamically when buildings are added/removed from range.
+* Show died-last-round indicator
+  In the per-creature damage stats, note whether it died last round
+* See Attack speed in building stats
+* Booster Limits Explanations
+* Stats need to update with boost value
 
 
 
