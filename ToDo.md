@@ -50,12 +50,25 @@
 
 * !Update .gitignore for HTBH prototype section
 * Range of building should update visually immediately on upgrade, not on the next select
+  When upgrading a building, the range indicator stays at the old value until the building is deselected and reselected. Fix it so the range visualisation refreshes in-place the moment the upgrade is confirmed — especially important when range increases on upgrade.
+
 * shift click to select multiple tiles of the same type
+  Shift-clicking a tile should add it to a multi-selection, but only within the same category (build tiles, buildable tiles, or combat tiles — no mixing). Selecting a build tile locks the selection to build tiles only; selecting a buildable tile locks to buildable tiles, etc. A valid multi-selection then lets the player upgrade, build, or unlock all selected tiles in one action simultaneously.
+
 * Maybe make the mortar shoot where the enemies will go? maybe put this on a bool in balancing
+  Instead of firing at an enemy's current position, the Mortar predicts the enemy's movement vector and leads the shot so the projectile lands where the enemy will be. Expose a balancing toggle (bool) and a lead-factor scalar in the balancing GUI so the behaviour can be tuned or disabled.
+
 * !Range Impacts the pathfinding of the enemies
+  Every tile covered by the attack range of a non-Mortar defence building (e.g. Stone Thrower, Sunscorch) should have its pathfinding tile weight increased by a configurable amount, making enemies prefer routes that avoid those tiles. They will still walk through covered tiles if forced, but will route around them otherwise. Add a global on/off toggle and a weight-increase scalar to the balancing GUI under the building/pathfinding section.
+
 * Infinite money cheat, unlock all tech cheat
+  Add two entries to the cheats menu: one that gives the player infinite gold (or a very large lump sum), and one that unlocks all technology immediately. Both should be accessible from the existing cheats UI.
+
 * !First Levelup Glitch: First levelup only painter even though mortar should be available
+  At the very first level-up (after round 0), only the Painter appears as an unlock option — the Mortar never shows up even though it should be available from round 0 onward. Investigate the unlock-pool logic that populates the three choices and fix whatever is filtering the Mortar out.
+
 * Hole HP upgrade not available in lives mode
+  The HP/hole-upgrade technology card is meaningless in lives mode (lives are tracked differently). Remove it from the upgrade pool when the game is running in lives mode so it never appears as a level-up option.
 * Come up with more generic upgrades
 * Switch Button to Confirm construction with cancel
   WHen building buildings in the stat confirm window, Confirm should be on the right, cancel should be on the left switch these, then put a book into UIbalancing defaulted to true that is ConfirmOnRightSide
