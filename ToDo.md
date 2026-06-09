@@ -8,7 +8,6 @@
 
 ###### Bureaucracy & Chores
 
-* [2026-06-09 13:45] Bring Pfand bottles away — deadline 2pm
 
 ###### HTBH
 
@@ -74,13 +73,14 @@
   WHen building buildings in the stat confirm window, Confirm should be on the right, cancel should be on the left switch these, then put a book into UIbalancing defaulted to true that is ConfirmOnRightSide
 this should be toggleable in balancing gui
 * Range and Building Preview on hover
-* Implement Tile Conditions
+* !Implement Tile Conditions
 * Lives in base building UI
   Clicking the base building should show current lives in its info UI panel
 * Tile weight reduction by damage
   After ~round 10, top 3 damage-dealing buildings reduce tile weights on their tiles; enemies more likely to path over them (feels like enemies target whoever hurt them most)
 * Sunscorch beam scales visually
   Beam gets fatter each level; at laser beam tier it should be very fat and red
+* !Boss Enemy
 
 
 
@@ -113,6 +113,8 @@ this should be toggleable in balancing gui
 
 * Dashboard for secondbrain
 * Dashboard: Reminder System
+* Integrate dashboard calendar sync into morning routine
+  Set up persistent 6:30am calendar → reminders sync: either configure Windows Task Scheduler to run sync-calendar-reminders.js (requires one-time Google OAuth token setup) or keep a Claude Code session open so the CronCreate job fires. Done when calendar events appear automatically in the dashboard Reminders sidebar every morning without any manual steps.
 
 
 
