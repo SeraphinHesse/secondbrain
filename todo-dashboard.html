@@ -452,6 +452,15 @@
   }
   .modal-desc:focus { border-color: var(--accent); }
   .modal-desc::placeholder { color: var(--text-dim); }
+  .modal-input {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--text);
+    font-family: 'Inter', sans-serif; font-size: 0.875rem;
+    padding: 0.65rem 0.75rem; outline: none; transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+  .modal-input:focus { border-color: var(--accent); }
+  .modal-input option { background: #1a1a1f; }
   .modal-row {
     display: flex; align-items: center; gap: 0.75rem; margin-top: 1rem;
     flex-wrap: wrap;
@@ -722,10 +731,17 @@
       <span class="modal-cat-badge" id="modal-cat"></span>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
-    <div class="modal-task-name" id="modal-title"></div>
+    <div class="form-group" style="margin-bottom:0.875rem">
+      <label>Task Name</label>
+      <input type="text" class="modal-input" id="modal-title-input" />
+    </div>
+    <div class="form-group" style="margin-bottom:0.875rem">
+      <label>Category</label>
+      <select class="modal-input" id="modal-cat-select"></select>
+    </div>
     <div class="form-group">
       <label>Notes</label>
-      <textarea class="modal-desc" id="modal-desc" placeholder="Add notes or details…" rows="4"></textarea>
+      <textarea class="modal-desc" id="modal-desc" placeholder="Add notes or details…" rows="3"></textarea>
     </div>
     <div class="modal-row">
       <label class="priority-toggle" style="padding-bottom:0">
@@ -736,6 +752,7 @@
       <button class="btn-done-toggle" id="modal-done-btn" onclick="modalToggleDone()">✓ Mark Done</button>
     </div>
     <div class="modal-footer">
+      <button class="btn-danger" style="margin-right:auto" onclick="deleteTaskFromModal()">✕ Delete</button>
       <button class="btn-secondary" onclick="closeModal()">Close</button>
       <button class="btn-primary" onclick="saveModal()">Save</button>
     </div>
@@ -752,7 +769,14 @@
     <div id="rem-modal-time-wrap" style="margin-bottom:0.6rem">
       <span class="reminder-time" id="rem-modal-time"></span>
     </div>
-    <div class="modal-task-name" id="rem-modal-title"></div>
+    <div class="form-group" style="margin-bottom:0.875rem">
+      <label>Reminder Text</label>
+      <input type="text" class="modal-input" id="rem-modal-title-input" />
+    </div>
+    <div class="form-group" style="margin-bottom:0.875rem">
+      <label>Category</label>
+      <select class="modal-input" id="rem-modal-cat-select"></select>
+    </div>
     <div class="form-group">
       <label>Notes</label>
       <textarea class="modal-desc" id="rem-modal-desc" placeholder="Add notes or details…" rows="3"></textarea>
@@ -1176,22 +1200,26 @@ async function clearReminder(id) {
 
 // --- REMINDER MODAL ---
 let currentReminderTaskId = null;
+let currentReminderPrefix = '';
 
 function openReminderModal(id) {
   const t = tasks.find(t => t.id === id);
   if (!t) return;
   currentReminderTaskId = id;
   const { timeLabel, text } = parseReminderText(t.text);
-  const cat = t.cat.replace(/^Reminders\s*\/\s*/, '');
-  document.getElementById('rem-modal-cat').textContent = cat;
-  document.getElementById('rem-modal-title').textContent = text || t.text;
+  const prefixMatch = t.text.match(/^(\[\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}\]\s*)/);
+  currentReminderPrefix = prefixMatch ? prefixMatch[1] : '';
+  const displayCat = t.cat.replace(/^Reminders\s*\/\s*/, '');
+  document.getElementById('rem-modal-cat').textContent = displayCat;
+  document.getElementById('rem-modal-title-input').value = text || t.text;
   const timeEl = document.getElementById('rem-modal-time');
   const timeWrap = document.getElementById('rem-modal-time-wrap');
   if (timeLabel) { timeEl.textContent = timeLabel; timeWrap.style.display = ''; }
   else { timeWrap.style.display = 'none'; }
   document.getElementById('rem-modal-desc').value = localStorage.getItem('sb-desc::rem-' + id) || '';
+  populateReminderCatDropdown(t.cat);
   document.getElementById('reminder-modal').classList.add('open');
-  setTimeout(() => document.getElementById('rem-modal-desc').focus(), 50);
+  setTimeout(() => document.getElementById('rem-modal-title-input').focus(), 50);
 }
 
 function closeReminderModal() {
@@ -1203,13 +1231,40 @@ function handleReminderOverlayClick(e) {
   if (e.target === e.currentTarget) closeReminderModal();
 }
 
-function saveReminderModal() {
+async function saveReminderModal() {
   if (!currentReminderTaskId) return;
-  const desc = document.getElementById('rem-modal-desc').value.trim();
-  const key = 'sb-desc::rem-' + currentReminderTaskId;
-  if (desc) localStorage.setItem(key, desc); else localStorage.removeItem(key);
+  const id = currentReminderTaskId;
+  const t = tasks.find(t => t.id === id);
+  if (!t) { closeReminderModal(); return; }
+
+  const desc       = document.getElementById('rem-modal-desc').value.trim();
+  const newTextRaw = document.getElementById('rem-modal-title-input').value.trim();
+  const newCat     = document.getElementById('rem-modal-cat-select').value;
+  const newFullText = newTextRaw ? (currentReminderPrefix + newTextRaw) : t.text;
+
+  if (desc) localStorage.setItem('sb-desc::rem-' + id, desc);
+  else localStorage.removeItem('sb-desc::rem-' + id);
+
+  const changed = newFullText !== t.text || newCat !== t.cat;
+  if (changed) {
+    try {
+      const res = await fetch(API, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, text: newFullText, cat: newCat }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      tasks = await res.json();
+      toast('Reminder saved ✓');
+    } catch (e) {
+      toast('⚠ Save failed: ' + e.message);
+      closeReminderModal(); return;
+    }
+  } else {
+    toast('Saved ✓');
+  }
   closeReminderModal();
-  toast('Saved ✓');
+  render();
 }
 
 async function clearReminderFromModal() {
@@ -1472,18 +1527,36 @@ async function submitCardAdd(cat, form) {
   }
 }
 
+// --- MODAL CATEGORY DROPDOWNS ---
+function populateModalCatDropdown(currentCat) {
+  const sel = document.getElementById('modal-cat-select');
+  const cats = Object.keys(CATEGORY_META).filter(c => !c.startsWith('Reminders'));
+  sel.innerHTML = cats.map(c =>
+    `<option value="${esc(c)}"${c === currentCat ? ' selected' : ''}>${esc(c)}</option>`
+  ).join('');
+}
+
+function populateReminderCatDropdown(currentCat) {
+  const sel = document.getElementById('rem-modal-cat-select');
+  const cats = Object.keys(CAT_MAP).filter(c => c.startsWith('Reminders'));
+  sel.innerHTML = cats.map(c =>
+    `<option value="${esc(c)}"${c === currentCat ? ' selected' : ''}>${esc(c.replace(/^Reminders\s*\/\s*/, ''))}</option>`
+  ).join('');
+}
+
 // --- TASK MODAL ---
 function openTaskModal(key) {
   const t = taskMap[key];
   if (!t) return;
   currentModalKey = key;
-  document.getElementById('modal-cat').textContent   = t.cat;
-  document.getElementById('modal-title').textContent = t.text;
-  document.getElementById('modal-desc').value        = localStorage.getItem('sb-desc::' + key) || '';
-  document.getElementById('modal-high').checked      = t.high;
+  document.getElementById('modal-cat').textContent       = t.cat;
+  document.getElementById('modal-title-input').value     = t.text;
+  document.getElementById('modal-desc').value            = localStorage.getItem('sb-desc::' + key) || '';
+  document.getElementById('modal-high').checked          = t.high;
+  populateModalCatDropdown(t.cat);
   updateModalDoneBtn();
   document.getElementById('task-modal').classList.add('open');
-  setTimeout(() => document.getElementById('modal-desc').focus(), 50);
+  setTimeout(() => document.getElementById('modal-title-input').focus(), 50);
 }
 
 function updateModalDoneBtn() {
@@ -1515,26 +1588,39 @@ async function saveModal() {
   if (!t) { closeModal(); return; }
 
   const desc    = document.getElementById('modal-desc').value.trim();
+  const newText = document.getElementById('modal-title-input').value.trim() || t.text;
+  const newCat  = document.getElementById('modal-cat-select').value;
   const newHigh = document.getElementById('modal-high').checked;
 
-  if (desc) {
-    localStorage.setItem('sb-desc::' + currentModalKey, desc);
-  } else {
-    localStorage.removeItem('sb-desc::' + currentModalKey);
-  }
+  if (desc) localStorage.setItem('sb-desc::' + currentModalKey, desc);
+  else localStorage.removeItem('sb-desc::' + currentModalKey);
 
-  if (newHigh !== t.high) {
+  const changed = newText !== t.text || newCat !== t.cat || newHigh !== t.high;
+  if (changed) {
     try {
       const res = await fetch(API, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: t.id, high: newHigh }),
+        body: JSON.stringify({ id: t.id, text: newText, cat: newCat, high: newHigh }),
       });
       if (!res.ok) throw new Error(await res.text());
       tasks = await res.json();
-      toast('Priority updated' + (newHigh ? ' 🔴' : ''));
+      // Migrate done state & desc key if identity changed
+      const newKey = `${newCat}::${newText}`;
+      if (currentModalKey !== newKey) {
+        const done = getDone(); const doneAt = getDoneAt();
+        if (done.has(currentModalKey)) {
+          done.delete(currentModalKey); done.add(newKey);
+          const ts = doneAt[currentModalKey];
+          if (ts) { delete doneAt[currentModalKey]; doneAt[newKey] = ts; }
+          setDone(done); setDoneAt(doneAt);
+        }
+        if (desc) { localStorage.setItem('sb-desc::' + newKey, desc); localStorage.removeItem('sb-desc::' + currentModalKey); }
+      }
+      toast('Saved' + (newHigh ? ' 🔴' : ' ✓'));
     } catch (e) {
-      toast('⚠ Priority save failed: ' + e.message);
+      toast('⚠ Save failed: ' + e.message);
+      closeModal(); render(); return;
     }
   } else {
     toast(desc ? 'Notes saved' : 'Saved');
@@ -1542,6 +1628,31 @@ async function saveModal() {
 
   closeModal();
   render();
+}
+
+async function deleteTaskFromModal() {
+  if (!currentModalKey) return;
+  const t = taskMap[currentModalKey];
+  if (!t) { closeModal(); return; }
+  if (!confirm(`Delete "${t.text}"?`)) return;
+  try {
+    const res = await fetch(API, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: t.id }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    tasks = await res.json();
+    const done = getDone(); const doneAt = getDoneAt();
+    done.delete(currentModalKey); delete doneAt[currentModalKey];
+    setDone(done); setDoneAt(doneAt);
+    localStorage.removeItem('sb-desc::' + currentModalKey);
+    closeModal();
+    render();
+    toast('Task deleted');
+  } catch (e) {
+    toast('⚠ Delete failed: ' + e.message);
+  }
 }
 
 // --- BACKLOG ---

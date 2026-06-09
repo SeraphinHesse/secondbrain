@@ -54,13 +54,28 @@ function parseTodo() {
   return tasks;
 }
 
-function patchTask(id, high) {
+function updateTask(id, updates) {
   const tasks = parseTodo();
   const task  = tasks.find(t => t.id === id);
   if (!task) return false;
-  const lines = fs.readFileSync(TODO, 'utf8').split('\n');
-  lines[task.lineNo] = (high ? '* ! ' : '* ') + task.text;
-  fs.writeFileSync(TODO, lines.join('\n'), 'utf8');
+
+  const newText = (updates.text !== undefined && updates.text !== null)
+    ? String(updates.text).trim() || task.text
+    : task.text;
+  const newHigh = updates.high !== undefined ? !!updates.high : task.high;
+  const newCat  = (updates.cat !== undefined && updates.cat !== null)
+    ? updates.cat : task.cat;
+
+  if (newCat !== task.cat) {
+    const lines = fs.readFileSync(TODO, 'utf8').split('\n');
+    lines.splice(task.lineNo, 1);
+    fs.writeFileSync(TODO, lines.join('\n'), 'utf8');
+    addTask(newText, newCat, newHigh);
+  } else {
+    const lines = fs.readFileSync(TODO, 'utf8').split('\n');
+    lines[task.lineNo] = (newHigh ? '* !' : '* ') + newText;
+    fs.writeFileSync(TODO, lines.join('\n'), 'utf8');
+  }
   return true;
 }
 
@@ -140,9 +155,9 @@ const server = http.createServer((req, res) => {
     req.on('data', d => body += d);
     req.on('end', () => {
       try {
-        const { id, high } = JSON.parse(body);
+        const { id, high, text, cat } = JSON.parse(body);
         if (typeof id !== 'number') { res.writeHead(400); res.end('id required'); return; }
-        patchTask(id, !!high);
+        updateTask(id, { high, text, cat });
         const tasks = parseTodo().map(({ lineNo, ...t }) => t);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(tasks));
