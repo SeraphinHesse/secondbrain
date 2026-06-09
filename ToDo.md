@@ -59,7 +59,6 @@
   When a life is lost nothing makes it clear; needs a fix
 * Ideation: life loss display
   Options: animate the base, or have the enemy path back out of the base
-* Move Balancing GUI outside of balancing folder and cleanup root folder
 * Come up with more generic upgrades
 
 
@@ -99,11 +98,12 @@ this should be toggleable in balancing gui
 * Sunscorch beam scales visually
   Beam gets fatter each level; at laser beam tier it should be very fat and red
 * !Boss Enemy
+  https://docs.google.com/document/d/1KszfyyrXJBXUo8kMW9GGmMaiDflqj5JNKP8BPM0Cvow/edit?tab=t.0#heading=h.w6ikow374bm6
 
 * !Add Meditator building
   Economy building that generates yield each turn like the Musician. Core mechanic: a streak counter tracks consecutive undisturbed turns — each uninterrupted turn the yield increases (compounding). If the building is attacked or disturbed, the streak resets. Ties into the three-tier design (Meditator → Shaman → Sun Priest). Done when the building is placeable, upgradeable, and the streak/yield logic works correctly.
 
-* Add wall building
+* !Add wall building
   Add walls as a placeable structure. Walls should block or redirect enemy pathing by acting as impassable (or high-weight) tiles in the pathfinding system. Done when a wall tile can be built, integrates with the existing tile-weight/pathfinding system, and enemies route around it.
 
 * !Add Boost buildings (4 aura support buildings)
@@ -113,6 +113,8 @@ this should be toggleable in balancing gui
 * See Attack speed in building stats
 * Booster Limits Explanations
 * Stats need to update with boost value
+* Move Balancing GUI outside of balancing folder and cleanup root folder
+* Boost building range visual representation
 
 
 
@@ -147,6 +149,8 @@ this should be toggleable in balancing gui
 * Dashboard: Reminder System
 * Integrate dashboard calendar sync into morning routine
   Set up persistent 6:30am calendar → reminders sync: either configure Windows Task Scheduler to run sync-calendar-reminders.js (requires one-time Google OAuth token setup) or keep a Claude Code session open so the CronCreate job fires. Done when calendar events appear automatically in the dashboard Reminders sidebar every morning without any manual steps.
+* Dashboard: Click and drag movable tasks
+* Rework Morning Claude Routine
 
 
 
