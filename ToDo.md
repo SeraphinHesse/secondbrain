@@ -59,8 +59,6 @@
 * Come up with more generic upgrades
 * Switch Button to Confirm construction with cancel
   WHen building buildings in the stat confirm window, Confirm should be on the right, cancel should be on the left switch these, then put a book into UIbalancing defaulted to true that is ConfirmOnRightSide
-* Switch Button to Confirm construction with cancel
-  In Building construction stats preview, confirm should be on the right, and cancel on the left
 this should be toggleable in balancing gui
 * Range and Building Preview on hover
 * Implement Tile Conditions
