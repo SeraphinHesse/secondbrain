@@ -912,6 +912,7 @@ const API = 'http://localhost:8765/api/tasks';
 // --- Storage keys ---
 const K_DONE         = 'sb-done';
 const K_DONE_AT      = 'sb-done-at';
+const K_DONE_SNAP    = 'sb-done-snap';
 const K_BACKLOG      = 'sb-backlog';
 const K_COLLAPSED    = 'sb-collapsed';
 const K_URGENT_COL   = 'sb-urgent-col';
@@ -962,6 +963,8 @@ function getDone()         { return new Set(JSON.parse(localStorage.getItem(K_DO
 function setDone(s)        { localStorage.setItem(K_DONE, JSON.stringify([...s])); }
 function getDoneAt()       { return JSON.parse(localStorage.getItem(K_DONE_AT) || '{}'); }
 function setDoneAt(o)      { localStorage.setItem(K_DONE_AT, JSON.stringify(o)); }
+function getDoneSnap()     { return JSON.parse(localStorage.getItem(K_DONE_SNAP) || '{}'); }
+function setDoneSnap(o)    { localStorage.setItem(K_DONE_SNAP, JSON.stringify(o)); }
 function getBacklog()      { return JSON.parse(localStorage.getItem(K_BACKLOG) || '[]'); }
 function setBacklog(a)     { localStorage.setItem(K_BACKLOG, JSON.stringify(a)); }
 function getCollapsed()    { return new Set(JSON.parse(localStorage.getItem(K_COLLAPSED) || '[]')); }
@@ -1042,11 +1045,14 @@ async function loadTasks(showSpinner = false) {
 }
 
 // --- ARCHIVE CHECK ---
+// Tasks are already deleted from ToDo.md at mark-done time; this just moves
+// them from the done-limbo state into the persistent backlog after ARCHIVE_MS.
 async function checkAndArchive() {
-  const done   = getDone();
-  const doneAt = getDoneAt();
+  const done    = getDone();
+  const doneAt  = getDoneAt();
+  const snap    = getDoneSnap();
   const backlog = getBacklog();
-  const now = Date.now();
+  const now     = Date.now();
 
   const toArchive = Object.entries(doneAt)
     .filter(([, ts]) => now - ts >= ARCHIVE_MS)
@@ -1055,37 +1061,28 @@ async function checkAndArchive() {
   if (!toArchive.length) return;
 
   for (const key of toArchive) {
-    const task = tasks.find(t => doneKey(t) === key);
-    const catText = key.indexOf('::') !== -1
+    const snapData = snap[key];
+    const catText  = key.indexOf('::') !== -1
       ? { cat: key.slice(0, key.indexOf('::')), text: key.slice(key.indexOf('::') + 2) }
       : { cat: '', text: key };
 
     backlog.push({
       key,
-      text:  task ? task.text  : catText.text,
-      cat:   task ? task.cat   : catText.cat,
-      high:  task ? task.high  : false,
-      desc:  task ? (task.desc || '') : '',
+      text:   snapData ? snapData.text : catText.text,
+      cat:    snapData ? snapData.cat  : catText.cat,
+      high:   snapData ? snapData.high : false,
+      desc:   snapData ? snapData.desc : '',
       doneAt: doneAt[key],
     });
 
-    if (task) {
-      try {
-        const res = await fetch(API, {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: task.id }),
-        });
-        if (res.ok) tasks = await res.json();
-      } catch (_) {}
-    }
-
     done.delete(key);
     delete doneAt[key];
+    delete snap[key];
   }
 
   setDone(done);
   setDoneAt(doneAt);
+  setDoneSnap(snap);
   setBacklog(backlog);
   updateBacklogBadge();
   render();
@@ -1124,21 +1121,51 @@ async function addTask() {
 }
 
 // --- DONE TOGGLE ---
-function toggleDone(key) {
-  const s = getDone();
+async function toggleDone(key) {
+  const s    = getDone();
   const doneAt = getDoneAt();
+  const snap = getDoneSnap();
   const wasDone = s.has(key);
+
   if (wasDone) {
+    // Reopen: POST task back to ToDo.md using stored snapshot
+    const snapData = snap[key];
+    if (snapData) {
+      try {
+        const res = await fetch(API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: snapData.text, cat: snapData.cat, high: snapData.high, desc: snapData.desc }),
+        });
+        if (res.ok) tasks = await res.json();
+      } catch (e) { toast('⚠ Reopen failed: ' + e.message); return; }
+    }
     s.delete(key);
     delete doneAt[key];
+    delete snap[key];
   } else {
+    // Mark done: snapshot task data, then DELETE from ToDo.md immediately
+    const t = taskMap[key];
+    if (t) {
+      snap[key] = { text: t.text, cat: t.cat, high: !!t.high, desc: t.desc || '' };
+      try {
+        const res = await fetch(API, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: t.id }),
+        });
+        if (res.ok) tasks = await res.json();
+      } catch (e) { toast('⚠ Mark done failed: ' + e.message); return; }
+    }
     s.add(key);
     doneAt[key] = Date.now();
   }
+
   setDone(s);
   setDoneAt(doneAt);
+  setDoneSnap(snap);
   render();
-  toast(!wasDone ? '✓ Marked done' : '↩ Reopened');
+  toast(!wasDone ? '✓ Done — removed from ToDo' : '↩ Reopened');
 }
 
 // --- RENDER ---
@@ -1152,7 +1179,7 @@ function render() {
   });
 
   const openCount   = withDone.filter(t => !t.done).length;
-  const doneCount   = withDone.filter(t => t.done).length;
+  const doneCount   = getDone().size;
   const urgentCount = withDone.filter(t => t.high && !t.done).length;
 
   document.getElementById('stat-open').textContent   = openCount + ' open';
