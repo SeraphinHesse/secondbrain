@@ -11,6 +11,7 @@
 
 ###### General
 * [2026-06-11 18:00] Meeting with Kim
+* [2026-06-13 22:00] Fly to Italy
 
 ###### HTBH
 * [2026-06-09 16:30] Hendrik Pulling Up
@@ -39,6 +40,8 @@
 
 * Vertical Slice Deliverables Internal Presentation
   Prepare and deliver an internal presentation covering the vertical slice deliverables — what they are, current status, and what done looks like. Done when the team has a shared, aligned picture of VS scope and next steps.
+* !Internal Vert Slice Delivs Slides
+  Make Slides presentation in the template to
 
 
 
