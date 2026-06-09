@@ -37,6 +37,10 @@
 * Ideation: More Enemy types
 * Ideation: More Economy Buildings
 * Ideation: More Defence Buildings
+* Life loss feedback unclear
+* Ideation: life loss display
+* Sunscorch beam scales visually
+* Show died-last-round indicator
 
 
 
@@ -56,6 +60,8 @@
 * Switch Button to Confirm construction with cancel
 * Range and Building Preview on hover
 * Implement Tile Conditions
+* Lives in base building UI
+* Tile weight reduction by damage
 
 
 
@@ -65,7 +71,11 @@
 * Slinger too strong
 * Levelling too Fast: Sheets Predictions not accurate
 * First levelup should be slightly later
-* 
+* Flute player needs more HP
+* Musicians too strong
+* Harp too cheap/strong
+* Sunscorch nerf + pricier upgrade
+* Raise all building upkeep
 
 
 
