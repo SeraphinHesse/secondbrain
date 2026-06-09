@@ -29,6 +29,9 @@
 
 ###### Design
 
+* Meditator Building: tier visual design
+  Three-tier economy building. Tier 1 — "The Meditator": looks identical to the Flute Player but seated on a rock. Tier 2 — "The Shaman": seated on a partial temple structure, visibly levitating above it. Tier 3 — "The Sun Priest": god-like figure radiating sunlight with a giant temple beneath. Design all three art directions / sprites before implementation.
+
 * XP cards: Finish GDD
 * !Ideation: Tile conditions
 * Ideation: More Boss types
@@ -81,6 +84,12 @@ this should be toggleable in balancing gui
 * Sunscorch beam scales visually
   Beam gets fatter each level; at laser beam tier it should be very fat and red
 * !Boss Enemy
+
+* Add Meditator building
+  Economy building that generates yield each turn like the Musician. Core mechanic: a streak counter tracks consecutive undisturbed turns — each uninterrupted turn the yield increases (compounding). If the building is attacked or disturbed, the streak resets. Ties into the three-tier design (Meditator → Shaman → Sun Priest). Done when the building is placeable, upgradeable, and the streak/yield logic works correctly.
+
+* Add wall building
+  Add walls as a placeable structure. Walls should block or redirect enemy pathing by acting as impassable (or high-weight) tiles in the pathfinding system. Done when a wall tile can be built, integrates with the existing tile-weight/pathfinding system, and enemies route around it.
 
 
 
