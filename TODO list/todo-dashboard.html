@@ -552,28 +552,79 @@
   @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.2)} }
   @keyframes pulse-dot-red { 0%,100%{opacity:1;box-shadow:0 0 4px var(--red)} 50%{opacity:.7;box-shadow:0 0 8px var(--red)} }
 
+  /* TOP ZONES LAYOUT — urgent left, reminders right */
+  .top-zones {
+    display: flex; gap: 1.25rem; margin-bottom: 2.5rem; align-items: flex-start;
+  }
+  .top-zones .urgent-zone { flex: 1; margin-bottom: 0; min-width: 0; }
+  .top-zones .reminders-zone { width: 340px; flex-shrink: 0; margin-bottom: 0; }
+  @media (max-width: 900px) {
+    .top-zones { flex-direction: column; }
+    .top-zones .reminders-zone { width: 100%; }
+  }
+
   /* REMINDERS ZONE */
   .reminders-zone {
-    border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 2rem;
+    border-radius: var(--radius); padding: 1.25rem 1.5rem;
     border: 1.5px solid rgba(251,191,36,0.3);
     background: rgba(251,191,36,0.03);
-    display: none;
+    display: block;
   }
-  .reminders-zone.has-reminders { display: block; }
   .reminders-header {
-    display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.85rem;
-    cursor: pointer; user-select: none;
+    display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.85rem;
+    user-select: none;
   }
-  .reminders-icon { font-size: 1.1rem; }
+  .reminders-icon { font-size: 1.1rem; cursor: pointer; }
   .reminders-title {
     font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.95rem;
     color: #fbbf24; text-transform: uppercase; letter-spacing: 0.08em;
+    cursor: pointer; flex: 1;
   }
   .reminders-count {
     background: rgba(251,191,36,0.15); color: #fbbf24;
     font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;
   }
-  .reminders-chevron { margin-left: auto; font-size: 0.7rem; color: rgba(251,191,36,0.5); }
+  .rem-add-btn {
+    background: none; border: 1px solid rgba(251,191,36,0.35); color: #fbbf24;
+    border-radius: var(--radius-sm); font-size: 0.68rem; font-weight: 600;
+    padding: 0.18rem 0.55rem; cursor: pointer; white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s;
+    font-family: 'Inter', sans-serif; flex-shrink: 0;
+  }
+  .rem-add-btn:hover { background: rgba(251,191,36,0.12); border-color: rgba(251,191,36,0.6); }
+  .reminders-chevron { font-size: 0.7rem; color: rgba(251,191,36,0.5); cursor: pointer; flex-shrink: 0; }
+  .reminders-empty {
+    padding: 1.25rem 0; text-align: center; color: rgba(251,191,36,0.3);
+    font-size: 0.78rem;
+  }
+
+  /* ADD REMINDER MODAL */
+  .add-reminder-card {
+    background: var(--surface); border: 1.5px solid rgba(251,191,36,0.3);
+    border-radius: var(--radius); width: 100%; max-width: 480px;
+    padding: 1.5rem;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+    animation: modal-in 0.2s ease;
+  }
+  .add-reminder-card .modal-header { margin-bottom: 1.25rem; }
+  .add-reminder-heading {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.95rem;
+    color: #fbbf24;
+  }
+  .add-reminder-row { display: flex; gap: 0.75rem; margin-bottom: 0.875rem; }
+  .add-reminder-row .form-group { flex: 1; min-width: 0; margin-bottom: 0; }
+  .add-reminder-footer {
+    display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem;
+    margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border);
+  }
+  .btn-reminder-save {
+    background: linear-gradient(135deg, #fbbf24, #d97706);
+    color: #1a1000; border: none; border-radius: var(--radius-sm);
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.82rem;
+    padding: 0.5rem 1.1rem; cursor: pointer; transition: opacity 0.2s;
+  }
+  .btn-reminder-save:hover { opacity: 0.88; }
+  .btn-reminder-save:disabled { opacity: 0.5; cursor: not-allowed; }
   .reminders-zone.zone-collapsed .reminders-body { display: none; }
   .rem-cat-group { margin-bottom: 0.5rem; }
   .rem-cat-group:last-child { margin-bottom: 0; }
@@ -625,6 +676,8 @@
     .categories-grid { grid-template-columns: 1fr; }
     .add-form { flex-direction: column; }
     .header-stats { display: none; }
+    .top-zones { flex-direction: column; }
+    .top-zones .reminders-zone { width: 100%; }
   }
 </style>
 </head>
@@ -654,6 +707,8 @@
     — then reload.
   </div>
 
+  <div class="top-zones">
+
   <!-- URGENT ZONE -->
   <div class="urgent-zone">
     <div class="urgent-header">
@@ -664,18 +719,21 @@
     <div id="urgent-items"><div class="empty-state" style="text-align:left;padding:0">Loading…</div></div>
   </div>
 
-  <!-- REMINDERS ZONE -->
+  <!-- REMINDERS ZONE (right sidebar) -->
   <div class="reminders-zone" id="reminders-zone">
-    <div class="reminders-header" onclick="toggleRemindersCollapse()">
-      <span class="reminders-icon">🔔</span>
-      <span class="reminders-title">Reminders</span>
+    <div class="reminders-header">
+      <span class="reminders-icon" onclick="toggleRemindersCollapse()">🔔</span>
+      <span class="reminders-title" onclick="toggleRemindersCollapse()">Reminders</span>
       <span class="reminders-count" id="reminders-count">0</span>
-      <span class="reminders-chevron" id="reminders-chevron">▾</span>
+      <button class="rem-add-btn" onclick="openAddReminderModal()">+ Add</button>
+      <span class="reminders-chevron" id="reminders-chevron" onclick="toggleRemindersCollapse()">▾</span>
     </div>
     <div class="reminders-body" id="reminders-body">
       <div id="reminders-items"></div>
     </div>
   </div>
+
+  </div><!-- /.top-zones -->
 
   <!-- ADD FORM -->
   <div class="add-form">
@@ -789,6 +847,44 @@
       <button class="btn-danger" style="margin-right:auto" onclick="clearReminderFromModal()">✕ Clear</button>
       <button class="btn-secondary" onclick="closeReminderModal()">Close</button>
       <button class="btn-primary" onclick="saveReminderModal()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD REMINDER MODAL -->
+<div id="add-reminder-modal" class="modal-overlay" onclick="handleAddReminderOverlayClick(event)">
+  <div class="add-reminder-card">
+    <div class="modal-header add-reminder-card .modal-header">
+      <span class="add-reminder-heading">🔔 Add Reminder</span>
+      <button class="modal-close" onclick="closeAddReminderModal()">✕</button>
+    </div>
+    <div class="form-group" style="margin-bottom:0.875rem">
+      <label>Reminder</label>
+      <input type="text" class="modal-input" id="ar-text" placeholder="What do you need to remember?" />
+    </div>
+    <div class="add-reminder-row">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" class="modal-input" id="ar-date" />
+      </div>
+      <div class="form-group">
+        <label>Time</label>
+        <input type="time" class="modal-input" id="ar-time" />
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:0">
+      <label>Category</label>
+      <select class="modal-input" id="ar-cat">
+        <option value="Reminders / General">General</option>
+        <option value="Reminders / HTBH">HTBH</option>
+        <option value="Reminders / Agency">Agency</option>
+        <option value="Reminders / Admin">Admin</option>
+        <option value="Reminders / Bureaucracy &amp; Chores">Bureaucracy &amp; Chores</option>
+      </select>
+    </div>
+    <div class="add-reminder-footer">
+      <button class="btn-secondary" onclick="closeAddReminderModal()">Cancel</button>
+      <button class="btn-reminder-save" id="ar-save-btn" onclick="submitAddReminder()">Save &amp; Open Calendar</button>
     </div>
   </div>
 </div>
@@ -1143,12 +1239,13 @@ function renderRemindersZone(withDone) {
   const zone = document.getElementById('reminders-zone');
   const countEl = document.getElementById('reminders-count');
 
+  countEl.textContent = reminders.length;
+
   if (!reminders.length) {
-    zone.classList.remove('has-reminders');
+    document.getElementById('reminders-items').innerHTML =
+      '<div class="reminders-empty">No reminders · click + Add to create one</div>';
     return;
   }
-  zone.classList.add('has-reminders');
-  countEl.textContent = reminders.length;
 
   const wasCollapsed = getRemZoneCollapsed();
   zone.classList.toggle('zone-collapsed', wasCollapsed);
@@ -1287,6 +1384,78 @@ async function clearReminderFromModal() {
   const id = currentReminderTaskId;
   closeReminderModal();
   await clearReminder(id);
+}
+
+// --- ADD REMINDER MODAL ---
+function openAddReminderModal() {
+  const now = new Date();
+  // Default: tomorrow at 09:00
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const dateStr = tomorrow.toISOString().slice(0, 10);
+  document.getElementById('ar-date').value = dateStr;
+  document.getElementById('ar-time').value = '09:00';
+  document.getElementById('ar-text').value = '';
+  document.getElementById('ar-cat').value = 'Reminders / General';
+  document.getElementById('add-reminder-modal').classList.add('open');
+  setTimeout(() => document.getElementById('ar-text').focus(), 50);
+}
+
+function closeAddReminderModal() {
+  document.getElementById('add-reminder-modal').classList.remove('open');
+}
+
+function handleAddReminderOverlayClick(e) {
+  if (e.target === e.currentTarget) closeAddReminderModal();
+}
+
+async function submitAddReminder() {
+  const text = document.getElementById('ar-text').value.trim();
+  const date = document.getElementById('ar-date').value;
+  const time = document.getElementById('ar-time').value;
+  const cat  = document.getElementById('ar-cat').value;
+  if (!text) { document.getElementById('ar-text').focus(); return; }
+
+  const btn = document.getElementById('ar-save-btn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  // Format: [YYYY-MM-DD HH:MM] text
+  const prefix = (date && time) ? `[${date} ${time}] ` : '';
+  const fullText = prefix + text;
+
+  try {
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: fullText, cat, high: false, desc: '' }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    tasks = await res.json();
+    render();
+    closeAddReminderModal();
+    toast('Reminder saved ✓');
+
+    // Open Google Calendar event creation URL in new tab
+    if (date && time) {
+      const [y, mo, d] = date.split('-');
+      const [h, mi] = time.split(':');
+      const startDt = `${y}${mo}${d}T${h}${mi}00`;
+      // End = start + 1 hour
+      const endDate = new Date(parseInt(y), parseInt(mo)-1, parseInt(d), parseInt(h)+1, parseInt(mi));
+      const ey = endDate.getFullYear();
+      const emo = String(endDate.getMonth()+1).padStart(2,'0');
+      const ed  = String(endDate.getDate()).padStart(2,'0');
+      const eh  = String(endDate.getHours()).padStart(2,'0');
+      const emi = String(endDate.getMinutes()).padStart(2,'0');
+      const endDt = `${ey}${emo}${ed}T${eh}${emi}00`;
+      const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(text)}&dates=${startDt}/${endDt}&details=${encodeURIComponent('Added from Secondbrain')}`;
+      window.open(calUrl, '_blank');
+    }
+  } catch (e) {
+    toast('⚠ Save failed: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save & Open Calendar';
+  }
 }
 
 function renderGrid(withDone) {
@@ -1442,6 +1611,10 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if (currentModalKey) closeModal();
     if (currentReminderTaskId) closeReminderModal();
+    if (document.getElementById('add-reminder-modal').classList.contains('open')) closeAddReminderModal();
+  }
+  if (e.key === 'Enter' && document.getElementById('add-reminder-modal').classList.contains('open')) {
+    if (e.target.id !== 'ar-save-btn') submitAddReminder();
   }
 });
 

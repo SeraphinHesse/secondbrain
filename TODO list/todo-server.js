@@ -26,6 +26,7 @@ const CAT_MAP = {
   'Reminders / Agency':                ['##### Reminders', '###### Agency'],
   'Reminders / Admin':                 ['##### Reminders', '###### Admin'],
   'Reminders / Bureaucracy & Chores':  ['##### Reminders', '###### Bureaucracy & Chores'],
+  'Reminders / Calendar':              ['##### Reminders', '###### Calendar'],
 };
 
 // Returns tasks with lineNo, descLine, desc fields.
