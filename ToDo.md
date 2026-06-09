@@ -9,8 +9,12 @@
 ###### Bureaucracy & Chores
 
 
+###### General
+* [2026-06-11 18:00] Meeting with Kim
+
 ###### HTBH
 * [2026-06-09 16:30] Hendrik Pulling Up
+* [2026-06-11 17:00] Meet Johann
 
 
 
@@ -26,11 +30,12 @@
 * Taiga update
 * Call Johann
 
-* !Sprint planning: art & design
-  Plan and assign sprint tasks for both the art track and the design track. Done when both tracks have a full, prioritised sprint backlog ready to execute.
+* !Sprint planning: art & tech
+  Plan and assign sprint tasks for both the art team and for tech. Done when both teams have a full, prioritised sprint backlog ready to execute.
 
 * !Vertical slice roadmap & deliverables plan
   Define the milestone path to vertical slice: (1) a roadmap showing the phases and milestones needed to reach VS, and (2) a deliverables checklist scoped to VS. Done when both documents exist and tasks can be broken out from them.
+* !Agenda Planning
 
 
 
@@ -52,13 +57,14 @@
 * Show died-last-round indicator
   In the per-creature damage stats, note whether it died last round
 * Move Balancing GUI outside of balancing folder and cleanup root folder
+* Come up with more generic upgrades
 
 
 
 ###### Claude Build
 
 * !Update .gitignore for HTBH prototype section
-* Range of building should update visually immediately on upgrade, not on the next select
+* !Range of building should update visually immediately on upgrade, not on the next select
   When upgrading a building, the range indicator stays at the old value until the building is deselected and reselected. Fix it so the range visualisation refreshes in-place the moment the upgrade is confirmed — especially important when range increases on upgrade.
 
 * shift click to select multiple tiles of the same type
@@ -78,12 +84,11 @@
 
 * Hole HP upgrade not available in lives mode
   The HP/hole-upgrade technology card is meaningless in lives mode (lives are tracked differently). Remove it from the upgrade pool when the game is running in lives mode so it never appears as a level-up option.
-* Come up with more generic upgrades
 * Switch Button to Confirm construction with cancel
   WHen building buildings in the stat confirm window, Confirm should be on the right, cancel should be on the left switch these, then put a book into UIbalancing defaulted to true that is ConfirmOnRightSide
 this should be toggleable in balancing gui
 * Range and Building Preview on hover
-* !Implement Tile Conditions
+* Implement Tile Conditions
 * Lives in base building UI
   Clicking the base building should show current lives in its info UI panel
 * Tile weight reduction by damage
@@ -92,13 +97,13 @@ this should be toggleable in balancing gui
   Beam gets fatter each level; at laser beam tier it should be very fat and red
 * !Boss Enemy
 
-* Add Meditator building
+* !Add Meditator building
   Economy building that generates yield each turn like the Musician. Core mechanic: a streak counter tracks consecutive undisturbed turns — each uninterrupted turn the yield increases (compounding). If the building is attacked or disturbed, the streak resets. Ties into the three-tier design (Meditator → Shaman → Sun Priest). Done when the building is placeable, upgradeable, and the streak/yield logic works correctly.
 
 * Add wall building
   Add walls as a placeable structure. Walls should block or redirect enemy pathing by acting as impassable (or high-weight) tiles in the pathfinding system. Done when a wall tile can be built, integrates with the existing tile-weight/pathfinding system, and enemies route around it.
 
-* Add Boost buildings (4 aura support buildings)
+* !Add Boost buildings (4 aura support buildings)
   Four new support buildings that each emit a passive aura buffing all defense buildings in adjacent/surrounding tiles. One per stat: (1) Attack range boost, (2) HP boost, (3) Damage boost, (4) Attack speed boost. Buff values should be configurable in the balancing GUI. Done when all four are placeable, their auras apply correctly to nearby defense buildings, and buffs update dynamically when buildings are added/removed from range.
 
 
