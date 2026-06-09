@@ -81,8 +81,6 @@
 * Range Impacts the pathfinding of the enemies
   Every tile covered by the attack range of a non-Mortar defence building (e.g. Stone Thrower, Sunscorch) should have its pathfinding tile weight increased by a configurable amount, making enemies prefer routes that avoid those tiles. They will still walk through covered tiles if forced, but will route around them otherwise. Add a global on/off toggle and a weight-increase scalar to the balancing GUI under the building/pathfinding section.
 
-* Infinite money cheat, unlock all tech cheat
-  Add two entries to the cheats menu: one that gives the player infinite gold (or a very large lump sum), and one that unlocks all technology immediately. Both should be accessible from the existing cheats UI.
 
 * !First Levelup Glitch: First levelup only painter even though mortar should be available
   At the very first level-up (after round 0), only the Painter appears as an unlock option — the Mortar never shows up even though it should be available from round 0 onward. Investigate the unlock-pool logic that populates the three choices and fix whatever is filtering the Mortar out.
@@ -113,7 +111,6 @@ this should be toggleable in balancing gui
   Four new support buildings that each emit a passive aura buffing all defense buildings in adjacent/surrounding tiles. One per stat: (1) Attack range boost, (2) HP boost, (3) Damage boost, (4) Attack speed boost. Buff values should be configurable in the balancing GUI. Done when all four are placeable, their auras apply correctly to nearby defense buildings, and buffs update dynamically when buildings are added/removed from range.
 * Show died-last-round indicator
   In the per-creature damage stats, note whether it died last round
-* Stats need to update with boost value
 * !See Attack speed in building stats
 * Move Balancing GUI outside of balancing folder and cleanup root folder
 * Boost building range visual representation
