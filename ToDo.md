@@ -66,6 +66,7 @@
 ##### Admin
 
 * Dashboard for secondbrain
+* Send birthday invitations to Fabrizio, Alessia, Chris, and the extended friend group
 
 
 
