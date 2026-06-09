@@ -28,8 +28,8 @@ function parseTodo() {
   const tasks = [];
   let id = 1, project = null, sub = null;
 
-  for (const raw of lines) {
-    const s = raw.trim();
+  for (let lineNo = 0; lineNo < lines.length; lineNo++) {
+    const s = lines[lineNo].trim();
     if (s.startsWith('###### '))      { sub = s.slice(7).trim(); }
     else if (s.startsWith('##### ')) { const l = s.slice(6).trim(); if (l) project = l; sub = null; }
     else if (s.startsWith('* ')) {
@@ -39,10 +39,20 @@ function parseTodo() {
       if (high) text = text.slice(1).trim();
       const proj = (project || 'General').replace('How to be Human', 'HTBH').replace(/\\&/g, '&');
       const cat  = sub ? `${proj} / ${sub}` : proj;
-      tasks.push({ id: id++, cat, text, high });
+      tasks.push({ id: id++, cat, text, high, lineNo });
     }
   }
   return tasks;
+}
+
+function patchTask(id, high) {
+  const tasks = parseTodo();
+  const task  = tasks.find(t => t.id === id);
+  if (!task) return false;
+  const lines = fs.readFileSync(TODO, 'utf8').split('\n');
+  lines[task.lineNo] = (high ? '* ! ' : '* ') + task.text;
+  fs.writeFileSync(TODO, lines.join('\n'), 'utf8');
+  return true;
 }
 
 function addTask(text, cat, high) {
@@ -83,9 +93,19 @@ function addTask(text, cat, high) {
   fs.writeFileSync(TODO, lines.join('\n'), 'utf8');
 }
 
+function deleteTask(id) {
+  const tasks = parseTodo();
+  const task  = tasks.find(t => t.id === id);
+  if (!task) return false;
+  const lines = fs.readFileSync(TODO, 'utf8').split('\n');
+  lines.splice(task.lineNo, 1);
+  fs.writeFileSync(TODO, lines.join('\n'), 'utf8');
+  return true;
+}
+
 function cors(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
 
@@ -96,13 +116,32 @@ const server = http.createServer((req, res) => {
 
   if (req.url === '/api/tasks' && req.method === 'GET') {
     try {
-      const tasks = parseTodo();
+      const tasks = parseTodo().map(({ lineNo, ...t }) => t);
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(tasks));
     } catch (e) {
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: e.message }));
     }
+    return;
+  }
+
+  if (req.url === '/api/tasks' && req.method === 'PATCH') {
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const { id, high } = JSON.parse(body);
+        if (typeof id !== 'number') { res.writeHead(400); res.end('id required'); return; }
+        patchTask(id, !!high);
+        const tasks = parseTodo().map(({ lineNo, ...t }) => t);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(tasks));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
     return;
   }
 
@@ -114,7 +153,26 @@ const server = http.createServer((req, res) => {
         const { text, cat, high } = JSON.parse(body);
         if (!text || !text.trim()) { res.writeHead(400); res.end('text required'); return; }
         addTask(text.trim(), cat, !!high);
-        const tasks = parseTodo();
+        const tasks = parseTodo().map(({ lineNo, ...t }) => t);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(tasks));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
+  if (req.url === '/api/tasks' && req.method === 'DELETE') {
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const { id } = JSON.parse(body);
+        if (typeof id !== 'number') { res.writeHead(400); res.end('id required'); return; }
+        deleteTask(id);
+        const tasks = parseTodo().map(({ lineNo, ...t }) => t);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(tasks));
       } catch (e) {
