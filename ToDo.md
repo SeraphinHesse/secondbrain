@@ -113,8 +113,8 @@ this should be toggleable in balancing gui
   Four new support buildings that each emit a passive aura buffing all defense buildings in adjacent/surrounding tiles. One per stat: (1) Attack range boost, (2) HP boost, (3) Damage boost, (4) Attack speed boost. Buff values should be configurable in the balancing GUI. Done when all four are placeable, their auras apply correctly to nearby defense buildings, and buffs update dynamically when buildings are added/removed from range.
 * Show died-last-round indicator
   In the per-creature damage stats, note whether it died last round
-* See Attack speed in building stats
 * Stats need to update with boost value
+* !See Attack speed in building stats
 * Move Balancing GUI outside of balancing folder and cleanup root folder
 * Boost building range visual representation
 
