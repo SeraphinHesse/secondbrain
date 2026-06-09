@@ -29,6 +29,7 @@
 
 ###### Claude Build
 
+* Update .gitignore for HTBH prototype section
 * Range of building should update visually immediately on upgrade, not on the next select
 * shift click to select multiple tiles of the same type
 * Maybe make the mortar shoot where the enemies will go? maybe put this on a bool in balancing
