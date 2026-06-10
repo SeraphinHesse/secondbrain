@@ -934,12 +934,12 @@
 <div id="backlog-modal" class="modal-overlay" onclick="handleBacklogOverlayClick(event)">
   <div class="backlog-modal-card">
     <div class="backlog-modal-header">
-      <div class="backlog-modal-title">🗂 Completed Backlog</div>
+      <div class="backlog-modal-title">🗂 Backlog</div>
       <button class="modal-close" onclick="closeBacklog()">✕</button>
     </div>
     <div class="backlog-modal-body" id="backlog-body"></div>
     <div class="backlog-modal-footer">
-      <button class="btn-danger" onclick="clearBacklog()">Clear All</button>
+      <button class="btn-danger" onclick="clearCompleted()">Clear completed → Backlog</button>
       <button class="btn-secondary" onclick="closeBacklog()">Close</button>
     </div>
   </div>
@@ -951,16 +951,15 @@
 const API = 'http://localhost:8765/api/tasks';
 
 // --- Storage keys ---
-const K_DONE         = 'sb-done';
-const K_DONE_AT      = 'sb-done-at';
-const K_BACKLOG      = 'sb-backlog';
 const K_PAIRS        = 'sb-rem-pairs';
 const K_COLLAPSED    = 'sb-collapsed';
 const K_URGENT_COL   = 'sb-urgent-col';
 const K_CUSTOM_CATS  = 'sb-custom-cats';
 const K_REM_COL      = 'sb-rem-col';
 const K_REM_ZONE     = 'sb-rem-zone';
-const ARCHIVE_MS     = 12 * 60 * 60 * 1000; // 12 hours
+
+const BACKLOG_API    = 'http://localhost:8765/api/backlog';
+const CLEAR_API      = 'http://localhost:8765/api/clear-completed';
 
 // --- Default category metadata ---
 const DEFAULT_CAT_META = {
@@ -993,14 +992,8 @@ function buildCategoryMeta() {
 }
 
 // --- Storage helpers ---
-function getDone()         { return new Set(JSON.parse(localStorage.getItem(K_DONE) || '[]')); }
-function setDone(s)        { localStorage.setItem(K_DONE, JSON.stringify([...s])); }
-function getDoneAt()       { return JSON.parse(localStorage.getItem(K_DONE_AT) || '{}'); }
-function setDoneAt(o)      { localStorage.setItem(K_DONE_AT, JSON.stringify(o)); }
 function getPairs()        { return JSON.parse(localStorage.getItem(K_PAIRS)   || '{}'); }
 function setPairs(o)       { localStorage.setItem(K_PAIRS, JSON.stringify(o)); }
-function getBacklog()      { return JSON.parse(localStorage.getItem(K_BACKLOG) || '[]'); }
-function setBacklog(a)     { localStorage.setItem(K_BACKLOG, JSON.stringify(a)); }
 function getCollapsed()    { return new Set(JSON.parse(localStorage.getItem(K_COLLAPSED) || '[]')); }
 function setCollapsed(s)   { localStorage.setItem(K_COLLAPSED, JSON.stringify([...s])); }
 function getUrgentCol()    { return new Set(JSON.parse(localStorage.getItem(K_URGENT_COL) || '[]')); }
@@ -1071,66 +1064,12 @@ async function loadTasks(showSpinner = false) {
     tasks = await res.json();
     document.getElementById('error-banner').classList.remove('visible');
     render();
-    await checkAndArchive();
   } catch (e) {
     document.getElementById('error-banner').classList.add('visible');
     document.getElementById('urgent-items').innerHTML = '<div class="empty-state" style="text-align:left;padding:0;color:var(--text-dim)">Server offline</div>';
   }
 }
 
-// --- ARCHIVE CHECK ---
-async function checkAndArchive() {
-  const done   = getDone();
-  const doneAt = getDoneAt();
-  const backlog = getBacklog();
-  const now = Date.now();
-
-  const toArchive = Object.entries(doneAt)
-    .filter(([, ts]) => now - ts >= ARCHIVE_MS)
-    .map(([key]) => key);
-
-  if (!toArchive.length) return;
-
-  for (const key of toArchive) {
-    const task = tasks.find(t => doneKey(t) === key);
-    const catText = key.indexOf('::') !== -1
-      ? { cat: key.slice(0, key.indexOf('::')), text: key.slice(key.indexOf('::') + 2) }
-      : { cat: '', text: key };
-
-    backlog.push({
-      key,
-      text:  task ? task.text  : catText.text,
-      cat:   task ? task.cat   : catText.cat,
-      high:  task ? task.high  : false,
-      desc:  task ? (task.desc || '') : '',
-      doneAt: doneAt[key],
-    });
-
-    if (task) {
-      try {
-        const res = await fetch(API, {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: task.id }),
-        });
-        if (res.ok) tasks = await res.json();
-      } catch (_) {}
-    }
-
-    const pairs = getPairs();
-    const pairedKey = pairs[key];
-    if (pairedKey) { delete pairs[pairedKey]; delete pairs[key]; setPairs(pairs); }
-    done.delete(key);
-    delete doneAt[key];
-  }
-
-  setDone(done);
-  setDoneAt(doneAt);
-  setBacklog(backlog);
-  updateBacklogBadge();
-  render();
-  toast(`${toArchive.length} task${toArchive.length > 1 ? 's' : ''} archived to backlog`);
-}
 
 // --- ADD TASK ---
 async function addTask() {
@@ -1164,42 +1103,30 @@ async function addTask() {
 }
 
 // --- DONE TOGGLE ---
-function toggleDone(key) {
-  const s = getDone();
-  const doneAt = getDoneAt();
-  const wasDone = s.has(key);
-  if (wasDone) {
-    s.delete(key);
-    delete doneAt[key];
-  } else {
-    s.add(key);
-    doneAt[key] = Date.now();
+async function toggleDone(key) {
+  const t = taskMap[key];
+  if (!t) return;
+  try {
+    const res = await fetch(API, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: t.id, done: !t.done }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    tasks = await res.json();
+    render();
+    toast(t.done ? '↩ Reopened' : '✓ Marked done');
+  } catch (e) {
+    toast('⚠ ' + e.message);
   }
-  setDone(s);
-  setDoneAt(doneAt);
-
-  // Sync paired reminder↔task
-  const pairs = getPairs();
-  const pairedKey = pairs[key];
-  if (pairedKey) {
-    const s2 = getDone(); const doneAt2 = getDoneAt();
-    if (wasDone) { s2.delete(pairedKey); delete doneAt2[pairedKey]; }
-    else { s2.add(pairedKey); doneAt2[pairedKey] = Date.now(); }
-    setDone(s2); setDoneAt(doneAt2);
-  }
-
-  render();
-  toast(!wasDone ? '✓ Marked done' : '↩ Reopened');
 }
 
 // --- RENDER ---
 function render() {
   taskMap = {};
-  const done = getDone();
   const withDone = tasks.map(t => {
-    const k = doneKey(t);
-    taskMap[k] = t;
-    return { ...t, done: done.has(k) };
+    taskMap[doneKey(t)] = t;
+    return t;
   });
 
   const openCount   = withDone.filter(t => !t.done).length;
@@ -1639,9 +1566,7 @@ document.addEventListener('click', e => {
     const s = getRemCol();
     s.has(cat) ? s.delete(cat) : s.add(cat);
     setRemCol(s);
-    const done = getDone();
-    const withDone = tasks.map(t => ({ ...t, done: done.has(doneKey(t)) }));
-    renderRemindersZone(withDone);
+    renderRemindersZone(tasks);
     return;
   }
 
@@ -1651,9 +1576,7 @@ document.addEventListener('click', e => {
     const s = getUrgentCol();
     s.has(cat) ? s.delete(cat) : s.add(cat);
     setUrgentCol(s);
-    const done = getDone();
-    const withDone = tasks.map(t => ({ ...t, done: done.has(doneKey(t)) }));
-    renderUrgentZone(withDone);
+    renderUrgentZone(tasks);
     return;
   }
 
@@ -1730,9 +1653,7 @@ function toggleCollapseAll() {
     btn.textContent = 'Collapse All';
   }
   setCollapsed(s);
-  const done = getDone();
-  const withDone = tasks.map(t => ({ ...t, done: done.has(doneKey(t)) }));
-  renderGrid(withDone);
+  renderGrid(tasks);
 }
 
 // --- CARD INLINE ADD ---
@@ -1839,7 +1760,8 @@ function openTaskModal(key) {
 
 function updateModalDoneBtn() {
   if (!currentModalKey) return;
-  const isDone = getDone().has(currentModalKey);
+  const t = taskMap[currentModalKey];
+  const isDone = t ? !!t.done : false;
   const btn = document.getElementById('modal-done-btn');
   btn.textContent = isDone ? '↩ Reopen' : '✓ Mark Done';
   btn.classList.toggle('is-done', isDone);
@@ -1854,9 +1776,9 @@ function handleOverlayClick(e) {
   if (e.target === e.currentTarget) closeModal();
 }
 
-function modalToggleDone() {
+async function modalToggleDone() {
   if (!currentModalKey) return;
-  toggleDone(currentModalKey);
+  await toggleDone(currentModalKey);
   updateModalDoneBtn();
 }
 
@@ -1880,17 +1802,9 @@ async function saveModal() {
       });
       if (!res.ok) throw new Error(await res.text());
       tasks = await res.json();
-      // Migrate done state if identity changed
+      // Update pair references if identity changed
       const newKey = `${newCat}::${newText}`;
       if (currentModalKey !== newKey) {
-        const done = getDone(); const doneAt = getDoneAt();
-        if (done.has(currentModalKey)) {
-          done.delete(currentModalKey); done.add(newKey);
-          const ts = doneAt[currentModalKey];
-          if (ts) { delete doneAt[currentModalKey]; doneAt[newKey] = ts; }
-          setDone(done); setDoneAt(doneAt);
-        }
-        // Update pair references to the new key
         const pairs = getPairs();
         const pairedKey = pairs[currentModalKey];
         if (pairedKey) {
@@ -1900,8 +1814,6 @@ async function saveModal() {
           setPairs(pairs);
         }
       }
-      // Clean up any legacy localStorage desc
-      localStorage.removeItem('sb-desc::' + currentModalKey);
       toast('Saved' + (newHigh ? ' 🔴' : ' ✓'));
     } catch (e) {
       toast('⚠ Save failed: ' + e.message);
@@ -1928,13 +1840,9 @@ async function deleteTaskFromModal() {
     });
     if (!res.ok) throw new Error(await res.text());
     tasks = await res.json();
-    const done = getDone(); const doneAt = getDoneAt();
-    done.delete(currentModalKey); delete doneAt[currentModalKey];
-    setDone(done); setDoneAt(doneAt);
     const pairs = getPairs();
     const pairedKey = pairs[currentModalKey];
     if (pairedKey) { delete pairs[pairedKey]; delete pairs[currentModalKey]; setPairs(pairs); }
-    localStorage.removeItem('sb-desc::' + currentModalKey);
     closeModal();
     render();
     toast('Task deleted');
@@ -1945,15 +1853,15 @@ async function deleteTaskFromModal() {
 
 // --- BACKLOG ---
 function updateBacklogBadge() {
-  const count = getBacklog().length;
+  const count = tasks.filter(t => t.done).length;
   const badge = document.getElementById('backlog-badge');
   badge.textContent = count;
   badge.classList.toggle('has-items', count > 0);
 }
 
-function openBacklog() {
-  renderBacklog();
+async function openBacklog() {
   document.getElementById('backlog-modal').classList.add('open');
+  await renderBacklog();
 }
 
 function closeBacklog() {
@@ -1964,71 +1872,74 @@ function handleBacklogOverlayClick(e) {
   if (e.target === e.currentTarget) closeBacklog();
 }
 
-function renderBacklog() {
-  const backlog = getBacklog();
+async function renderBacklog() {
   const body = document.getElementById('backlog-body');
+  const doneTasks = tasks.filter(t => t.done);
 
-  if (!backlog.length) {
-    body.innerHTML = '<div class="backlog-empty">No completed tasks in backlog.<br>Tasks completed for more than 12 hours will appear here.</div>';
-    return;
-  }
-
-  const groups = {};
-  const catOrder = [];
-  backlog.forEach((item, idx) => {
-    const cat = item.cat || 'Unknown';
-    if (!groups[cat]) { groups[cat] = []; catOrder.push(cat); }
-    groups[cat].push({ ...item, _idx: idx });
-  });
-
+  // Section 1: pending completed tasks (still in ToDo.md, marked x)
   let html = '';
-  catOrder.forEach(cat => {
-    const meta = CATEGORY_META[cat] || { icon: '📌', color: '#94a3b8' };
-    html += `<div class="backlog-group-label">${meta.icon} <span style="color:${meta.color}">${esc(cat)}</span></div>`;
-    groups[cat].forEach(item => {
+  if (doneTasks.length) {
+    html += '<div class="backlog-group-label" style="margin-bottom:8px">⏳ Completed — pending clear</div>';
+    doneTasks.forEach(t => {
+      const meta = CATEGORY_META[t.cat] || { icon: '📌', color: '#94a3b8' };
       html += `
-        <div class="backlog-item" data-backlog-idx="${item._idx}">
-          <span class="backlog-item-text">${esc(item.text)}</span>
-          <span class="backlog-item-time">${timeAgo(item.doneAt)}</span>
-          <button class="backlog-restore-btn" data-backlog-idx="${item._idx}" onclick="restoreFromBacklog(${item._idx})">↩ Restore</button>
+        <div class="backlog-item">
+          <span style="font-size:0.8rem;color:var(--text-dim);margin-right:6px">${meta.icon}</span>
+          <span class="backlog-item-text" style="text-decoration:line-through">${esc(t.text)}</span>
+          <span style="font-size:0.7rem;color:var(--text-dim);margin:0 6px">${esc(t.cat)}</span>
+          <button class="backlog-restore-btn" onclick="toggleDone('${esc(doneKey(t))}')">↩ Reopen</button>
         </div>`;
     });
-  });
+  } else {
+    html += '<div class="backlog-empty" style="margin-bottom:12px">No completed tasks pending.</div>';
+  }
+
+  // Section 2: backlog.md archive
+  html += '<div class="backlog-group-label" style="margin-top:16px;margin-bottom:8px">🗂 Backlog archive</div>';
+  try {
+    const res = await fetch(BACKLOG_API);
+    const { content } = await res.json();
+    if (content && content.trim().length > 1) {
+      // Render markdown headings and tasks simply
+      const lines = content.split('\n');
+      let archiveHtml = '';
+      for (const line of lines) {
+        if (line.startsWith('## ')) {
+          archiveHtml += `<div style="font-size:0.75rem;color:var(--accent);font-weight:600;margin:10px 0 4px">${esc(line.slice(3))}</div>`;
+        } else if (line.startsWith('### ')) {
+          archiveHtml += `<div style="font-size:0.72rem;color:var(--text-dim);margin:6px 0 2px">${esc(line.slice(4))}</div>`;
+        } else if (line.startsWith('* ') || line.startsWith('* !')) {
+          const text = line.slice(2).replace(/^!/, '');
+          archiveHtml += `<div style="font-size:0.8rem;color:var(--text-muted);padding:2px 0 2px 8px">${esc(text)}</div>`;
+        } else if (line.match(/^  +\S/)) {
+          archiveHtml += `<div style="font-size:0.72rem;color:var(--text-dim);padding:0 0 2px 16px">${esc(line.trim())}</div>`;
+        }
+      }
+      html += archiveHtml || '<div class="backlog-empty">Backlog file is empty.</div>';
+    } else {
+      html += '<div class="backlog-empty">No archived tasks yet. Use "Clear completed" to archive.</div>';
+    }
+  } catch (_) {
+    html += '<div class="backlog-empty">Could not load backlog archive.</div>';
+  }
 
   body.innerHTML = html;
 }
 
-async function restoreFromBacklog(idx) {
-  const backlog = getBacklog();
-  const item = backlog[idx];
-  if (!item) return;
-
+async function clearCompleted() {
+  const doneTasks = tasks.filter(t => t.done);
+  if (!doneTasks.length) { toast('No completed tasks to clear'); return; }
   try {
-    const res = await fetch(API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: item.text, cat: item.cat, high: item.high, desc: item.desc || '' }),
-    });
+    const res = await fetch(CLEAR_API, { method: 'POST' });
     if (!res.ok) throw new Error(await res.text());
-    tasks = await res.json();
-
-    backlog.splice(idx, 1);
-    setBacklog(backlog);
-    updateBacklogBadge();
+    const { count, tasks: updated } = await res.json();
+    tasks = updated;
     render();
-    renderBacklog();
-    toast('Task restored ↩');
+    await renderBacklog();
+    toast(`${count} task${count !== 1 ? 's' : ''} moved to backlog`);
   } catch (e) {
-    toast('⚠ Restore failed: ' + e.message);
+    toast('⚠ ' + e.message);
   }
-}
-
-function clearBacklog() {
-  if (!getBacklog().length) return;
-  setBacklog([]);
-  updateBacklogBadge();
-  renderBacklog();
-  toast('Backlog cleared');
 }
 
 // --- NEW CATEGORY ---
@@ -2086,7 +1997,6 @@ buildColorSwatches();
 updateBacklogBadge();
 loadTasks();
 
-setInterval(checkAndArchive, 30 * 60 * 1000);
 </script>
 </body>
 </html>

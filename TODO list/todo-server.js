@@ -55,6 +55,8 @@ function parseTodo() {
     else if (s.startsWith('* ')) {
       let text = s.slice(2).trim();
       if (!text) continue;
+      const done = text.startsWith('x ');
+      if (done) text = text.slice(2).trim();
       const high = text.startsWith('!');
       if (high) text = text.slice(1).trim();
       const proj = (project || 'General').replace('How to be Human', 'HTBH').replace(/\\&/g, '&');
@@ -66,7 +68,7 @@ function parseTodo() {
       const desc     = descMatch ? descMatch[1].trim() : '';
       const descLine = descMatch ? lineNo + 1 : -1;
 
-      tasks.push({ id: id++, cat, text, high, reminder: inReminders, lineNo, desc, descLine });
+      tasks.push({ id: id++, cat, text, high, done, reminder: inReminders, lineNo, desc, descLine });
     }
   }
   return tasks;
@@ -81,6 +83,7 @@ function updateTask(id, updates) {
     ? String(updates.text).trim() || task.text
     : task.text;
   const newHigh = updates.high !== undefined ? !!updates.high : task.high;
+  const newDone = updates.done !== undefined ? !!updates.done : task.done;
   const newCat  = (updates.cat !== undefined && updates.cat !== null)
     ? updates.cat : task.cat;
   const newDesc = updates.desc !== undefined ? (updates.desc || '').trim() : task.desc;
@@ -91,7 +94,7 @@ function updateTask(id, updates) {
     if (task.descLine >= 0) lines.splice(task.descLine, 1); // desc first (higher index)
     lines.splice(task.lineNo, 1);
     fs.writeFileSync(TODO, lines.join('\n'), 'utf8');
-    addTask(newText, newCat, newHigh, newDesc);
+    addTask(newText, newCat, newHigh, newDesc, newDone);
   } else {
     const lines = fs.readFileSync(TODO, 'utf8').split('\n');
 
@@ -106,17 +109,17 @@ function updateTask(id, updates) {
       lines.splice(task.lineNo + 1, 0, '  ' + newDesc);
     }
 
-    lines[task.lineNo] = (newHigh ? '* !' : '* ') + newText;
+    lines[task.lineNo] = '* ' + (newDone ? 'x ' : '') + (newHigh ? '!' : '') + newText;
     fs.writeFileSync(TODO, lines.join('\n'), 'utf8');
   }
   return true;
 }
 
-function addTask(text, cat, high, desc) {
+function addTask(text, cat, high, desc, done = false) {
   const lines  = fs.readFileSync(TODO, 'utf8').split('\n');
   const entry  = CAT_MAP[cat] || [`##### ${cat}`, null];
   const [parentH, subH] = entry;
-  const newLine = (high ? '* !' : '* ') + text;
+  const newLine = '* ' + (done ? 'x ' : '') + (high ? '!' : '') + text;
 
   let targetIdx = -1;
   if (subH) {
@@ -167,6 +170,51 @@ function deleteTask(id) {
   return true;
 }
 
+const BACKLOG = path.join(BASE_DIR, 'backlog.md');
+
+function clearCompleted() {
+  const tasks = parseTodo();
+  const done  = tasks.filter(t => t.done);
+  if (!done.length) return 0;
+
+  // Build a dated backlog entry grouped by category
+  const now = new Date();
+  const dateStr = now.toISOString().slice(0, 16).replace('T', ' ');
+  const groups = {};
+  const order  = [];
+  for (const t of done) {
+    if (!groups[t.cat]) { groups[t.cat] = []; order.push(t.cat); }
+    groups[t.cat].push(t);
+  }
+  let entry = `\n## Cleared ${dateStr}\n\n`;
+  for (const cat of order) {
+    entry += `### ${cat}\n\n`;
+    for (const t of groups[cat]) {
+      entry += `* ${t.high ? '!' : ''}${t.text}\n`;
+      if (t.desc) entry += `  ${t.desc}\n`;
+    }
+    entry += '\n';
+  }
+
+  if (!fs.existsSync(BACKLOG)) fs.writeFileSync(BACKLOG, '# Backlog\n', 'utf8');
+  fs.appendFileSync(BACKLOG, entry, 'utf8');
+
+  // Remove done tasks from ToDo.md (collect line indices, remove in one pass)
+  const lines = fs.readFileSync(TODO, 'utf8').split('\n');
+  const remove = new Set();
+  for (const t of done) {
+    remove.add(t.lineNo);
+    if (t.descLine >= 0) remove.add(t.descLine);
+  }
+  fs.writeFileSync(TODO, lines.filter((_, i) => !remove.has(i)).join('\n'), 'utf8');
+  return done.length;
+}
+
+function readBacklog() {
+  if (!fs.existsSync(BACKLOG)) return '';
+  return fs.readFileSync(BACKLOG, 'utf8');
+}
+
 function cors(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
@@ -195,9 +243,9 @@ const server = http.createServer((req, res) => {
     req.on('data', d => body += d);
     req.on('end', () => {
       try {
-        const { id, high, text, cat, desc } = JSON.parse(body);
+        const { id, high, text, cat, desc, done } = JSON.parse(body);
         if (typeof id !== 'number') { res.writeHead(400); res.end('id required'); return; }
-        updateTask(id, { high, text, cat, desc });
+        updateTask(id, { high, text, cat, desc, done });
         const tasks = parseTodo().map(({ lineNo, descLine, ...t }) => t);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(tasks));
@@ -244,6 +292,30 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify({ error: e.message }));
       }
     });
+    return;
+  }
+
+  if (req.url === '/api/clear-completed' && req.method === 'POST') {
+    try {
+      const count = clearCompleted();
+      const tasks = parseTodo().map(({ lineNo, descLine, ...t }) => t);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ count, tasks }));
+    } catch (e) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: e.message }));
+    }
+    return;
+  }
+
+  if (req.url === '/api/backlog' && req.method === 'GET') {
+    try {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ content: readBacklog() }));
+    } catch (e) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: e.message }));
+    }
     return;
   }
 
