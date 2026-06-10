@@ -68,8 +68,7 @@
 
 ###### Claude Build
 
-* !Update .gitignore for HTBH prototype section
-* !Range of building should update visually immediately on upgrade, not on the next select
+* x !Range of building should update visually immediately on upgrade, not on the next select
   When upgrading a building, the range indicator stays at the old value until the building is deselected and reselected. Fix it so the range visualisation refreshes in-place the moment the upgrade is confirmed — especially important when range increases on upgrade.
 
 * shift click to select multiple tiles of the same type
@@ -82,10 +81,10 @@
   Every tile covered by the attack range of a non-Mortar defence building (e.g. Stone Thrower, Sunscorch) should have its pathfinding tile weight increased by a configurable amount, making enemies prefer routes that avoid those tiles. They will still walk through covered tiles if forced, but will route around them otherwise. Add a global on/off toggle and a weight-increase scalar to the balancing GUI under the building/pathfinding section.
 
 
-* !First Levelup Glitch: First levelup only painter even though mortar should be available
+* x !First Levelup Glitch: First levelup only painter even though mortar should be available
   At the very first level-up (after round 0), only the Painter appears as an unlock option — the Mortar never shows up even though it should be available from round 0 onward. Investigate the unlock-pool logic that populates the three choices and fix whatever is filtering the Mortar out.
 
-* !Hole HP upgrade not available in lives mode
+* x !Hole HP upgrade not available in lives mode
   The HP/hole-upgrade technology card is meaningless in lives mode (lives are tracked differently). Remove it from the upgrade pool when the game is running in lives mode so it never appears as a level-up option.
 * Switch Button to Confirm construction with cancel
   WHen building buildings in the stat confirm window, Confirm should be on the right, cancel should be on the left switch these, then put a book into UIbalancing defaulted to true that is ConfirmOnRightSide
@@ -107,16 +106,17 @@ this should be toggleable in balancing gui
 * !Add wall building
   Add walls as a placeable structure. Walls should block or redirect enemy pathing by acting as impassable (or high-weight) tiles in the pathfinding system. Done when a wall tile can be built, integrates with the existing tile-weight/pathfinding system, and enemies route around it.
 
-* !Add Boost buildings (4 aura support buildings)
+* x !Add Boost buildings (4 aura support buildings)
   Four new support buildings that each emit a passive aura buffing all defense buildings in adjacent/surrounding tiles. One per stat: (1) Attack range boost, (2) HP boost, (3) Damage boost, (4) Attack speed boost. Buff values should be configurable in the balancing GUI. Done when all four are placeable, their auras apply correctly to nearby defense buildings, and buffs update dynamically when buildings are added/removed from range.
 * Show died-last-round indicator
   In the per-creature damage stats, note whether it died last round
-* !See Attack speed in building stats
+* See Attack speed in building stats
 * Move Balancing GUI outside of balancing folder and cleanup root folder
 * Boost building range visual representation
 * !Add Blocker Building
   A high Hp building with (for now) the same pathfinding weight as econ building but significantly more hp. does nothing else, can be placed strategically to block the enemies path
-* !infinte money and unlock all tech cheat
+* x !infinte money and unlock all tech cheat
+* Make Balancing Config history get cloned to the build version
 
 
 
@@ -153,6 +153,7 @@ this should be toggleable in balancing gui
   Set up persistent 6:30am calendar → reminders sync: either configure Windows Task Scheduler to run sync-calendar-reminders.js (requires one-time Google OAuth token setup) or keep a Claude Code session open so the CronCreate job fires. Done when calendar events appear automatically in the dashboard Reminders sidebar every morning without any manual steps.
 * Dashboard: Click and drag movable tasks
 * Rework Morning Claude Routine
+* !Finish Dashboard Task Completion MD sync
 
 
 
