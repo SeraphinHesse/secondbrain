@@ -32,16 +32,16 @@
 * Taiga update
 * Call Johann
 
-* !Sprint planning: art & tech
+* x !Sprint planning: art & tech
   Plan and assign sprint tasks for both the art team and for tech. Done when both teams have a full, prioritised sprint backlog ready to execute.
 
-* !Vertical slice roadmap & deliverables plan
+* x !Vertical slice roadmap & deliverables plan
   Define the milestone path to vertical slice: (1) a roadmap showing the phases and milestones needed to reach VS, and (2) a deliverables checklist scoped to VS. Done when both documents exist and tasks can be broken out from them.
-* !Agenda Planning
+* x !Agenda Planning
 
 * Vertical Slice Deliverables Internal Presentation
   Prepare and deliver an internal presentation covering the vertical slice deliverables — what they are, current status, and what done looks like. Done when the team has a shared, aligned picture of VS scope and next steps.
-* !Internal Vert Slice Delivs Slides
+* x !Internal Vert Slice Delivs Slides
   Make Slides presentation in the template to
 
 
@@ -117,6 +117,8 @@ this should be toggleable in balancing gui
   A high Hp building with (for now) the same pathfinding weight as econ building but significantly more hp. does nothing else, can be placed strategically to block the enemies path
 * x !infinte money and unlock all tech cheat
 * Make Balancing Config history get cloned to the build version
+* FIx Boost Range
+* Split Boost into 3 techs
 
 
 
@@ -153,7 +155,8 @@ this should be toggleable in balancing gui
   Set up persistent 6:30am calendar → reminders sync: either configure Windows Task Scheduler to run sync-calendar-reminders.js (requires one-time Google OAuth token setup) or keep a Claude Code session open so the CronCreate job fires. Done when calendar events appear automatically in the dashboard Reminders sidebar every morning without any manual steps.
 * Dashboard: Click and drag movable tasks
 * Rework Morning Claude Routine
-* !Finish Dashboard Task Completion MD sync
+* x !Finish Dashboard Task Completion MD sync
+* j
 
 
 
@@ -165,4 +168,10 @@ this should be toggleable in balancing gui
 
 ##### Bureaucracy \& Chores
 
+
+
+
+##### Reminders
+
+###### Admin
 
