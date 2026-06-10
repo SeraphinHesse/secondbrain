@@ -63,6 +63,7 @@
   Options: animate the base, or have the enemy path back out of the base
 * Come up with more generic upgrades
 * Booster Limits Explanations
+* Traps Ideation
 
 
 
@@ -119,6 +120,9 @@ this should be toggleable in balancing gui
 * Make Balancing Config history get cloned to the build version
 * FIx Boost Range
 * Split Boost into 3 techs
+* Painter Death Tile Blocking
+  When the painter dies, the tile he was on becomes unusable
+* Traps
 
 
 
