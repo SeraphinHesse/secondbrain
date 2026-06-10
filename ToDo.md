@@ -17,8 +17,6 @@
 * [2026-06-11 17:00] Meet Johann
 * [2026-06-09 23:38] Check if First Levelup Glitch fix ran
   (AOE_DEF_UNLOCK_MIN_VILLAGE_LEVEL: 2→1)
-* [2026-06-15 09:00] Next Sprint Planning & Taiga
-* [2026-06-10 09:00] Work on WBS
 
 
 
@@ -71,7 +69,7 @@
 ###### Claude Build
 
 * !Update .gitignore for HTBH prototype section
-* !Range of building should update visually immediately on upgrade, not on the next select
+* Range of building should update visually immediately on upgrade, not on the next select
   When upgrading a building, the range indicator stays at the old value until the building is deselected and reselected. Fix it so the range visualisation refreshes in-place the moment the upgrade is confirmed — especially important when range increases on upgrade.
 
 * shift click to select multiple tiles of the same type
@@ -83,8 +81,6 @@
 * Range Impacts the pathfinding of the enemies
   Every tile covered by the attack range of a non-Mortar defence building (e.g. Stone Thrower, Sunscorch) should have its pathfinding tile weight increased by a configurable amount, making enemies prefer routes that avoid those tiles. They will still walk through covered tiles if forced, but will route around them otherwise. Add a global on/off toggle and a weight-increase scalar to the balancing GUI under the building/pathfinding section.
 
-* !Infinite money cheat, unlock all tech cheat
-  Add two entries to the cheats menu: one that gives the player infinite gold (or a very large lump sum), and one that unlocks all technology immediately. Both should be accessible from the existing cheats UI.
 
 * !First Levelup Glitch: First levelup only painter even though mortar should be available
   At the very first level-up (after round 0), only the Painter appears as an unlock option — the Mortar never shows up even though it should be available from round 0 onward. Investigate the unlock-pool logic that populates the three choices and fix whatever is filtering the Mortar out.
@@ -113,13 +109,11 @@ this should be toggleable in balancing gui
 
 * !Add Boost buildings (4 aura support buildings)
   Four new support buildings that each emit a passive aura buffing all defense buildings in adjacent/surrounding tiles. One per stat: (1) Attack range boost, (2) HP boost, (3) Damage boost, (4) Attack speed boost. Buff values should be configurable in the balancing GUI. Done when all four are placeable, their auras apply correctly to nearby defense buildings, and buffs update dynamically when buildings are added/removed from range.
-* !Show died-last-round indicator
+* Show died-last-round indicator
   In the per-creature damage stats, note whether it died last round
 * !See Attack speed in building stats
-* Stats need to update with boost value
 * Move Balancing GUI outside of balancing folder and cleanup root folder
 * Boost building range visual representation
-* !Blocker Enemy
 
 
 

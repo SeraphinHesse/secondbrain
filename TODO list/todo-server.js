@@ -21,12 +21,20 @@ const CAT_MAP = {
   'Admin':                  ['##### Admin', null],
   'University':             ['##### University', null],
   'Bureaucracy & Chores':   ['##### Bureaucracy \\& Chores', null],
+  // Legacy reminder subcategories (backward compat for existing ToDo.md entries)
   'Reminders / General':               ['##### Reminders', '###### General'],
   'Reminders / HTBH':                  ['##### Reminders', '###### HTBH'],
   'Reminders / Agency':                ['##### Reminders', '###### Agency'],
-  'Reminders / Admin':                 ['##### Reminders', '###### Admin'],
-  'Reminders / Bureaucracy & Chores':  ['##### Reminders', '###### Bureaucracy & Chores'],
   'Reminders / Calendar':              ['##### Reminders', '###### Calendar'],
+  // Task-category-aligned reminder subcategories (new format)
+  'Reminders / HTBH / Producing':      ['##### Reminders', '###### HTBH / Producing'],
+  'Reminders / HTBH / Design':         ['##### Reminders', '###### HTBH / Design'],
+  'Reminders / HTBH / Claude Build':   ['##### Reminders', '###### HTBH / Claude Build'],
+  'Reminders / HTBH / Balancing':      ['##### Reminders', '###### HTBH / Balancing'],
+  'Reminders / Addictive Media Agency':['##### Reminders', '###### Addictive Media Agency'],
+  'Reminders / Admin':                 ['##### Reminders', '###### Admin'],
+  'Reminders / University':            ['##### Reminders', '###### University'],
+  'Reminders / Bureaucracy & Chores':  ['##### Reminders', '###### Bureaucracy & Chores'],
 };
 
 // Returns tasks with lineNo, descLine, desc fields.
