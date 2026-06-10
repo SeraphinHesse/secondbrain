@@ -69,7 +69,7 @@
 ###### Claude Build
 
 * !Update .gitignore for HTBH prototype section
-* Range of building should update visually immediately on upgrade, not on the next select
+* !Range of building should update visually immediately on upgrade, not on the next select
   When upgrading a building, the range indicator stays at the old value until the building is deselected and reselected. Fix it so the range visualisation refreshes in-place the moment the upgrade is confirmed — especially important when range increases on upgrade.
 
 * shift click to select multiple tiles of the same type
@@ -91,7 +91,7 @@
   WHen building buildings in the stat confirm window, Confirm should be on the right, cancel should be on the left switch these, then put a book into UIbalancing defaulted to true that is ConfirmOnRightSide
 this should be toggleable in balancing gui
 * Range and Building Preview on hover
-* Implement Tile Conditions
+* !Implement Tile Conditions
 * Lives in base building UI
   Clicking the base building should show current lives in its info UI panel
 * Tile weight reduction by damage
@@ -104,7 +104,7 @@ this should be toggleable in balancing gui
 * Add Meditator building
   Economy building that generates yield each turn like the Musician. Core mechanic: a streak counter tracks consecutive undisturbed turns — each uninterrupted turn the yield increases (compounding). If the building is attacked or disturbed, the streak resets. Ties into the three-tier design (Meditator → Shaman → Sun Priest). Done when the building is placeable, upgradeable, and the streak/yield logic works correctly.
 
-* Add wall building
+* !Add wall building
   Add walls as a placeable structure. Walls should block or redirect enemy pathing by acting as impassable (or high-weight) tiles in the pathfinding system. Done when a wall tile can be built, integrates with the existing tile-weight/pathfinding system, and enemies route around it.
 
 * !Add Boost buildings (4 aura support buildings)
@@ -114,6 +114,9 @@ this should be toggleable in balancing gui
 * !See Attack speed in building stats
 * Move Balancing GUI outside of balancing folder and cleanup root folder
 * Boost building range visual representation
+* !Add Blocker Building
+  A high Hp building with (for now) the same pathfinding weight as econ building but significantly more hp. does nothing else, can be placed strategically to block the enemies path
+* !infinte money and unlock all tech cheat
 
 
 
