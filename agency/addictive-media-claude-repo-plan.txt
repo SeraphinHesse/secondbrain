@@ -1,0 +1,52 @@
+addictive-media-claude-repo-plan.txt
+
+ADDICTIVE MEDIA — CLAUDE CODE SHARED REPO SETUP
+================================================
+
+Goal: Build a Claude Code setup in a shared Addictive Media repository.
+Open Claude Code from terminal directly inside that repo.
+Feed it all the below as a long-term vision. Ask it to ultra-think and plan it
+into individual projects, each with verifiable steps.
+
+---
+
+PROJECT AREAS
+=============
+
+1. AUTOMATED CLIENT OUTREACH
+   - Web scrape to find potential clients
+   - Auto-outreach based on what's on their website
+   - Mirror their tone in responses
+   - Lots of existing tools/skills for this — research and pick the best stack
+
+2. ADDICTIVE MEDIA DASHBOARD (task + project management)
+   - Accessible to everyone on the team
+   - Stage 1: runs over the GitHub repo — pull to access files locally
+   - Stage 2: real server setup with mobile version
+   - Features: task management, calendar management, general project management
+   - Boilerplate project setup for each new client/project
+
+3. DOCUMENT CREATION
+   - Skills/tools to create boilerplate docs from templates
+   - High-quality slides and presentations for the consulting side
+   - PDF reports and documents
+   - Facebook Ads Manager data automation → auto-generate client-facing reports
+
+4. SERVICE EXPANSION: TECH & AI CONSULTING
+   - Website building for clients
+   - Help companies convert to AI
+   - Build personalized/specialized project management tools (same way we're building ours)
+   - General IT consulting
+   - Our own dashboard as a productized service for other companies
+
+---
+
+OPEN QUESTIONS (for Claude Code to answer, not for Seraphin to answer now)
+===========================================================================
+- Would Obsidian memory vault be useful here? How to hook it up?
+- What skills are useful for this stack?
+- What repo structure does the agency repo need?
+- Memory structure: does each new project get its own Claude instance?
+  Does each client get a CLAUDE.md?
+- How do all of these pieces nest together into a coherent system?
+  (outreach → onboarding → project management → reporting → docs — it's all connected)
