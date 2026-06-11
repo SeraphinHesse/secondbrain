@@ -28,3 +28,31 @@
 
 * !Finish Dashboard Task Completion MD sync
 
+
+## Cleared 2026-06-11 13:24
+
+### Reminders / HTBH
+
+* [2026-06-09 23:38] Check if First Levelup Glitch fix ran
+  (AOE_DEF_UNLOCK_MIN_VILLAGE_LEVEL: 2→1)
+
+### HTBH / Producing
+
+* Call Johann
+
+### Addictive Media Agency
+
+* !Meet Simona
+
+### Reminders / Addictive Media Agency
+
+* ![2026-06-11 13:30] Meet Simona
+
+
+## Cleared 2026-06-11 13:27
+
+### HTBH / Claude Build
+
+* !Boss Enemy
+  https://docs.google.com/document/d/1KszfyyrXJBXUo8kMW9GGmMaiDflqj5JNKP8BPM0Cvow/edit?tab=t.0#heading=h.w6ikow374bm6
+

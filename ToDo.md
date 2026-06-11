@@ -15,8 +15,6 @@
 
 ###### HTBH
 * [2026-06-11 17:00] Meet Johann
-* [2026-06-09 23:38] Check if First Levelup Glitch fix ran
-  (AOE_DEF_UNLOCK_MIN_VILLAGE_LEVEL: 2→1)
 
 
 
@@ -30,7 +28,6 @@
 * WBS update
 * WBS full tasks
 * Taiga update
-* Call Johann
 
 
 
@@ -86,8 +83,6 @@ this should be toggleable in balancing gui
   After ~round 10, top 3 damage-dealing buildings reduce tile weights on their tiles; enemies more likely to path over them (feels like enemies target whoever hurt them most)
 * Sunscorch beam scales visually
   Beam gets fatter each level; at laser beam tier it should be very fat and red
-* !Boss Enemy
-  https://docs.google.com/document/d/1KszfyyrXJBXUo8kMW9GGmMaiDflqj5JNKP8BPM0Cvow/edit?tab=t.0#heading=h.w6ikow374bm6
 
 * Add Meditator building
   Economy building that generates yield each turn like the Musician. Core mechanic: a streak counter tracks consecutive undisturbed turns — each uninterrupted turn the yield increases (compounding). If the building is attacked or disturbed, the streak resets. Ties into the three-tier design (Meditator → Shaman → Sun Priest). Done when the building is placeable, upgradeable, and the streak/yield logic works correctly.
@@ -131,7 +126,6 @@ this should be toggleable in balancing gui
 
 
 ##### Addictive Media Agency
-* x !Meet Simona
 
 * Research: Automate potential client list creation
   Investigate tools, APIs, and approaches for automatically generating qualified potential client lists for the agency. Could include LinkedIn scraping, Apollo/Hunter APIs, domain enrichment, etc. Done when there's a clear shortlist of viable approaches with pros/cons.
@@ -163,6 +157,7 @@ this should be toggleable in balancing gui
 * Tazio & Keanu Meeting
 * Glasses Ideation
 * Weib Automation and Pitch planning
+* Github Repo
 
 
 
@@ -198,5 +193,4 @@ this should be toggleable in balancing gui
 ##### Reminders
 
 ###### Addictive Media Agency
-* x ![2026-06-11 13:30] Meet Simona
 
