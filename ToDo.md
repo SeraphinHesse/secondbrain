@@ -161,6 +161,8 @@ this should be toggleable in balancing gui
   Unlock or recover access to the agency Google account. Work through whatever the current blocker is (2FA, recovery, account suspension). Done when we're fully logged in and operational again.
 * Setup Addictive Task and Project Dashboard
 * Tazio & Keanu Meeting
+* Glasses Ideation
+* Weib Automation and Pitch planning
 
 
 
