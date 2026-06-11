@@ -32,7 +32,12 @@ PROJECT AREAS
    - PDF reports and documents
    - Facebook Ads Manager data automation → auto-generate client-facing reports
 
-4. SERVICE EXPANSION: TECH & AI CONSULTING
+4. MEDIA BUYING AUTOMATION
+   - Automate media buying workflows
+   - Pull data from ad platforms (Facebook Ads Manager etc.)
+   - Automate reporting and optimization tasks
+
+5. SERVICE EXPANSION: TECH & AI CONSULTING
    - Website building for clients
    - Help companies convert to AI
    - Build personalized/specialized project management tools (same way we're building ours)
