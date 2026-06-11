@@ -148,7 +148,7 @@ this should be toggleable in balancing gui
 * Sign Gio (Drunkin' Donuts) — brand agreement
   Figure out the right structure to sign Gio the rapper as a client and get a brand agreement in place. Define what the deal looks like — services, exclusivity, rev share or retainer — and what the approach is for getting him to sign. Done when we have a proposed deal structure and an outreach/signing plan.
 
-* Cano meeting plan — VC + agency consulting/IT role
+* Keanu meeting plan — VC + agency consulting/IT role
   Prepare for the meeting with Cano covering two angles: (1) VC conversation — what we're raising, for what, and what we want from him; (2) potential role for Cano doing sales, consulting, and IT outsourcing for Addictive Media, with emphasis on consulting and IT. Done when there's a clear agenda and talking points for both topics.
 
 * Tazio meeting plan — operations involvement
