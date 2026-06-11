@@ -150,6 +150,12 @@ this should be toggleable in balancing gui
 * !Meet Simona
 * !Meet Simona
 
+* Research: Automate potential client list creation
+  Investigate tools, APIs, and approaches for automatically generating qualified potential client lists for the agency. Could include LinkedIn scraping, Apollo/Hunter APIs, domain enrichment, etc. Done when there's a clear shortlist of viable approaches with pros/cons.
+
+* Build: Client list automation tool
+  Build the automation software based on the research above. Should output a structured list of potential clients (company, contact, fit score or similar). Done when the tool can run and produce a usable lead list with minimal manual input.
+
 
 
 
