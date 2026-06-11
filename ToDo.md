@@ -19,8 +19,6 @@
 
 
 
-##### 
-
 ##### How to be Human
 
 ###### Producing
@@ -161,6 +159,16 @@ this should be toggleable in balancing gui
 
 
 
+##### Claude Automation
+
+* Research: Claude Code skills for frontend web design
+  Survey and document useful Claude Code skills for frontend/web design work. Priority candidates: the built-in topic skill, the third-party "taste" skill (UI/UX Pro Max), and any library-focused skills. Done when there's a curated shortlist with install/use notes in `projects/claude-automation/`.
+
+* Research: Cybersecurity for vibe coding
+  Investigate security risks specific to AI-assisted rapid development (vibe coding). Cover common vulnerabilities in AI-generated code, relevant Claude Code skills or MCP tools for catching issues, and best practices for reviewing AI-generated code. Done when findings are documented in `projects/claude-automation/cybersecurity-vibe-coding-notes.md`.
+
+
+
 ##### Admin
 
 * Dashboard for secondbrain
@@ -184,13 +192,4 @@ this should be toggleable in balancing gui
 
 
 
-##### Reminders
-
-###### Admin
-
-
-
-##### Reminders
-
-###### Addictive Media Agency
 
