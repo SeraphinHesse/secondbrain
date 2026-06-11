@@ -156,7 +156,26 @@ this should be toggleable in balancing gui
 * Build: Client list automation tool
   Build the automation software based on the research above. Should output a structured list of potential clients (company, contact, fit score or similar). Done when the tool can run and produce a usable lead list with minimal manual input.
 
+* Drunkin' Donuts: rebrand plan
+  Create a full rebrand strategy document for the client currently operating under the name "Drunkin' Donuts." Cover new name options, visual identity direction, positioning, and rollout approach. Done when there's a concrete rebrand proposal ready to present.
 
+* Drunkin' Donuts: How to be Human release roadmap & advertising plan
+  Build a release roadmap and advertising strategy for Gio's (Drunkin' Donuts) "How to be Human" release. Cover pre-release, launch, and post-launch phases — channels, content, timelines, budget buckets. Done when there's a doc we can brief the client with.
+
+* Sign Gio (Drunkin' Donuts) — brand agreement
+  Figure out the right structure to sign Gio the rapper as a client and get a brand agreement in place. Define what the deal looks like — services, exclusivity, rev share or retainer — and what the approach is for getting him to sign. Done when we have a proposed deal structure and an outreach/signing plan.
+
+* Cano meeting plan — VC + agency consulting/IT role
+  Prepare for the meeting with Cano covering two angles: (1) VC conversation — what we're raising, for what, and what we want from him; (2) potential role for Cano doing sales, consulting, and IT outsourcing for Addictive Media, with emphasis on consulting and IT. Done when there's a clear agenda and talking points for both topics.
+
+* Tatsu meeting plan — operations involvement
+  Prep for meeting with Tatsu to explore him joining in an operations capacity. Define what the role could look like, what we'd need from him, and what we'd offer. Done when there's a clear agenda and a proposal outline ready.
+
+* !Pay Chelsea for the website
+  Invoice or direct payment to Chelsea for work done on the website. Confirm the amount owed, settle it, and keep a record. Done when Chelsea is paid and payment is documented.
+
+* Regain access to Google account
+  Unlock or recover access to the agency Google account. Work through whatever the current blocker is (2FA, recovery, account suspension). Done when we're fully logged in and operational again.
 
 
 
