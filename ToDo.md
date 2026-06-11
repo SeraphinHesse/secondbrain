@@ -43,6 +43,7 @@
   Prepare and deliver an internal presentation covering the vertical slice deliverables — what they are, current status, and what done looks like. Done when the team has a shared, aligned picture of VS scope and next steps.
 * x !Internal Vert Slice Delivs Slides
   Make Slides presentation in the template to
+* Steam Page Setup
 
 
 
