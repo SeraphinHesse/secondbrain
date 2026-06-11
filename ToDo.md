@@ -147,6 +147,8 @@ this should be toggleable in balancing gui
 
 
 ##### Addictive Media Agency
+* !Meet Simona
+* !Meet Simona
 
 
 
@@ -179,4 +181,11 @@ this should be toggleable in balancing gui
 ##### Reminders
 
 ###### Admin
+
+
+
+##### Reminders
+
+###### Addictive Media Agency
+* ![2026-06-11 13:30] Meet Simona
 
