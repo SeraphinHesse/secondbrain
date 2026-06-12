@@ -29,7 +29,7 @@
 
 
 
-* Vertical Slice Deliverables Internal Presentation
+* x Vertical Slice Deliverables Internal Presentation
   Prepare and deliver an internal presentation covering the vertical slice deliverables — what they are, current status, and what done looks like. Done when the team has a shared, aligned picture of VS scope and next steps.
 * Steam Page Setup
 
@@ -146,8 +146,8 @@ this should be toggleable in balancing gui
 * Tazio meeting plan — operations involvement
   Prep for meeting with Tatsu to explore him joining in an operations capacity. Define what the role could look like, what we'd need from him, and what we'd offer. Done when there's a clear agenda and a proposal outline ready.
 
-* !Pay Chelsea for the website
-  Invoice or direct payment to Chelsea for work done on the website. Confirm the amount owed, settle it, and keep a record. Done when Chelsea is paid and payment is documented.
+* !Regain access to Google account
+  Unlock or recover access to the agency Google account. Work through whatever the current blocker is (2FA, recovery, account suspension). Done when we're fully logged in and operational again.
 
 * Regain access to Google account
   Unlock or recover access to the agency Google account. Work through whatever the current blocker is (2FA, recovery, account suspension). Done when we're fully logged in and operational again.
@@ -194,6 +194,7 @@ this should be toggleable in balancing gui
   Set up persistent 6:30am calendar → reminders sync: either configure Windows Task Scheduler to run sync-calendar-reminders.js (requires one-time Google OAuth token setup) or keep a Claude Code session open so the CronCreate job fires. Done when calendar events appear automatically in the dashboard Reminders sidebar every morning without any manual steps.
 * Dashboard: Click and drag movable tasks
 * Rework Morning Claude Routine
+* !Make Automation an addable Category
 
 
 
