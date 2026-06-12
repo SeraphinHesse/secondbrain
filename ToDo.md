@@ -157,6 +157,23 @@ this should be toggleable in balancing gui
 * Weib Automation and Pitch planning
 * Github Repo
 
+* Addictive OS — Phase 0: Foundation (IN PROGRESS)
+  Turn the AddictiveMedia repo into a real OS: root CLAUDE.md (voice, services, pricing), folder structure, _Brain Obsidian vault, connector checks, .gitignore. Done when a fresh Claude session answers "what's our medium consulting price?" and "draft a line in our voice" straight from CLAUDE.md. (Covers the old "Github Repo" item.)
+* Addictive OS — Phase 1: Agency Dashboard / OS
+  Task/project/calendar management over the repo + onboard-client skill (one-command client setup). (Covers "Setup Addictive Task and Project Dashboard.")
+* Addictive OS — Phase 2: Document & Reporting Engine
+  Branded Templates + client-report skill wiring Windsor.ai data into on-brand PDF reports.
+* Addictive OS — Phase 3: Outreach & Acquisition Engine
+  Prospect research, outreach-draft + proposal skills, personalized micro-pitch generator.
+* Addictive OS — Phase 4: Media-Buying & Optimization Automation
+  weekly-sprint skill, scheduled ad-platform pulls, budget/anomaly alerts, case-study generator.
+* Addictive OS — Phase 5: Productize & Expand
+  Client websites, "convert your company to AI" consulting, Addictive OS as a productized service, Dashboard Stage 2 (server + mobile).
+* !voice-guardian skill — tone deep-dive + anti-AI-slop research
+  Deferred from Phase 0. Codify Addictive Media's real voice from the brand docs, then research anti-"AI-slop" techniques (banned phrases, burstiness, concrete-over-abstract, EN/DE register) so generated copy doesn't read as machine-written. Until done, founders approve all outward copy.
+* Set up / authenticate Windsor.ai connector
+  One-time auth for the Windsor.ai MCP (Meta/Google Ads data) so reporting + media automation can pull live ad data. Run authenticate → complete_authentication in a Claude session.
+
 
 
 ##### Claude Automation
