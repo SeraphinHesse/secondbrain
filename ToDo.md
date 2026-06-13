@@ -205,6 +205,9 @@ this should be toggleable in balancing gui
 
 
 ##### Bureaucracy \& Chores
+* !Buy birthday present for Jacob
+  Get a gift for Jacob's birthday. Done when a present is purchased and ready to give.
+
 * Get Laptop From kim
 
 
