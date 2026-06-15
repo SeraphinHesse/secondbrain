@@ -7,7 +7,7 @@
 ##### Reminders
 
 ###### Bureaucracy & Chores
-* [2026-06-15 19:00] Get Laptop From kim
+* [2026-06-16 19:00] Get Laptop From kim
 
 
 ###### General
@@ -62,7 +62,7 @@
 * shift click to select multiple tiles of the same type
   Shift-clicking a tile should add it to a multi-selection, but only within the same category (build tiles, buildable tiles, or combat tiles — no mixing). Selecting a build tile locks the selection to build tiles only; selecting a buildable tile locks to buildable tiles, etc. A valid multi-selection then lets the player upgrade, build, or unlock all selected tiles in one action simultaneously.
 
-* Maybe make the mortar shoot where the enemies will go? maybe put this on a bool in balancing
+* x Maybe make the mortar shoot where the enemies will go? maybe put this on a bool in balancing
   Instead of firing at an enemy's current position, the Mortar predicts the enemy's movement vector and leads the shot so the projectile lands where the enemy will be. Expose a balancing toggle (bool) and a lead-factor scalar in the balancing GUI so the behaviour can be tuned or disabled.
 
 * Range Impacts the pathfinding of the enemies
@@ -79,7 +79,7 @@ this should be toggleable in balancing gui
   Clicking the base building should show current lives in its info UI panel
 * Tile weight reduction by damage
   After ~round 10, top 3 damage-dealing buildings reduce tile weights on their tiles; enemies more likely to path over them (feels like enemies target whoever hurt them most)
-* Sunscorch beam scales visually
+* x Sunscorch beam scales visually
   Beam gets fatter each level; at laser beam tier it should be very fat and red
 
 * Add Meditator building
@@ -88,11 +88,11 @@ this should be toggleable in balancing gui
 * !Add wall building
   Add walls as a placeable structure. Walls should block or redirect enemy pathing by acting as impassable (or high-weight) tiles in the pathfinding system. Done when a wall tile can be built, integrates with the existing tile-weight/pathfinding system, and enemies route around it.
 
-* Show died-last-round indicator
+* x Show died-last-round indicator
   In the per-creature damage stats, note whether it died last round
 * See Attack speed in building stats
 * Move Balancing GUI outside of balancing folder and cleanup root folder
-* Boost building range visual representation
+* x Boost building range visual representation
 * !Add Blocker Building
   A high Hp building with (for now) the same pathfinding weight as econ building but significantly more hp. does nothing else, can be placed strategically to block the enemies path
 * Make Balancing Config history get cloned to the build version
@@ -195,6 +195,7 @@ this should be toggleable in balancing gui
 * Dashboard: Click and drag movable tasks
 * Rework Morning Claude Routine
 * !Make Automation an addable Category
+* Call Jakob
 
 
 
@@ -214,3 +215,10 @@ this should be toggleable in balancing gui
 
 
 
+
+
+##### Reminders
+
+###### Admin
+
+* [2026-06-15 13:00] Call Jakob
