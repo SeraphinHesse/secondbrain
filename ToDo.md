@@ -72,19 +72,19 @@
 
 
 
-* Switch Button to Confirm construction with cancel
+* x Switch Button to Confirm construction with cancel
   WHen building buildings in the stat confirm window, Confirm should be on the right, cancel should be on the left switch these, then put a book into UIbalancing defaulted to true that is ConfirmOnRightSide
 this should be toggleable in balancing gui
 * Range and Building Preview on hover
 * !Implement Tile Conditions
-* Lives in base building UI
+* x Lives in base building UI
   Clicking the base building should show current lives in its info UI panel
-* Tile weight reduction by damage
+* x Tile weight reduction by damage
   After ~round 10, top 3 damage-dealing buildings reduce tile weights on their tiles; enemies more likely to path over them (feels like enemies target whoever hurt them most)
 * x Sunscorch beam scales visually
   Beam gets fatter each level; at laser beam tier it should be very fat and red
 
-* Add Meditator building
+* x Add Meditator building
   Economy building that generates yield each turn like the Musician. Core mechanic: a streak counter tracks consecutive undisturbed turns — each uninterrupted turn the yield increases (compounding). If the building is attacked or disturbed, the streak resets. Ties into the three-tier design (Meditator → Shaman → Sun Priest). Done when the building is placeable, upgradeable, and the streak/yield logic works correctly.
 
 * !Add wall building
@@ -103,6 +103,8 @@ this should be toggleable in balancing gui
 * Painter Death Tile Blocking
   When the painter dies, the tile he was on becomes unusable
 * Traps
+* Scrollable list of buildable buildings
+* Boss healthbar needs to disappear
 
 
 
@@ -173,6 +175,9 @@ this should be toggleable in balancing gui
   Client websites, "convert your company to AI" consulting, Addictive OS as a productized service, Dashboard Stage 2 (server + mobile).
 * !voice-guardian skill — tone deep-dive + anti-AI-slop research
   Deferred from Phase 0. Codify Addictive Media's real voice from the brand docs, then research anti-"AI-slop" techniques (banned phrases, burstiness, concrete-over-abstract, EN/DE register) so generated copy doesn't read as machine-written. Until done, founders approve all outward copy.
+* Set up Meta Ads account + activate Meta Ads MCP
+  Create a Meta Business account and Meta Ads account, then sign up at pipeboard.co to get a Pipeboard token. Add PIPEBOARD_TOKEN to .claude/settings.local.json in the AddictiveMedia repo to activate the Meta Ads MCP (meta-ads server is already configured in .mcp.json — just needs the token).
+
 * Set up / authenticate Windsor.ai connector
   One-time auth for the Windsor.ai MCP (Meta/Google Ads data) so reporting + media automation can pull live ad data. Run authenticate → complete_authentication in a Claude session.
 * !Pay chelsea for website
