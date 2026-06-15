@@ -11,10 +11,10 @@
 
 
 ###### General
-* [2026-06-13 22:00] Fly to Italy
+* x [2026-06-13 22:00] Fly to Italy
 
 ###### HTBH
-* [2026-06-11 17:00] Meet Johann
+* x [2026-06-11 17:00] Meet Johann
 
 
 
@@ -65,7 +65,7 @@
 * x Maybe make the mortar shoot where the enemies will go? maybe put this on a bool in balancing
   Instead of firing at an enemy's current position, the Mortar predicts the enemy's movement vector and leads the shot so the projectile lands where the enemy will be. Expose a balancing toggle (bool) and a lead-factor scalar in the balancing GUI so the behaviour can be tuned or disabled.
 
-* Range Impacts the pathfinding of the enemies
+* x Range Impacts the pathfinding of the enemies
   Every tile covered by the attack range of a non-Mortar defence building (e.g. Stone Thrower, Sunscorch) should have its pathfinding tile weight increased by a configurable amount, making enemies prefer routes that avoid those tiles. They will still walk through covered tiles if forced, but will route around them otherwise. Add a global on/off toggle and a weight-increase scalar to the balancing GUI under the building/pathfinding section.
 
 
@@ -103,6 +103,8 @@ this should be toggleable in balancing gui
 * Traps
 * x Scrollable list of buildable buildings
 * Boss healthbar needs to disappear
+* Map Mode: Building Range
+* Map Mode: Enemy heatmap
 
 
 
@@ -160,7 +162,7 @@ this should be toggleable in balancing gui
 * Weib Automation and Pitch planning
 * Github Repo
 
-* Addictive OS — Phase 0: Foundation (IN PROGRESS)
+* Addictive OS — Phase 0: Foundation
   Turn the AddictiveMedia repo into a real OS: root CLAUDE.md (voice, services, pricing), folder structure, _Brain Obsidian vault, connector checks, .gitignore. Done when a fresh Claude session answers "what's our medium consulting price?" and "draft a line in our voice" straight from CLAUDE.md. (Covers the old "Github Repo" item.)
 * Addictive OS — Phase 1: Agency Dashboard / OS
   Task/project/calendar management over the repo + onboard-client skill (one-command client setup). (Covers "Setup Addictive Task and Project Dashboard.")
