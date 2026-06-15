@@ -175,6 +175,7 @@ this should be toggleable in balancing gui
   Deferred from Phase 0. Codify Addictive Media's real voice from the brand docs, then research anti-"AI-slop" techniques (banned phrases, burstiness, concrete-over-abstract, EN/DE register) so generated copy doesn't read as machine-written. Until done, founders approve all outward copy.
 * Set up / authenticate Windsor.ai connector
   One-time auth for the Windsor.ai MCP (Meta/Google Ads data) so reporting + media automation can pull live ad data. Run authenticate → complete_authentication in a Claude session.
+* !Pay chelsea for website
 
 
 
@@ -196,7 +197,7 @@ this should be toggleable in balancing gui
   Set up persistent 6:30am calendar → reminders sync: either configure Windows Task Scheduler to run sync-calendar-reminders.js (requires one-time Google OAuth token setup) or keep a Claude Code session open so the CronCreate job fires. Done when calendar events appear automatically in the dashboard Reminders sidebar every morning without any manual steps.
 * Dashboard: Click and drag movable tasks
 * Rework Morning Claude Routine
-* !Make Automation an addable Category
+* x !Make Automation an addable Category
 * Call Jakob
 
 
