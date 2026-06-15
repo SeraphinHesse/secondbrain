@@ -48,8 +48,6 @@
 * Ideation: More Enemy types
 * Ideation: More Economy Buildings
 * Ideation: More Defence Buildings
-* Life loss feedback unclear
-  When a life is lost nothing makes it clear; needs a fix
 * Ideation: life loss display
   Options: animate the base, or have the enemy path back out of the base
 * Come up with more generic upgrades
@@ -95,35 +93,36 @@ this should be toggleable in balancing gui
 * See Attack speed in building stats
 * Move Balancing GUI outside of balancing folder and cleanup root folder
 * x Boost building range visual representation
-* !Add Blocker Building
+* x !Add Blocker Building
   A high Hp building with (for now) the same pathfinding weight as econ building but significantly more hp. does nothing else, can be placed strategically to block the enemies path
 * Make Balancing Config history get cloned to the build version
 * FIx Boost Range
 * Split Boost into 3 techs
-* Painter Death Tile Blocking
+* x Painter Death Tile Blocking
   When the painter dies, the tile he was on becomes unusable
 * Traps
-* Scrollable list of buildable buildings
+* x Scrollable list of buildable buildings
 * Boss healthbar needs to disappear
 
 
 
 ###### Balancing
 
-* Early game slightly too difficult (double check this?)
-* Slinger too strong
+* x Early game slightly too difficult (double check this?)
+* x Slinger too strong
 * Levelling too Fast: Sheets Predictions not accurate
-* First levelup should be slightly later
-* Flute player needs more HP
+* x First levelup should be slightly later
+* x Flute player needs more HP
   Currently only has two hit points, needs a bump
-* Musicians too strong
+* x Musicians too strong
   Overall generating too much gold/income
-* Harp too cheap/strong
+* x Harp too cheap/strong
   Harp player is either too cheap to build or generates too much yield (or both)
 * Sunscorch nerf + pricier upgrade
   Sunscorch generally too strong; upgrade cost needs to go up
-* Raise all building upkeep
+* x Raise all building upkeep
   Upkeep across the board is too low
+* Blocker too much HP
 
 
 
