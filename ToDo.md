@@ -81,6 +81,16 @@ this should be toggleable in balancing gui
 
 
 
+###### Godot Implementation
+
+* Add the Stone Thrower
+  Implement the Stone Thrower unit in Godot. Done when it is functional in-game with correct behaviour, animations, and balancing config wired up.
+
+* Add the Meditator
+  Implement the Meditator building in Godot (Tier 1 of the economy building). Done when it is placeable, produces the correct resource output, and hooks into the existing balancing config.
+
+
+
 ###### Balancing
 
 * Levelling too Fast: Sheets Predictions not accurate
