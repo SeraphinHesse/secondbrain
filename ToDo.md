@@ -8,11 +8,10 @@
 
 ###### Bureaucracy & Chores
 * [2026-06-16 19:00] Get Laptop From kim
-* [2026-06-16 16:40] Fly Home
+* x [2026-06-16 16:40] Fly Home
 
 
 ###### General
-* [2026-06-16 19:00] call Hendrik
 
 ###### HTBH
 
@@ -31,9 +30,8 @@
 
 * Steam Page Setup
   Complete all admin and implementation steps to get HTBH's Steam store page live. Covers: partner onboarding, AppID creation, tax/banking setup, store page fields, graphical asset uploads (capsules, library hero, screenshots, trailer), content survey / Germany age rating, pricing + regional pricing, SteamPipe build upload, and the two-checklist release process. Done when store page is "Coming Soon" with build approved and the 2-week clock started.
-* Call Fabian
+* x Call Fabian
   Guide: https://docs.google.com/document/d/1eC3m6qhfyt6CbJOwM38a8IP-FTneCkUwsVBTBO5-Nlg/edit
-* Call Jakob
 
 
 
@@ -53,6 +51,7 @@
 * Come up with more generic upgrades
 * Booster Limits Explanations
 * Traps Ideation
+* Economy Proximity Bonuses Ideation
 
 
 
@@ -86,14 +85,17 @@ this should be toggleable in balancing gui
 
 
 
-* See Attack speed in building stats
+* x See Attack speed in building stats
 * Move Balancing GUI outside of balancing folder and cleanup root folder
 * Make Balancing Config history get cloned to the build version
 * FIx Boost Range
 * Split Boost into 3 techs
 * Traps
 * All tileweights balanceable
-* GDD converter
+* x GDD converter
+* Economy Proximity Bonuses
+* Fullscreen Mode
+* Wall HP upgrade
 
 
 
@@ -112,6 +114,8 @@ this should be toggleable in balancing gui
 * Levelling too Fast: Sheets Predictions not accurate
 * Sunscorch nerf + pricier upgrade
   Sunscorch generally too strong; upgrade cost needs to go up
+* Higher wall hp
+* slightly higher stone thrower hp
 
 
 
@@ -143,7 +147,7 @@ this should be toggleable in balancing gui
 
 * Regain access to Google account
   Unlock or recover access to the agency Google account. Work through whatever the current blocker is (2FA, recovery, account suspension). Done when we're fully logged in and operational again.
-* Tazio & Keanu Meeting
+* Organize Tazio & Keanu Meeting
 * Glasses Ideation
 * Weib Automation and Pitch planning
 * x Github Repo
@@ -183,11 +187,15 @@ this should be toggleable in balancing gui
 
 ##### Admin
 
-* Dashboard: Reminder System
+* x Dashboard: Reminder System
 * Integrate dashboard calendar sync into morning routine
   Set up persistent 6:30am calendar → reminders sync: either configure Windows Task Scheduler to run sync-calendar-reminders.js (requires one-time Google OAuth token setup) or keep a Claude Code session open so the CronCreate job fires. Done when calendar events appear automatically in the dashboard Reminders sidebar every morning without any manual steps.
 * Dashboard: Click and drag movable tasks
 * Rework Morning Claude Routines
+* Be able to change time on the reminders
+* Big Tasks and small tasks
+* Change Dashboard Logo
+* x Call Jakob
 
 
 
@@ -202,7 +210,7 @@ this should be toggleable in balancing gui
   Get a gift for Jacob's birthday. Done when a present is purchased and ready to give.
 
 * Get Laptop From kim
-* Fly Home
+* x Fly Home
 
 
 
@@ -220,5 +228,6 @@ this should be toggleable in balancing gui
 
 ###### HTBH / Producing
 
-* [2026-06-16 18:55] Call Fabian
-* [2026-06-16 18:45] Call Jakob
+* x [2026-06-16 18:55] Call Fabian
+* x [2026-06-16 18:45] Call Jakob
+* x [2026-06-16 19:00] call Hendrik
