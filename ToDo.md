@@ -12,10 +12,8 @@
 
 
 ###### General
-* x [2026-06-13 22:00] Fly to Italy
 
 ###### HTBH
-* x [2026-06-11 17:00] Meet Johann
 
 
 
@@ -30,12 +28,11 @@
 
 
 
-* x Vertical Slice Deliverables Internal Presentation
-  Prepare and deliver an internal presentation covering the vertical slice deliverables — what they are, current status, and what done looks like. Done when the team has a shared, aligned picture of VS scope and next steps.
 * Steam Page Setup
   Complete all admin and implementation steps to get HTBH's Steam store page live. Covers: partner onboarding, AppID creation, tax/banking setup, store page fields, graphical asset uploads (capsules, library hero, screenshots, trailer), content survey / Germany age rating, pricing + regional pricing, SteamPipe build upload, and the two-checklist release process. Done when store page is "Coming Soon" with build approved and the 2-week clock started.
 * Call Fabian
   Guide: https://docs.google.com/document/d/1eC3m6qhfyt6CbJOwM38a8IP-FTneCkUwsVBTBO5-Nlg/edit
+* Call Jakob
 
 
 
@@ -55,83 +52,39 @@
 * Come up with more generic upgrades
 * Booster Limits Explanations
 * Traps Ideation
-* Traps Ideation
 
 
 
 ###### Claude Build
 
 
-* x shift click to select multiple tiles of the same type
-  Shift-clicking a tile should add it to a multi-selection, but only within the same category (build tiles, buildable tiles, or combat tiles — no mixing). Selecting a build tile locks the selection to build tiles only; selecting a buildable tile locks to buildable tiles, etc. A valid multi-selection then lets the player upgrade, build, or unlock all selected tiles in one action simultaneously.
-
-* x Maybe make the mortar shoot where the enemies will go? maybe put this on a bool in balancing
-  Instead of firing at an enemy's current position, the Mortar predicts the enemy's movement vector and leads the shot so the projectile lands where the enemy will be. Expose a balancing toggle (bool) and a lead-factor scalar in the balancing GUI so the behaviour can be tuned or disabled.
-
-* x Range Impacts the pathfinding of the enemies
-  Every tile covered by the attack range of a non-Mortar defence building (e.g. Stone Thrower, Sunscorch) should have its pathfinding tile weight increased by a configurable amount, making enemies prefer routes that avoid those tiles. They will still walk through covered tiles if forced, but will route around them otherwise. Add a global on/off toggle and a weight-increase scalar to the balancing GUI under the building/pathfinding section.
 
 
 
-* x Switch Button to Confirm construction with cancel
-  WHen building buildings in the stat confirm window, Confirm should be on the right, cancel should be on the left switch these, then put a book into UIbalancing defaulted to true that is ConfirmOnRightSide
+
+
 this should be toggleable in balancing gui
 * Range and Building Preview on hover
 * !Implement Tile Conditions
-* x Lives in base building UI
-  Clicking the base building should show current lives in its info UI panel
-* x Tile weight reduction by damage
-  After ~round 10, top 3 damage-dealing buildings reduce tile weights on their tiles; enemies more likely to path over them (feels like enemies target whoever hurt them most)
-* x Sunscorch beam scales visually
-  Beam gets fatter each level; at laser beam tier it should be very fat and red
 
-* x Add Meditator building
-  Economy building that generates yield each turn like the Musician. Core mechanic: a streak counter tracks consecutive undisturbed turns — each uninterrupted turn the yield increases (compounding). If the building is attacked or disturbed, the streak resets. Ties into the three-tier design (Meditator → Shaman → Sun Priest). Done when the building is placeable, upgradeable, and the streak/yield logic works correctly.
 
-* x !Add wall building
-  Add walls as a placeable structure. Walls should block or redirect enemy pathing by acting as impassable (or high-weight) tiles in the pathfinding system. Done when a wall tile can be built, integrates with the existing tile-weight/pathfinding system, and enemies route around it.
 
-* x Show died-last-round indicator
-  In the per-creature damage stats, note whether it died last round
 * See Attack speed in building stats
 * Move Balancing GUI outside of balancing folder and cleanup root folder
-* x Boost building range visual representation
-* x !Add Blocker Building
-  A high Hp building with (for now) the same pathfinding weight as econ building but significantly more hp. does nothing else, can be placed strategically to block the enemies path
 * Make Balancing Config history get cloned to the build version
 * FIx Boost Range
 * Split Boost into 3 techs
-* x Painter Death Tile Blocking
-  When the painter dies, the tile he was on becomes unusable
 * Traps
-* x Scrollable list of buildable buildings
-* x Boss healthbar needs to disappear
-  When the boss isnt killed, but the round ends, (i.e. via cheating or via losing the round) the bosses healthbar remains on screen, this should disappear FOR SURE
-* x Map Mode: Building Range
-  toggled by a button on the HUD, all ranges of all defence buildings should become visible at the same time
-* x Map Mode: Enemy heatmap
-  toggled by a button on the HUD, a heatmap of enemy locations will be shown
 * All tileweights balanceable
+* GDD converter
 
 
 
 ###### Balancing
 
-* x Early game slightly too difficult (double check this?)
-* x Slinger too strong
 * Levelling too Fast: Sheets Predictions not accurate
-* x First levelup should be slightly later
-* x Flute player needs more HP
-  Currently only has two hit points, needs a bump
-* x Musicians too strong
-  Overall generating too much gold/income
-* x Harp too cheap/strong
-  Harp player is either too cheap to build or generates too much yield (or both)
 * Sunscorch nerf + pricier upgrade
   Sunscorch generally too strong; upgrade cost needs to go up
-* x Raise all building upkeep
-  Upkeep across the board is too low
-* Blocker too much HP
 
 
 
@@ -163,13 +116,12 @@ this should be toggleable in balancing gui
 
 * Regain access to Google account
   Unlock or recover access to the agency Google account. Work through whatever the current blocker is (2FA, recovery, account suspension). Done when we're fully logged in and operational again.
-* Setup Addictive Task and Project Dashboard
 * Tazio & Keanu Meeting
 * Glasses Ideation
 * Weib Automation and Pitch planning
-* Github Repo
+* x Github Repo
 
-* Addictive OS — Phase 0: Foundation
+* x Addictive OS — Phase 0: Foundation
   Turn the AddictiveMedia repo into a real OS: root CLAUDE.md (voice, services, pricing), folder structure, _Brain Obsidian vault, connector checks, .gitignore. Done when a fresh Claude session answers "what's our medium consulting price?" and "draft a line in our voice" straight from CLAUDE.md. (Covers the old "Github Repo" item.)
 * Addictive OS — Phase 1: Agency Dashboard / OS
   Task/project/calendar management over the repo + onboard-client skill (one-command client setup). (Covers "Setup Addictive Task and Project Dashboard.")
@@ -204,14 +156,11 @@ this should be toggleable in balancing gui
 
 ##### Admin
 
-* x Dashboard for secondbrain
 * Dashboard: Reminder System
 * Integrate dashboard calendar sync into morning routine
   Set up persistent 6:30am calendar → reminders sync: either configure Windows Task Scheduler to run sync-calendar-reminders.js (requires one-time Google OAuth token setup) or keep a Claude Code session open so the CronCreate job fires. Done when calendar events appear automatically in the dashboard Reminders sidebar every morning without any manual steps.
 * Dashboard: Click and drag movable tasks
-* Rework Morning Claude Routine
-* x !Make Automation an addable Category
-* x Call Jakob
+* Rework Morning Claude Routines
 
 
 
@@ -238,7 +187,6 @@ this should be toggleable in balancing gui
 
 ###### Admin
 
-* x [2026-06-15 13:00] Call Jakob
 
 
 ##### Reminders
@@ -246,3 +194,4 @@ this should be toggleable in balancing gui
 ###### HTBH / Producing
 
 * [2026-06-16 18:55] Call Fabian
+* [2026-06-16 18:45] Call Jakob
