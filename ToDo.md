@@ -58,7 +58,23 @@
 
 ###### Claude Build
 
+* !Balancing GUI: Fix build/editor version label
+  The GUI currently misidentifies the editor version as a build version. Find the version detection logic and correct it. Done when the label accurately shows "Editor" in Godot editor and "Build" in exported builds.
 
+* Balancing GUI: Collapsible items within categories
+  Buildings and entries inside each category should be individually collapsible/expandable so you can focus on one at a time. State persists within session. Done when each entry can be collapsed to its header and re-expanded.
+
+* Balancing GUI: Left panel category tree
+  Replace the flat category list on the left with a hierarchical tree: top level = category (e.g. Buildings), second = sub-type (e.g. Defense/Economy), third = individual building names. Clicking a leaf scrolls/filters to that building. Done when the full tree is rendered and navigable.
+
+* Balancing GUI: Visual polish
+  General UI refresh — spacing, typography, color palette, card styling, hover states. Current look is too raw. Done when it looks like a tool you'd actually want to use.
+
+* Balancing GUI: Hover tooltips for each value
+  Every config field should show a tooltip on hover explaining what it controls, what effect changing it has, and any constraints. Tooltip content should live in a data file (not hardcoded). Done when all fields have accurate tooltips.
+
+* Balancing GUI: Value categories within each building
+  Group each building's config values into logical sub-categories (e.g. Combat, Economy, Visual, Costs) instead of one flat list. Done when all building values are organized into named groups with visual separators.
 
 
 
