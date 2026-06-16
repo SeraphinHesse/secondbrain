@@ -8,6 +8,7 @@
 
 ###### Bureaucracy & Chores
 * [2026-06-16 19:00] Get Laptop From kim
+* [2026-06-16 16:40] Fly Home
 
 
 ###### General
@@ -33,6 +34,7 @@
   Prepare and deliver an internal presentation covering the vertical slice deliverables — what they are, current status, and what done looks like. Done when the team has a shared, aligned picture of VS scope and next steps.
 * Steam Page Setup
   Complete all admin and implementation steps to get HTBH's Steam store page live. Covers: partner onboarding, AppID creation, tax/banking setup, store page fields, graphical asset uploads (capsules, library hero, screenshots, trailer), content survey / Germany age rating, pricing + regional pricing, SteamPipe build upload, and the two-checklist release process. Done when store page is "Coming Soon" with build approved and the 2-week clock started.
+* Call Fabian
   Guide: https://docs.google.com/document/d/1eC3m6qhfyt6CbJOwM38a8IP-FTneCkUwsVBTBO5-Nlg/edit
 
 
@@ -53,13 +55,14 @@
 * Come up with more generic upgrades
 * Booster Limits Explanations
 * Traps Ideation
+* Traps Ideation
 
 
 
 ###### Claude Build
 
 
-* shift click to select multiple tiles of the same type
+* x shift click to select multiple tiles of the same type
   Shift-clicking a tile should add it to a multi-selection, but only within the same category (build tiles, buildable tiles, or combat tiles — no mixing). Selecting a build tile locks the selection to build tiles only; selecting a buildable tile locks to buildable tiles, etc. A valid multi-selection then lets the player upgrade, build, or unlock all selected tiles in one action simultaneously.
 
 * x Maybe make the mortar shoot where the enemies will go? maybe put this on a bool in balancing
@@ -85,7 +88,7 @@ this should be toggleable in balancing gui
 * x Add Meditator building
   Economy building that generates yield each turn like the Musician. Core mechanic: a streak counter tracks consecutive undisturbed turns — each uninterrupted turn the yield increases (compounding). If the building is attacked or disturbed, the streak resets. Ties into the three-tier design (Meditator → Shaman → Sun Priest). Done when the building is placeable, upgradeable, and the streak/yield logic works correctly.
 
-* !Add wall building
+* x !Add wall building
   Add walls as a placeable structure. Walls should block or redirect enemy pathing by acting as impassable (or high-weight) tiles in the pathfinding system. Done when a wall tile can be built, integrates with the existing tile-weight/pathfinding system, and enemies route around it.
 
 * x Show died-last-round indicator
@@ -102,9 +105,13 @@ this should be toggleable in balancing gui
   When the painter dies, the tile he was on becomes unusable
 * Traps
 * x Scrollable list of buildable buildings
-* Boss healthbar needs to disappear
-* Map Mode: Building Range
-* Map Mode: Enemy heatmap
+* x Boss healthbar needs to disappear
+  When the boss isnt killed, but the round ends, (i.e. via cheating or via losing the round) the bosses healthbar remains on screen, this should disappear FOR SURE
+* x Map Mode: Building Range
+  toggled by a button on the HUD, all ranges of all defence buildings should become visible at the same time
+* x Map Mode: Enemy heatmap
+  toggled by a button on the HUD, a heatmap of enemy locations will be shown
+* All tileweights balanceable
 
 
 
@@ -197,14 +204,14 @@ this should be toggleable in balancing gui
 
 ##### Admin
 
-* Dashboard for secondbrain
+* x Dashboard for secondbrain
 * Dashboard: Reminder System
 * Integrate dashboard calendar sync into morning routine
   Set up persistent 6:30am calendar → reminders sync: either configure Windows Task Scheduler to run sync-calendar-reminders.js (requires one-time Google OAuth token setup) or keep a Claude Code session open so the CronCreate job fires. Done when calendar events appear automatically in the dashboard Reminders sidebar every morning without any manual steps.
 * Dashboard: Click and drag movable tasks
 * Rework Morning Claude Routine
 * x !Make Automation an addable Category
-* Call Jakob
+* x Call Jakob
 
 
 
@@ -219,6 +226,7 @@ this should be toggleable in balancing gui
   Get a gift for Jacob's birthday. Done when a present is purchased and ready to give.
 
 * Get Laptop From kim
+* Fly Home
 
 
 
@@ -230,4 +238,11 @@ this should be toggleable in balancing gui
 
 ###### Admin
 
-* [2026-06-15 13:00] Call Jakob
+* x [2026-06-15 13:00] Call Jakob
+
+
+##### Reminders
+
+###### HTBH / Producing
+
+* [2026-06-16 18:55] Call Fabian
