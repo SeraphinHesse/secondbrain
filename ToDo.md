@@ -96,6 +96,9 @@ this should be toggleable in balancing gui
 * Economy Proximity Bonuses
 * Fullscreen Mode
 * Wall HP upgrade
+* Active Abilities
+* bloodstains only get cleared on end turn
+* Xp from dead buildings and lost rounds
 
 
 
