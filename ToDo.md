@@ -111,6 +111,9 @@ this should be toggleable in balancing gui
 
 ###### Balancing
 
+* Apply control-variable balancing approach
+  Strip random variables to establish a stable baseline, balance against predictable conditions, then reintroduce randomness incrementally. Isolates core system behavior before layering in emergent complexity. Reference: projects/htbh/balancing-control-variables.md
+
 * Levelling too Fast: Sheets Predictions not accurate
 * Sunscorch nerf + pricier upgrade
   Sunscorch generally too strong; upgrade cost needs to go up
