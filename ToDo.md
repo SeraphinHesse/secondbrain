@@ -109,6 +109,7 @@ this should be toggleable in balancing gui
   Blood stains left by dead enemies are currently cleared at the end of the combat phase. Change this so they persist and are only cleared at the end of the following turn when the player presses End Turn — so they carry over into the next round and players can see where enemies fell. Done when blood stains survive into the next round and disappear only on the subsequent End Turn press.
 
 * Xp from dead buildings and lost rounds
+<<<<<<< HEAD
   Two related XP changes: (1) When a building is destroyed, it should grant the player XP. The amount should be balanceable per building type, with a default of 1 XP per building. (2) When a round is lost, any enemies that were in the queue but never spawned should still award XP as if they had entered and died — so losing a round does not put the player at an XP disadvantage. Done when both rules are implemented and the per-building XP value is exposed in the balancing config.
 =======
 * !Fullscreen Mode
@@ -121,6 +122,8 @@ this should be toggleable in balancing gui
 * !Cutscene Integration
 * !Xp from lost rounds
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 2649dca (Add descriptions to HTBH Claude Build tasks)
 
 
 
