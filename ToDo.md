@@ -8,15 +8,12 @@
 
 ###### Bureaucracy & Chores
 * [2026-06-16 19:00] Get Laptop From kim
-* x [2026-06-16 16:40] Fly Home
-* x [2026-06-19 18:00] Dinner with parents
 
 
 ###### General
 
 ###### HTBH
 
-* [2026-06-19 18:00] Apply for government funding for HTBH game
 
 
 
@@ -27,14 +24,11 @@
 * !WBS update
   Check if the WBS still matches the planned scope of the game
 * !WBS full tasks
-* x Taiga update
 
 
 
 * Steam Page Setup
   Complete all admin and implementation steps to get HTBH's Steam store page live. Covers: partner onboarding, AppID creation, tax/banking setup, store page fields, graphical asset uploads (capsules, library hero, screenshots, trailer), content survey / Germany age rating, pricing + regional pricing, SteamPipe build upload, and the two-checklist release process. Done when store page is "Coming Soon" with build approved and the 2-week clock started.
-* x Call Fabian
-  Guide: https://docs.google.com/document/d/1eC3m6qhfyt6CbJOwM38a8IP-FTneCkUwsVBTBO5-Nlg/edit
 
 
 
@@ -43,8 +37,7 @@
 * Meditator Building: tier visual design
   Three-tier economy building. Tier 1 — "The Meditator": looks identical to the Flute Player but seated on a rock. Tier 2 — "The Shaman": seated on a partial temple structure, visibly levitating above it. Tier 3 — "The Sun Priest": god-like figure radiating sunlight with a giant temple beneath. Design all three art directions / sprites before implementation.
 
-* !XP cards: Finish GDD
-* x !Ideation: Tile conditions
+* x !XP cards: Finish GDD
 * Ideation: More Boss types
 * Ideation: More Enemy types
 * Ideation: More Economy Buildings
@@ -53,7 +46,6 @@
   Options: animate the base, or have the enemy path back out of the base
 * Come up with more generic upgrades
 * Booster Limits Explanations
-* x Traps Ideation
 * Economy Proximity Bonuses Ideation
 
 
@@ -84,17 +76,15 @@
 
 this should be toggleable in balancing gui
 * Range and Building Preview on hover
-* !Implement Tile Conditions
+* x !Implement Tile Conditions
 
 
 
-* x See Attack speed in building stats
 * Move Balancing GUI outside of balancing folder and cleanup root folder
 * Make Balancing Config history get cloned to the build version
 * FIx Boost Range
 * Split Boost into 3 techs
 * All tileweights balanceable
-* x GDD converter
 * Economy Proximity Bonuses
 * !Fullscreen Mode
   Full screen mode is currently broken on various resolutions. Fix it so the game runs correctly at any screen resolution without layout issues, clipping, or scaling errors. Done when full screen works reliably across all tested resolutions.
@@ -102,7 +92,7 @@ this should be toggleable in balancing gui
 * !Wall HP upgrade
   Upgrading the Wall Builder building currently only increases the building's own HP. It should also upgrade the HP of all walls it manages. Make wall HP scale with the building's upgrade tier. Done when upgrading the Wall Builder visibly increases wall HP.
 
-* !Active Abilities
+* x !Active Abilities
 
 * !bloodstains only get cleared on end turn
   Blood stains left by dead enemies are currently cleared at the end of the combat phase. Change this so they persist and are only cleared at the end of the following turn when the player presses End Turn — so they carry over into the next round and players can see where enemies fell. Done when blood stains survive into the next round and disappear only on the subsequent End Turn press.
@@ -116,6 +106,10 @@ this should be toggleable in balancing gui
 
 * !Xp from lost rounds
   When a round is lost, any enemies that were in the queue but never spawned should still award XP as if they had entered and died — so losing a round does not put the player at an XP disadvantage. Done when the rule is implemented and the XP amount matches what would have been awarded normally.
+* !Meditator unlockable and Balanceable
+  The meditator needs to be added to the unlock system and to the balancing gui in the same way as all the other buildings
+* !Scaling Blocker
+  The Blocker should be scaleable with tiers just like any other building it should start with 500 HP and then should scale Hp with upgrades
 
 
 
@@ -170,10 +164,7 @@ this should be toggleable in balancing gui
 * Organize Tazio & Keanu Meeting
 * Glasses Ideation
 * Weib Automation and Pitch planning
-* x Github Repo
 
-* x Addictive OS — Phase 0: Foundation
-  Turn the AddictiveMedia repo into a real OS: root CLAUDE.md (voice, services, pricing), folder structure, _Brain Obsidian vault, connector checks, .gitignore. Done when a fresh Claude session answers "what's our medium consulting price?" and "draft a line in our voice" straight from CLAUDE.md. (Covers the old "Github Repo" item.)
 * Addictive OS — Phase 1: Agency Dashboard / OS
   Task/project/calendar management over the repo + onboard-client skill (one-command client setup). (Covers "Setup Addictive Task and Project Dashboard.")
 * Addictive OS — Phase 2: Document & Reporting Engine
@@ -207,7 +198,6 @@ this should be toggleable in balancing gui
 
 ##### Admin
 
-* x Dashboard: Reminder System
 * Integrate dashboard calendar sync into morning routine
   Set up persistent 6:30am calendar → reminders sync: either configure Windows Task Scheduler to run sync-calendar-reminders.js (requires one-time Google OAuth token setup) or keep a Claude Code session open so the CronCreate job fires. Done when calendar events appear automatically in the dashboard Reminders sidebar every morning without any manual steps.
 * Dashboard: Click and drag movable tasks
@@ -215,7 +205,6 @@ this should be toggleable in balancing gui
 * Be able to change time on the reminders
 * Big Tasks and small tasks
 * Change Dashboard Logo
-* x Call Jakob
 
 
 
@@ -226,11 +215,8 @@ this should be toggleable in balancing gui
 
 
 ##### Bureaucracy \& Chores
-* x !Buy birthday present for Jacob
-  Get a gift for Jacob's birthday. Done when a present is purchased and ready to give.
 
 * Get Laptop From kim
-* x Fly Home
 * Dinner with parents
 
 
@@ -249,6 +235,3 @@ this should be toggleable in balancing gui
 
 ###### HTBH / Producing
 
-* x [2026-06-16 18:55] Call Fabian
-* x [2026-06-16 18:45] Call Jakob
-* x [2026-06-16 19:00] call Hendrik

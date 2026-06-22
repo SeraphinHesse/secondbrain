@@ -132,3 +132,50 @@
 
 * [2026-06-15 13:00] Call Jakob
 
+
+## Cleared 2026-06-22 17:01
+
+### Reminders / Bureaucracy & Chores
+
+* [2026-06-16 16:40] Fly Home
+* [2026-06-19 18:00] Dinner with parents
+
+### HTBH / Producing
+
+* Taiga update
+* Call Fabian
+  Guide: https://docs.google.com/document/d/1eC3m6qhfyt6CbJOwM38a8IP-FTneCkUwsVBTBO5-Nlg/edit
+
+### HTBH / Design
+
+* !Ideation: Tile conditions
+* Traps Ideation
+
+### HTBH / Claude Build
+
+* See Attack speed in building stats
+* GDD converter
+
+### Addictive Media Agency
+
+* Github Repo
+* Addictive OS — Phase 0: Foundation
+  Turn the AddictiveMedia repo into a real OS: root CLAUDE.md (voice, services, pricing), folder structure, _Brain Obsidian vault, connector checks, .gitignore. Done when a fresh Claude session answers "what's our medium consulting price?" and "draft a line in our voice" straight from CLAUDE.md. (Covers the old "Github Repo" item.)
+
+### Admin
+
+* Dashboard: Reminder System
+* Call Jakob
+
+### Bureaucracy & Chores
+
+* !Buy birthday present for Jacob
+  Get a gift for Jacob's birthday. Done when a present is purchased and ready to give.
+* Fly Home
+
+### Reminders / HTBH / Producing
+
+* [2026-06-16 18:55] Call Fabian
+* [2026-06-16 18:45] Call Jakob
+* [2026-06-16 19:00] call Hendrik
+
