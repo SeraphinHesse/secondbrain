@@ -9,6 +9,7 @@
 ###### Bureaucracy & Chores
 * [2026-06-16 19:00] Get Laptop From kim
 * x [2026-06-16 16:40] Fly Home
+* x [2026-06-19 18:00] Dinner with parents
 
 
 ###### General
@@ -23,9 +24,10 @@
 
 ###### Producing
 
-* WBS update
-* WBS full tasks
-* Taiga update
+* !WBS update
+  Check if the WBS still matches the planned scope of the game
+* !WBS full tasks
+* x Taiga update
 
 
 
@@ -41,8 +43,8 @@
 * Meditator Building: tier visual design
   Three-tier economy building. Tier 1 — "The Meditator": looks identical to the Flute Player but seated on a rock. Tier 2 — "The Shaman": seated on a partial temple structure, visibly levitating above it. Tier 3 — "The Sun Priest": god-like figure radiating sunlight with a giant temple beneath. Design all three art directions / sprites before implementation.
 
-* XP cards: Finish GDD
-* !Ideation: Tile conditions
+* !XP cards: Finish GDD
+* x !Ideation: Tile conditions
 * Ideation: More Boss types
 * Ideation: More Enemy types
 * Ideation: More Economy Buildings
@@ -51,14 +53,14 @@
   Options: animate the base, or have the enemy path back out of the base
 * Come up with more generic upgrades
 * Booster Limits Explanations
-* Traps Ideation
+* x Traps Ideation
 * Economy Proximity Bonuses Ideation
 
 
 
 ###### Claude Build
 
-* !Balancing GUI: Fix build/editor version label
+* Balancing GUI: Fix build/editor version label
   The GUI currently misidentifies the editor version as a build version. Find the version detection logic and correct it. Done when the label accurately shows "Editor" in Godot editor and "Build" in exported builds.
 
 * Balancing GUI: Collapsible items within categories
@@ -91,10 +93,10 @@ this should be toggleable in balancing gui
 * Make Balancing Config history get cloned to the build version
 * FIx Boost Range
 * Split Boost into 3 techs
-* Traps
 * All tileweights balanceable
 * x GDD converter
 * Economy Proximity Bonuses
+<<<<<<< Updated upstream
 * Fullscreen Mode
   Full screen mode is currently broken on various resolutions. Fix it so the game runs correctly at any screen resolution without layout issues, clipping, or scaling errors. Done when full screen works reliably across all tested resolutions.
 
@@ -108,6 +110,17 @@ this should be toggleable in balancing gui
 
 * Xp from dead buildings and lost rounds
   Two related XP changes: (1) When a building is destroyed, it should grant the player XP. The amount should be balanceable per building type, with a default of 1 XP per building. (2) When a round is lost, any enemies that were in the queue but never spawned should still award XP as if they had entered and died — so losing a round does not put the player at an XP disadvantage. Done when both rules are implemented and the per-building XP value is exposed in the balancing config.
+=======
+* !Fullscreen Mode
+* !Wall HP upgrade
+* !Active Abilities
+* !bloodstains only get cleared on end turn
+* !Xp from dead buildings
+* !Story Upgrades
+* !Blank Cutscenes
+* !Cutscene Integration
+* !Xp from lost rounds
+>>>>>>> Stashed changes
 
 
 
@@ -218,11 +231,12 @@ this should be toggleable in balancing gui
 
 
 ##### Bureaucracy \& Chores
-* !Buy birthday present for Jacob
+* x !Buy birthday present for Jacob
   Get a gift for Jacob's birthday. Done when a present is purchased and ready to give.
 
 * Get Laptop From kim
 * x Fly Home
+* Dinner with parents
 
 
 
