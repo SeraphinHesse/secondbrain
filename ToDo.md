@@ -96,27 +96,26 @@ this should be toggleable in balancing gui
 * All tileweights balanceable
 * x GDD converter
 * Economy Proximity Bonuses
-<<<<<<< Updated upstream
-* Fullscreen Mode
-* Wall HP upgrade
-* Active Abilities
-* bloodstains only get cleared on end turn
-* Xp from dead buildings and lost rounds
-<<<<<<< HEAD
-  Two related XP changes: (1) When a building is destroyed, it should grant the player XP. The amount should be balanceable per building type, with a default of 1 XP per building. (2) When a round is lost, any enemies that were in the queue but never spawned should still award XP as if they had entered and died — so losing a round does not put the player at an XP disadvantage. Done when both rules are implemented and the per-building XP value is exposed in the balancing config.
-=======
 * !Fullscreen Mode
+  Full screen mode is currently broken on various resolutions. Fix it so the game runs correctly at any screen resolution without layout issues, clipping, or scaling errors. Done when full screen works reliably across all tested resolutions.
+
 * !Wall HP upgrade
+  Upgrading the Wall Builder building currently only increases the building's own HP. It should also upgrade the HP of all walls it manages. Make wall HP scale with the building's upgrade tier. Done when upgrading the Wall Builder visibly increases wall HP.
+
 * !Active Abilities
+
 * !bloodstains only get cleared on end turn
+  Blood stains left by dead enemies are currently cleared at the end of the combat phase. Change this so they persist and are only cleared at the end of the following turn when the player presses End Turn — so they carry over into the next round and players can see where enemies fell. Done when blood stains survive into the next round and disappear only on the subsequent End Turn press.
+
 * !Xp from dead buildings
+  When a building is destroyed, it should grant the player XP. The amount should be balanceable per building type, with a default of 1 XP per building. Done when buildings drop XP on death and the per-building XP value is exposed in the balancing config.
+
 * !Story Upgrades
 * !Blank Cutscenes
 * !Cutscene Integration
+
 * !Xp from lost rounds
->>>>>>> Stashed changes
-=======
->>>>>>> parent of 2649dca (Add descriptions to HTBH Claude Build tasks)
+  When a round is lost, any enemies that were in the queue but never spawned should still award XP as if they had entered and died — so losing a round does not put the player at an XP disadvantage. Done when the rule is implemented and the XP amount matches what would have been awarded normally.
 
 
 
