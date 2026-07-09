@@ -179,3 +179,110 @@
 * [2026-06-16 18:45] Call Jakob
 * [2026-06-16 19:00] call Hendrik
 
+
+## Cleared 2026-06-23 12:56
+
+### HTBH / Design
+
+* !XP cards: Finish GDD
+
+### HTBH / Claude Build
+
+* !Implement Tile Conditions
+* !FIx Boost Range
+  Boost buildings should be able to be placed anywhere, except in the area of effect of another boost building
+* !Wall HP upgrade
+  Upgrading the Wall Builder building from level 1 to 2 or 2 to 3 currently only increases the building's own HP. It should also upgrade the HP of all walls it manages. Make wall HP scale with the building's level and not only scale with the tier. Done when upgrading the Wall Builder visibly increases wall HP, displayed also in green on hover just like all other stats.
+* !Active Abilities
+* !bloodstains only get cleared on end turn
+  Blood stains left by dead enemies are currently cleared at the end of the combat phase. Change this so they persist and are only cleared at the end of the following turn when the player presses End Turn — so they carry over into the next round and players can see where enemies fell. Done when blood stains survive into the next round and disappear only on the subsequent End Turn press.
+* !Xp from dead buildings
+  When a building is destroyed, it should grant the player XP. The amount should be balanceable per building type, with a default of 1 XP per building. Done when buildings drop XP on death and the per-building XP value is exposed in the balancing config.
+* !Story Upgrades
+* !Blank Cutscenes
+* !Xp from lost rounds
+  When a round is lost, any enemies that were in the queue but never spawned should still award XP as if they had entered and died — so losing a round does not put the player at an XP disadvantage. Done when the rule is implemented and the XP amount matches what would have been awarded normally.
+* !Meditator unlockable and Balanceable
+  The meditator needs to be added to the unlock system and to the balancing gui in the same way as all the other buildings
+* !Scaling Blocker
+  The Blocker should be scaleable with tiers just like any other building it should start with 500 HP and then should scale Hp with upgrades
+* !hover income
+  Update inome from story upgrades, hover income  to show sources by building type
+* Meditator bug
+* Blocker Crash
+
+### HTBH / Balancing
+
+* !Higher wall hp
+* !Adjust Unlock Pool Levels
+  Adjust Unlock Pool Levels for All tiers of all buildings
+
+
+## Cleared 2026-06-23 20:01
+
+### HTBH / Claude Build
+
+* Balancing GUI: Left panel category tree
+  Replace the flat category list on the left with a hierarchical tree: top level = category (e.g. Buildings), second = sub-type (e.g. Defense/Economy), third = individual building names. Clicking a leaf scrolls/filters to that building. Done when the full tree is rendered and navigable.
+* Make Balancing Config history get cloned to the build version
+* Scale Base Income Per XPLevel
+  Scale the basic 5 income the player gets by 2 each level each time the player levels up
+* !Fix Damage and yield Update from boss Upgrades
+  A bunch of Boss Upgrades are broken, they both dont visually show the effect in the UI nor is the effect in game for Upgrade Boss1A, Boss2AandB, but it is working for:Boss3A+B
+* !UI Rework
+  Make the placeholder rendered UI look exactly like the Provided mocks. Analyse the pixels. follow the exact colors, also make sure it is legible and understandable
+* !Lightning strike AOE feedback
+  Give AOE feedback exactly like the mortar
+* !Blocker Unlockable
+* !Moving background
+  The background moves a bit in relation to the tiles when you move the camera,
+* !Range Visual Not displayed when placed on mountain
+  The defence buildings Range Visual is Not being displayed when placed on mountain
+* !Boss Bar Bug
+  Doesnt Go away if the boss isnt killed - needs to be cleared in payday phase
+* !Enemy Attack FX
+* !Asset Integrator
+
+### HTBH / Balancing
+
+* Sunscorch nerf + pricier upgrade
+  Sunscorch generally too strong; upgrade cost needs to go up
+* !slightly higher stone thrower hp
+* Make Lightning weaker
+* !Fabian - Less Enemies with Bosses
+* !Fabian - Less enemy scaling
+* !Fabian - More enemy scaling in later eras
+
+
+## Cleared 2026-06-24 01:59
+
+### HTBH / Producing
+
+* !WBS update
+  Check if the WBS still matches the planned scope of the game
+* !WBS full tasks
+* !HtbH Vert Slice Presentation
+* !HtbH Vert Slice Delivs Zip
+
+### HTBH / Claude Build
+
+* Hover TileConditions in UpgradeUi
+  in the upgrade Ui, hovering the tileconditions should show what they do
+* !Tiles Art
+* !Flute Player Art
+* !Mortar Art
+* !Walls thicker and color represented
+  Walls should become thicker with each upgrade and meaningfully thicker on the levelups, they should always be behind buildings, they should also match the color of the type of wall they have
+* !Boosters percentages
+  Boosters should be percentage based, giving 1% more dmg or whatever per turn rather than 1 damage
+* !Stats Should be visible in UI
+  Right now the Building Ui is too bright for the text, make the text darker so you can read it
+* !Building Placement FX
+  Everytime you place a building, make a a little golden highlight on the tile and somesparks. also sparks when it levels up, more when it levels up a second time, and then full building vfx with the tile gold highlight when the tier is upgraded.
+* !Building Death FX
+  WHen a building dies, it needs purple rubble to fall apart and then disappear
+* !Hide HP Bars
+  HP bars should be hidden until the HP is under 100
+* !Fix Buildings Pausing
+  Buildings pause at the end of combat phase
+

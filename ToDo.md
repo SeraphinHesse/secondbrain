@@ -21,14 +21,12 @@
 
 ###### Producing
 
-* !WBS update
-  Check if the WBS still matches the planned scope of the game
-* !WBS full tasks
 
 
 
-* Steam Page Setup
+* !Steam Page Setup
   Complete all admin and implementation steps to get HTBH's Steam store page live. Covers: partner onboarding, AppID creation, tax/banking setup, store page fields, graphical asset uploads (capsules, library hero, screenshots, trailer), content survey / Germany age rating, pricing + regional pricing, SteamPipe build upload, and the two-checklist release process. Done when store page is "Coming Soon" with build approved and the 2-week clock started.
+* !WBS content Timeline
 
 
 
@@ -37,7 +35,6 @@
 * Meditator Building: tier visual design
   Three-tier economy building. Tier 1 — "The Meditator": looks identical to the Flute Player but seated on a rock. Tier 2 — "The Shaman": seated on a partial temple structure, visibly levitating above it. Tier 3 — "The Sun Priest": god-like figure radiating sunlight with a giant temple beneath. Design all three art directions / sprites before implementation.
 
-* x !XP cards: Finish GDD
 * Ideation: More Boss types
 * Ideation: More Enemy types
 * Ideation: More Economy Buildings
@@ -52,22 +49,20 @@
 
 ###### Claude Build
 
-* Balancing GUI: Fix build/editor version label
+* x Balancing GUI: Fix build/editor version label
   The GUI currently misidentifies the editor version as a build version. Find the version detection logic and correct it. Done when the label accurately shows "Editor" in Godot editor and "Build" in exported builds.
 
-* Balancing GUI: Collapsible items within categories
+* x Balancing GUI: Collapsible items within categories
   Buildings and entries inside each category should be individually collapsible/expandable so you can focus on one at a time. State persists within session. Done when each entry can be collapsed to its header and re-expanded.
 
-* Balancing GUI: Left panel category tree
-  Replace the flat category list on the left with a hierarchical tree: top level = category (e.g. Buildings), second = sub-type (e.g. Defense/Economy), third = individual building names. Clicking a leaf scrolls/filters to that building. Done when the full tree is rendered and navigable.
 
-* Balancing GUI: Visual polish
+* x Balancing GUI: Visual polish
   General UI refresh — spacing, typography, color palette, card styling, hover states. Current look is too raw. Done when it looks like a tool you'd actually want to use.
 
 * Balancing GUI: Hover tooltips for each value
   Every config field should show a tooltip on hover explaining what it controls, what effect changing it has, and any constraints. Tooltip content should live in a data file (not hardcoded). Done when all fields have accurate tooltips.
 
-* Balancing GUI: Value categories within each building
+* x Balancing GUI: Value categories within each building
   Group each building's config values into logical sub-categories (e.g. Combat, Economy, Visual, Costs) instead of one flat list. Done when all building values are organized into named groups with visual separators.
 
 
@@ -76,40 +71,51 @@
 
 this should be toggleable in balancing gui
 * Range and Building Preview on hover
-* x !Implement Tile Conditions
 
 
 
 * Move Balancing GUI outside of balancing folder and cleanup root folder
-* Make Balancing Config history get cloned to the build version
-* FIx Boost Range
-* Split Boost into 3 techs
 * All tileweights balanceable
 * Economy Proximity Bonuses
-* !Fullscreen Mode
+* Fullscreen Mode
   Full screen mode is currently broken on various resolutions. Fix it so the game runs correctly at any screen resolution without layout issues, clipping, or scaling errors. Done when full screen works reliably across all tested resolutions.
 
-* !Wall HP upgrade
-  Upgrading the Wall Builder building currently only increases the building's own HP. It should also upgrade the HP of all walls it manages. Make wall HP scale with the building's upgrade tier. Done when upgrading the Wall Builder visibly increases wall HP.
+tried to fix and now gives error: 
+Traceback (most recent call last):
+  File "main.py", line 20, in <module>
+  File "src\core\game.py", line 185, in run
+  File "src\core\game.py", line 205, in _handle_events
+  File "src\core\game.py", line 236, in _handle_settings
+  File "src\ui\settings_menu.py", line 55, in handle_event
+  File "src\core\game.py", line 1937, in _apply_display_mode
+pygame.error: Cannot set 0 sized SCALED display mode
 
-* x !Active Abilities
 
-* !bloodstains only get cleared on end turn
-  Blood stains left by dead enemies are currently cleared at the end of the combat phase. Change this so they persist and are only cleared at the end of the following turn when the player presses End Turn — so they carry over into the next round and players can see where enemies fell. Done when blood stains survive into the next round and disappear only on the subsequent End Turn press.
 
-* !Xp from dead buildings
-  When a building is destroyed, it should grant the player XP. The amount should be balanceable per building type, with a default of 1 XP per building. Done when buildings drop XP on death and the per-building XP value is exposed in the balancing config.
 
-* !Story Upgrades
-* !Blank Cutscenes
-* !Cutscene Integration
 
-* !Xp from lost rounds
-  When a round is lost, any enemies that were in the queue but never spawned should still award XP as if they had entered and died — so losing a round does not put the player at an XP disadvantage. Done when the rule is implemented and the XP amount matches what would have been awarded normally.
-* !Meditator unlockable and Balanceable
-  The meditator needs to be added to the unlock system and to the balancing gui in the same way as all the other buildings
-* !Scaling Blocker
-  The Blocker should be scaleable with tiers just like any other building it should start with 500 HP and then should scale Hp with upgrades
+* Cutscene Integration
+
+* Feature Toggle
+  Every Feature in the game should be toggleable on or off in a feature toggle section of the GUI
+* Display Updated Cost on shift click
+  When numeros items are shift clicked, the cost on the button should increase to reflect that, and there should be a 2x before the name
+* Boss Scaling
+* Raider Scaling
+  Seperate raider scaling in balancing GUI
+* Balancing GUI cleanup
+* x !New Repo
+* x !Engine
+* x !Editor
+* !redesign branch lock protocol
+* !migrate game to drunkenrobot engine - phase 9, First playable
+* !vfx editor in engine
+* balancing session history in editor
+* !ui editor in engine
+* !migrate game to drunkenrobot engine - phase 10, feature layering
+* !Build Shipped balancing GUI
+* !Tile Unlock Lag
+  Tile Unlock Lag
 
 
 
@@ -126,10 +132,6 @@ this should be toggleable in balancing gui
 ###### Balancing
 
 * Levelling too Fast: Sheets Predictions not accurate
-* Sunscorch nerf + pricier upgrade
-  Sunscorch generally too strong; upgrade cost needs to go up
-* Higher wall hp
-* slightly higher stone thrower hp
 
 
 
@@ -161,7 +163,7 @@ this should be toggleable in balancing gui
 
 * Regain access to Google account
   Unlock or recover access to the agency Google account. Work through whatever the current blocker is (2FA, recovery, account suspension). Done when we're fully logged in and operational again.
-* Organize Tazio & Keanu Meeting
+* x Organize Tazio & Keanu Meeting
 * Glasses Ideation
 * Weib Automation and Pitch planning
 
@@ -203,8 +205,9 @@ this should be toggleable in balancing gui
 * Dashboard: Click and drag movable tasks
 * Rework Morning Claude Routines
 * Be able to change time on the reminders
-* Big Tasks and small tasks
+* !Major Big Tasks and minor tasks
 * Change Dashboard Logo
+* !Seperate HtbH Engine and HtbH Claude Art Categories
 
 
 
@@ -217,7 +220,7 @@ this should be toggleable in balancing gui
 ##### Bureaucracy \& Chores
 
 * Get Laptop From kim
-* Dinner with parents
+* x Dinner with parents
 
 
 
@@ -235,3 +238,11 @@ this should be toggleable in balancing gui
 
 ###### HTBH / Producing
 
+
+
+##### HTBH / Claude Visuals
+
+* UI Rework
+* Seasons Art
+* x Background Art
+* Painter Art
