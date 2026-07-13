@@ -897,8 +897,15 @@
       <span class="modal-cat-badge" id="rem-modal-cat"></span>
       <button class="modal-close" onclick="closeReminderModal()">✕</button>
     </div>
-    <div id="rem-modal-time-wrap" style="margin-bottom:0.6rem">
-      <span class="reminder-time" id="rem-modal-time"></span>
+    <div class="add-reminder-row" style="margin-bottom:0.875rem">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" class="modal-input" id="rem-modal-date" />
+      </div>
+      <div class="form-group">
+        <label>Time</label>
+        <input type="time" class="modal-input" id="rem-modal-time-input" />
+      </div>
     </div>
     <div class="form-group" style="margin-bottom:0.875rem">
       <label>Reminder Text</label>
@@ -1340,22 +1347,18 @@ async function clearReminder(id) {
 
 // --- REMINDER MODAL ---
 let currentReminderTaskId = null;
-let currentReminderPrefix = '';
 
 function openReminderModal(id) {
   const t = tasks.find(t => t.id === id);
   if (!t) return;
   currentReminderTaskId = id;
-  const { timeLabel, text } = parseReminderText(t.text);
-  const prefixMatch = t.text.match(/^(\[\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}\]\s*)/);
-  currentReminderPrefix = prefixMatch ? prefixMatch[1] : '';
+  const { text } = parseReminderText(t.text);
   const displayCat = t.cat.replace(/^Reminders\s*\/\s*/, '');
   document.getElementById('rem-modal-cat').textContent = displayCat;
   document.getElementById('rem-modal-title-input').value = text || t.text;
-  const timeEl = document.getElementById('rem-modal-time');
-  const timeWrap = document.getElementById('rem-modal-time-wrap');
-  if (timeLabel) { timeEl.textContent = timeLabel; timeWrap.style.display = ''; }
-  else { timeWrap.style.display = 'none'; }
+  const dtMatch = t.text.match(/^\[(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})\]/);
+  document.getElementById('rem-modal-date').value       = dtMatch ? dtMatch[1] : '';
+  document.getElementById('rem-modal-time-input').value = dtMatch ? dtMatch[2] : '';
   // Use server-side desc; fall back to legacy localStorage for migration
   const lsDesc = localStorage.getItem('sb-desc::rem-' + id) || '';
   document.getElementById('rem-modal-desc').value = t.desc || lsDesc;
@@ -1384,7 +1387,11 @@ async function saveReminderModal() {
   const newTextRaw = document.getElementById('rem-modal-title-input').value.trim();
   const newCat     = document.getElementById('rem-modal-cat-select').value;
   const newHigh    = document.getElementById('rem-modal-high').checked;
-  const newFullText = newTextRaw ? (currentReminderPrefix + newTextRaw) : t.text;
+  const newDate    = document.getElementById('rem-modal-date').value;
+  const newTime    = document.getElementById('rem-modal-time-input').value;
+  const prefix     = newDate ? `[${newDate} ${newTime || '09:00'}] ` : ''; // cleared date removes the timestamp
+  const bareText   = newTextRaw || parseReminderText(t.text).text || t.text;
+  const newFullText = prefix + bareText;
 
   const changed = newFullText !== t.text || newCat !== t.cat || newHigh !== t.high || desc !== (t.desc || '');
   if (changed) {
