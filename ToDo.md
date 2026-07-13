@@ -7,7 +7,7 @@
 ##### Reminders
 
 ###### Bureaucracy & Chores
-* [2026-06-16 19:00] Get Laptop From kim
+* [2026-07-15 19:00] Get Laptop From kim
 
 
 ###### General
@@ -26,6 +26,8 @@
 
 * !^Steam Page Setup
   Complete all admin and implementation steps to get HTBH's Steam store page live. Covers: partner onboarding, AppID creation, tax/banking setup, store page fields, graphical asset uploads (capsules, library hero, screenshots, trailer), content survey / Germany age rating, pricing + regional pricing, SteamPipe build upload, and the two-checklist release process. Done when store page is "Coming Soon" with build approved and the 2-week clock started.
+* !Boss Stuck on terrain
+  Boss gets stuck randomly on water or mountain tiles, weird pathfinding overall, should reconfirm intent
 
 
 
@@ -53,8 +55,6 @@
 
 
 
-* Balancing GUI: Hover tooltips for each value
-  Every config field should show a tooltip on hover explaining what it controls, what effect changing it has, and any constraints. Tooltip content should live in a data file (not hardcoded). Done when all fields have accurate tooltips.
 
 
 
@@ -66,10 +66,8 @@ this should be toggleable in balancing gui
 
 
 
-* Move Balancing GUI outside of balancing folder and cleanup root folder
-* All tileweights balanceable
-* Economy Proximity Bonuses
-* Fullscreen Mode
+* ^All tileweights balanceable
+* x Fullscreen Mode
   Full screen mode is currently broken on various resolutions. Fix it so the game runs correctly at any screen resolution without layout issues, clipping, or scaling errors. Done when full screen works reliably across all tested resolutions.
 
 tried to fix and now gives error: 
@@ -86,29 +84,31 @@ pygame.error: Cannot set 0 sized SCALED display mode
 
 
 
-* Cutscene Integration
 
-* Feature Toggle
-  Every Feature in the game should be toggleable on or off in a feature toggle section of the GUI
 * Display Updated Cost on shift click
   When numeros items are shift clicked, the cost on the button should increase to reflect that, and there should be a 2x before the name
-* redesign branch lock protocol
-* !^vfx editor in engine
-* !^ui editor in engine
-  10L of migration plan, UI EDITOR, follow UI editor plan md
-* !^migrate game to drunkenrobot engine - phase 10, feature layering
+* x !^migrate game to drunkenrobot engine - phase 10, feature layering
   follow migration plan, phase 10
-* Build Shipped balancing GUI
-  A version of the editor which only carries the selector tree on the right, and the balancing values, and it says (BUILD VERSION, CANNOT BE PUSHED TO GIT), and it gets shipped with the Build
-* !buttons behind construction screen
+* x !buttons behind construction screen
   the pause and the end turn button should be BEHIND the building construction/tileunlocking/building upgrade UI screen, but it is not, those buttons should disappear and not be clickable when those screens are open
-* Lightning Does no Damage
-* Enemy HP bars
-* !^Enemy Grouping
-* !Same Time enemy Spawning
-* Lighting and AOE hitboxes
+* x !Lightning Does no Damage
+* x Enemy HP bars
+* x !^Enemy Grouping
+* !^Same Time enemy Spawning
+* !^Lighting and AOE hitboxes
   Should be elipses to seem like circles on the isometric ground, just like in the old prototype
 * !^Call Enemy Animations
+* Loading Screen
+  add a loading screen and the ability to import art for it
+* !Close Screens with Right Click
+  Must be able to close the build / unlock tile / upgrade screen by right clicking anywhere
+* !Lightning Building
+* Boss stuck in water
+  Enemy Boss gets stuck on water tiles
+* painter option greyout
+  painter should be greyed out when the tile has already been built  in building screen
+* !^Boss enemy rework
+* !^Enemy rework
 
 
 
@@ -117,6 +117,9 @@ pygame.error: Cannot set 0 sized SCALED display mode
 * Boss Scaling
 * Raider Scaling
   Seperate raider scaling in balancing GUI
+* Fewew Water tiles
+* Mortar more expensive
+  Mortar/AOE base cost must be more expensive
 
 
 
@@ -177,12 +180,12 @@ pygame.error: Cannot set 0 sized SCALED display mode
 
 * Integrate dashboard calendar sync into morning routine
   Set up persistent 6:30am calendar → reminders sync: either configure Windows Task Scheduler to run sync-calendar-reminders.js (requires one-time Google OAuth token setup) or keep a Claude Code session open so the CronCreate job fires. Done when calendar events appear automatically in the dashboard Reminders sidebar every morning without any manual steps.
-* Dashboard: Click and drag movable tasks
+* x Dashboard: Click and drag movable tasks
 * Rework Morning Claude Routines
-* Be able to change time on the reminders
-* !Major Big Tasks and minor tasks
+* x Be able to change time on the reminders
+* x !Major Big Tasks and minor tasks
 * Change Dashboard Logo
-* !Seperate HtbH Engine and HtbH Claude Art Categories
+* x !Seperate HtbH Engine and HtbH Claude Art Categories
 
 
 
@@ -216,7 +219,25 @@ pygame.error: Cannot set 0 sized SCALED display mode
 
 ##### HTBH / Claude Visuals
 
-* UI Rework
+* ^UI Rework
 * Seasons Art
 * Painter Art
 * Enemy Art
+* ^Cutscene - Meet Humans
+* ^Make Map
+* Intro Cutscene Rework
+
+
+##### HTBH Engin Changes
+
+* Build Shipped balancing GUI
+  A version of the editor which only carries the selector tree on the right, and the balancing values, and it says (BUILD VERSION, CANNOT BE PUSHED TO GIT), and it gets shipped with the Build
+* Feature Toggle
+  Every Feature in the game should be toggleable on or off in a feature toggle section of the GUI
+* Balancing GUI: Hover tooltips for each value
+  Every config field should show a tooltip on hover explaining what it controls, what effect changing it has, and any constraints. Tooltip content should live in a data file (not hardcoded). Done when all fields have accurate tooltips.
+* !^vfx editor in engine
+* !^ui editor in engine
+  10L of migration plan, UI EDITOR, follow UI editor plan md
+* redesign branch lock protocol
+* !^Cutscene Integration
