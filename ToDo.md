@@ -24,10 +24,8 @@
 
 
 
-* !Steam Page Setup
+* !^Steam Page Setup
   Complete all admin and implementation steps to get HTBH's Steam store page live. Covers: partner onboarding, AppID creation, tax/banking setup, store page fields, graphical asset uploads (capsules, library hero, screenshots, trailer), content survey / Germany age rating, pricing + regional pricing, SteamPipe build upload, and the two-checklist release process. Done when store page is "Coming Soon" with build approved and the 2-week clock started.
-* !WBS content Timeline
-* x !Art Plan
 
 
 
@@ -36,36 +34,28 @@
 * Meditator Building: tier visual design
   Three-tier economy building. Tier 1 — "The Meditator": looks identical to the Flute Player but seated on a rock. Tier 2 — "The Shaman": seated on a partial temple structure, visibly levitating above it. Tier 3 — "The Sun Priest": god-like figure radiating sunlight with a giant temple beneath. Design all three art directions / sprites before implementation.
 
-* Ideation: More Boss types
-* Ideation: More Enemy types
-* Ideation: More Economy Buildings
-* Ideation: More Defence Buildings
+* ^Ideation: More Boss types
+* ^Ideation: More Enemy types
+* ^Ideation: More Economy Buildings
+* ^Ideation: More Defence Buildings
 * Ideation: life loss display
   Options: animate the base, or have the enemy path back out of the base
 * Come up with more generic upgrades
 * Booster Limits Explanations
 * Economy Proximity Bonuses Ideation
-* Enemy spawning and Pathfinding Ideation
+* !^Enemy spawning and Pathfinding Ideation
 
 
 
 ###### Claude Build
 
-* x Balancing GUI: Fix build/editor version label
-  The GUI currently misidentifies the editor version as a build version. Find the version detection logic and correct it. Done when the label accurately shows "Editor" in Godot editor and "Build" in exported builds.
-
-* x Balancing GUI: Collapsible items within categories
-  Buildings and entries inside each category should be individually collapsible/expandable so you can focus on one at a time. State persists within session. Done when each entry can be collapsed to its header and re-expanded.
 
 
-* x Balancing GUI: Visual polish
-  General UI refresh — spacing, typography, color palette, card styling, hover states. Current look is too raw. Done when it looks like a tool you'd actually want to use.
+
 
 * Balancing GUI: Hover tooltips for each value
   Every config field should show a tooltip on hover explaining what it controls, what effect changing it has, and any constraints. Tooltip content should live in a data file (not hardcoded). Done when all fields have accurate tooltips.
 
-* x Balancing GUI: Value categories within each building
-  Group each building's config values into logical sub-categories (e.g. Combat, Economy, Visual, Costs) instead of one flat list. Done when all building values are organized into named groups with visual separators.
 
 
 
@@ -102,51 +92,28 @@ pygame.error: Cannot set 0 sized SCALED display mode
   Every Feature in the game should be toggleable on or off in a feature toggle section of the GUI
 * Display Updated Cost on shift click
   When numeros items are shift clicked, the cost on the button should increase to reflect that, and there should be a 2x before the name
-* x Balancing GUI cleanup
-* x !New Repo
-* x !Engine
-* x !Editor
 * redesign branch lock protocol
-* x !migrate game to drunkenrobot engine - phase 9, First playable
-* !vfx editor in engine
-* x balancing session history in editor
-* !ui editor in engine
+* !^vfx editor in engine
+* !^ui editor in engine
   10L of migration plan, UI EDITOR, follow UI editor plan md
-* !migrate game to drunkenrobot engine - phase 10, feature layering
+* !^migrate game to drunkenrobot engine - phase 10, feature layering
   follow migration plan, phase 10
 * Build Shipped balancing GUI
   A version of the editor which only carries the selector tree on the right, and the balancing values, and it says (BUILD VERSION, CANNOT BE PUSHED TO GIT), and it gets shipped with the Build
-* x !Tile Unlock Lag
-  Tile Unlock Lag
-* x Enemy Spawning Lag
-  Lag for each enemy towards the end of the spawn queue after round 12
-* x Bug: Tile Unlock Cost
-  Tile costs increase as they get further away from the base, if its in the wrong direction
-* x Bug: Enemies walk on background tiles
 * !buttons behind construction screen
   the pause and the end turn button should be BEHIND the building construction/tileunlocking/building upgrade UI screen, but it is not, those buttons should disappear and not be clickable when those screens are open
 * Lightning Does no Damage
 * Enemy HP bars
-* !Enemy Grouping
+* !^Enemy Grouping
 * !Same Time enemy Spawning
 * Lighting and AOE hitboxes
   Should be elipses to seem like circles on the isometric ground, just like in the old prototype
-
-
-
-###### Godot Implementation
-
-* Add the Stone Thrower
-  Implement the Stone Thrower unit in Godot. Done when it is functional in-game with correct behaviour, animations, and balancing config wired up.
-
-* Add the Meditator
-  Implement the Meditator building in Godot (Tier 1 of the economy building). Done when it is placeable, produces the correct resource output, and hooks into the existing balancing config.
+* !^Call Enemy Animations
 
 
 
 ###### Balancing
 
-* x Levelling too Fast: Sheets Predictions not accurate
 * Boss Scaling
 * Raider Scaling
   Seperate raider scaling in balancing GUI
@@ -181,7 +148,6 @@ pygame.error: Cannot set 0 sized SCALED display mode
 
 * Regain access to Google account
   Unlock or recover access to the agency Google account. Work through whatever the current blocker is (2FA, recovery, account suspension). Done when we're fully logged in and operational again.
-* x Organize Tazio & Keanu Meeting
 * Glasses Ideation
 * Weib Automation and Pitch planning
 
@@ -207,16 +173,6 @@ pygame.error: Cannot set 0 sized SCALED display mode
 
 
 
-##### Claude Automation
-
-* Research: Claude Code skills for frontend web design
-  Survey and document useful Claude Code skills for frontend/web design work. Priority candidates: the built-in topic skill, the third-party "taste" skill (UI/UX Pro Max), and any library-focused skills. Done when there's a curated shortlist with install/use notes in `projects/claude-automation/`.
-
-* Research: Cybersecurity for vibe coding
-  Investigate security risks specific to AI-assisted rapid development (vibe coding). Cover common vulnerabilities in AI-generated code, relevant Claude Code skills or MCP tools for catching issues, and best practices for reviewing AI-generated code. Done when findings are documented in `projects/claude-automation/cybersecurity-vibe-coding-notes.md`.
-
-
-
 ##### Admin
 
 * Integrate dashboard calendar sync into morning routine
@@ -239,7 +195,6 @@ pygame.error: Cannot set 0 sized SCALED display mode
 ##### Bureaucracy \& Chores
 
 * Get Laptop From kim
-* x Dinner with parents
 
 
 
@@ -263,5 +218,5 @@ pygame.error: Cannot set 0 sized SCALED display mode
 
 * UI Rework
 * Seasons Art
-* x Background Art
 * Painter Art
+* Enemy Art

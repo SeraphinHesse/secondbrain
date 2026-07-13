@@ -286,3 +286,51 @@
 * !Fix Buildings Pausing
   Buildings pause at the end of combat phase
 
+
+## Cleared 2026-07-13 08:27
+
+### HTBH / Producing
+
+* !WBS content Timeline
+* !Art Plan
+
+### HTBH / Claude Build
+
+* Balancing GUI: Fix build/editor version label
+  The GUI currently misidentifies the editor version as a build version. Find the version detection logic and correct it. Done when the label accurately shows "Editor" in Godot editor and "Build" in exported builds.
+* Balancing GUI: Collapsible items within categories
+  Buildings and entries inside each category should be individually collapsible/expandable so you can focus on one at a time. State persists within session. Done when each entry can be collapsed to its header and re-expanded.
+* Balancing GUI: Visual polish
+  General UI refresh — spacing, typography, color palette, card styling, hover states. Current look is too raw. Done when it looks like a tool you'd actually want to use.
+* Balancing GUI: Value categories within each building
+  Group each building's config values into logical sub-categories (e.g. Combat, Economy, Visual, Costs) instead of one flat list. Done when all building values are organized into named groups with visual separators.
+* Balancing GUI cleanup
+* !New Repo
+* !Engine
+* !Editor
+* !migrate game to drunkenrobot engine - phase 9, First playable
+* balancing session history in editor
+* !Tile Unlock Lag
+  Tile Unlock Lag
+* Enemy Spawning Lag
+  Lag for each enemy towards the end of the spawn queue after round 12
+* Bug: Tile Unlock Cost
+  Tile costs increase as they get further away from the base, if its in the wrong direction
+* Bug: Enemies walk on background tiles
+
+### HTBH / Balancing
+
+* Levelling too Fast: Sheets Predictions not accurate
+
+### Addictive Media Agency
+
+* Organize Tazio & Keanu Meeting
+
+### Bureaucracy & Chores
+
+* Dinner with parents
+
+### HTBH / Claude Visuals
+
+* Background Art
+
