@@ -347,6 +347,22 @@
   }
   .empty-state { padding: 1rem 0; text-align: center; color: var(--text-dim); font-size: 0.8rem; }
 
+  /* MAJOR / MINOR GROUPS */
+  .group-header {
+    display: flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0 0.15rem; cursor: pointer; user-select: none;
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-dim);
+    transition: color 0.15s;
+  }
+  .group-header:hover { color: var(--text-muted); }
+  .group-count {
+    font-weight: 400; color: var(--text-dim); opacity: 0.7;
+    font-size: 0.66rem; letter-spacing: 0;
+  }
+  .task-group.group-collapsed .group-items { display: none; }
+  .group-empty { padding: 0.35rem 0 0.4rem; color: var(--text-dim); font-size: 0.74rem; opacity: 0.5; }
+
   /* Collapsed card hides body */
   .category-card.collapsed .progress-bar,
   .category-card.collapsed .task-list,
@@ -844,6 +860,11 @@
         <span class="toggle-track"></span>
         <span class="toggle-label">High priority</span>
       </label>
+      <label class="priority-toggle" style="padding-bottom:0">
+        <input type="checkbox" id="modal-major">
+        <span class="toggle-track"></span>
+        <span class="toggle-label">Major task</span>
+      </label>
       <button class="btn-done-toggle" id="modal-done-btn" onclick="modalToggleDone()">✓ Mark Done</button>
     </div>
     <div class="modal-footer">
@@ -957,6 +978,7 @@ const K_URGENT_COL   = 'sb-urgent-col';
 const K_CUSTOM_CATS  = 'sb-custom-cats';
 const K_REM_COL      = 'sb-rem-col';
 const K_REM_ZONE     = 'sb-rem-zone';
+const K_GROUP_COL    = 'sb-group-col';
 
 const BACKLOG_API    = 'http://localhost:8765/api/backlog';
 const CLEAR_API      = 'http://localhost:8765/api/clear-completed';
@@ -1004,6 +1026,8 @@ function getRemZoneCollapsed() { return localStorage.getItem(K_REM_ZONE) === '1'
 function setRemZoneCollapsed(v) { localStorage.setItem(K_REM_ZONE, v ? '1' : '0'); }
 function getCustomCats()   { return JSON.parse(localStorage.getItem(K_CUSTOM_CATS) || '[]'); }
 function setCustomCats(a)  { localStorage.setItem(K_CUSTOM_CATS, JSON.stringify(a)); }
+function getGroupCol()     { return new Set(JSON.parse(localStorage.getItem(K_GROUP_COL) || '[]')); }
+function setGroupCol(s)    { localStorage.setItem(K_GROUP_COL, JSON.stringify([...s])); }
 
 function doneKey(t)  { return `${t.cat}::${t.text}`; }
 function esc(s) {
@@ -1475,6 +1499,31 @@ async function submitAddReminder() {
   }
 }
 
+function renderTaskGroup(cat, group, groupTasks) {
+  const isCollapsed = getGroupCol().has(`${cat}::${group}`);
+  const label = group === 'major' ? 'Major' : 'Minor';
+  const items = groupTasks.length
+    ? groupTasks.map(t => {
+        const hasDesc = !!(t.desc && t.desc.trim());
+        return `
+        <div class="task-item ${t.done ? 'done' : ''}" draggable="true" data-key="${esc(doneKey(t))}" data-id="${t.id}" data-cat="${esc(cat)}">
+          ${t.high ? '<span class="high-dot"></span>' : ''}
+          <span class="task-checkbox"></span>
+          <span class="task-text">${esc(t.text)}</span>
+          ${hasDesc ? '<span class="desc-indicator" title="Has description"></span>' : ''}
+        </div>`;
+      }).join('')
+    : `<div class="group-empty">No ${label.toLowerCase()} tasks</div>`;
+  return `
+    <div class="task-group ${isCollapsed ? 'group-collapsed' : ''}" data-cat="${esc(cat)}" data-group="${group}">
+      <div class="group-header" data-cat="${esc(cat)}" data-group="${group}">
+        <span class="group-arrow">${isCollapsed ? '▸' : '▾'}</span> ${label}
+        <span class="group-count">${groupTasks.filter(t => !t.done).length}/${groupTasks.length}</span>
+      </div>
+      <div class="group-items">${items}</div>
+    </div>`;
+}
+
 function renderGrid(withDone) {
   const grid = document.getElementById('categories-grid');
   grid.innerHTML = '';
@@ -1508,18 +1557,8 @@ function renderGrid(withDone) {
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
       <div class="task-list">
-        ${catTasks.length
-          ? catTasks.map(t => {
-              const hasDesc = !!(t.desc && t.desc.trim());
-              return `
-              <div class="task-item ${t.done ? 'done' : ''}" data-key="${esc(doneKey(t))}" data-id="${t.id}">
-                ${t.high ? '<span class="high-dot"></span>' : ''}
-                <span class="task-checkbox"></span>
-                <span class="task-text">${esc(t.text)}</span>
-                ${hasDesc ? '<span class="desc-indicator" title="Has description"></span>' : ''}
-              </div>`;
-            }).join('')
-          : '<div class="empty-state">No tasks — add one below</div>'}
+        ${renderTaskGroup(cat, 'major', catTasks.filter(t => t.major))}
+        ${renderTaskGroup(cat, 'minor', catTasks.filter(t => !t.major))}
       </div>
       <div class="card-add-form ${hasOpenForm ? 'open' : ''}" data-cat="${esc(cat)}">
         <input class="card-add-input" type="text" placeholder="New task…" data-cat="${esc(cat)}"
@@ -1592,6 +1631,22 @@ document.addEventListener('click', e => {
       card.classList.toggle('collapsed', isNowCollapsed);
       collapseBtn.textContent = isNowCollapsed ? '▸' : '▾';
       collapseBtn.title = isNowCollapsed ? 'Expand' : 'Collapse';
+    }
+    return;
+  }
+
+  const groupHeader = e.target.closest('.group-header');
+  if (groupHeader) {
+    const key = `${groupHeader.dataset.cat}::${groupHeader.dataset.group}`;
+    const s = getGroupCol();
+    s.has(key) ? s.delete(key) : s.add(key);
+    setGroupCol(s);
+    const groupEl = groupHeader.closest('.task-group');
+    if (groupEl) {
+      const isNowCollapsed = s.has(key);
+      groupEl.classList.toggle('group-collapsed', isNowCollapsed);
+      const arrow = groupHeader.querySelector('.group-arrow');
+      if (arrow) arrow.textContent = isNowCollapsed ? '▸' : '▾';
     }
     return;
   }
@@ -1752,6 +1807,7 @@ function openTaskModal(key) {
   const lsDesc = localStorage.getItem('sb-desc::' + key) || '';
   document.getElementById('modal-desc').value            = t.desc || lsDesc;
   document.getElementById('modal-high').checked          = t.high;
+  document.getElementById('modal-major').checked         = !!t.major;
   populateModalCatDropdown(t.cat);
   updateModalDoneBtn();
   document.getElementById('task-modal').classList.add('open');
@@ -1789,16 +1845,17 @@ async function saveModal() {
 
   const desc    = document.getElementById('modal-desc').value.trim();
   const newText = document.getElementById('modal-title-input').value.trim() || t.text;
-  const newCat  = document.getElementById('modal-cat-select').value;
-  const newHigh = document.getElementById('modal-high').checked;
+  const newCat   = document.getElementById('modal-cat-select').value;
+  const newHigh  = document.getElementById('modal-high').checked;
+  const newMajor = document.getElementById('modal-major').checked;
 
-  const changed = newText !== t.text || newCat !== t.cat || newHigh !== t.high || desc !== (t.desc || '');
+  const changed = newText !== t.text || newCat !== t.cat || newHigh !== t.high || newMajor !== !!t.major || desc !== (t.desc || '');
   if (changed) {
     try {
       const res = await fetch(API, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: t.id, text: newText, cat: newCat, high: newHigh, desc }),
+        body: JSON.stringify({ id: t.id, text: newText, cat: newCat, high: newHigh, major: newMajor, desc }),
       });
       if (!res.ok) throw new Error(await res.text());
       tasks = await res.json();
