@@ -175,6 +175,42 @@ function deleteTask(id) {
   return true;
 }
 
+// Remove every section whose display name matches `name` (duplicates exist),
+// including all task/desc lines inside. Uses the same header normalization as
+// parseTodo — never raw-match headers (escaped \& and the HTBH rename differ).
+function deleteCategory(name) {
+  const lines = fs.readFileSync(TODO, 'utf8').split('\n');
+  const normP = p => (p || 'General').replace('How to be Human', 'HTBH').replace(/\\&/g, '&');
+  const keep = [];
+  let removed = 0;
+  let project = null;
+  let deleting = false, deleteScope = null; // 'top' | 'sub'
+
+  for (const line of lines) {
+    const s = line.trim();
+    if (s.startsWith('##### ') && !s.startsWith('######')) {
+      deleting = false; // a top-level header always ends any deleted range
+      const l = s.slice(6).trim();
+      if (l) project = l;
+      if (normP(project) === name) { deleting = true; deleteScope = 'top'; }
+    } else if (s.startsWith('###### ')) {
+      if (deleting && deleteScope === 'sub') deleting = false;
+      if (!deleting) {
+        const sub = s.slice(7).trim();
+        if (`${normP(project)} / ${sub}` === name) { deleting = true; deleteScope = 'sub'; }
+      }
+    }
+    if (deleting) {
+      if (s.startsWith('* ')) removed++;
+      continue;
+    }
+    keep.push(line);
+  }
+
+  fs.writeFileSync(TODO, keep.join('\n'), 'utf8');
+  return removed;
+}
+
 const BACKLOG = path.join(BASE_DIR, 'backlog.md');
 
 function clearCompleted() {
@@ -273,6 +309,27 @@ const server = http.createServer((req, res) => {
         const tasks = parseTodo().map(({ lineNo, descLine, ...t }) => t);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(tasks));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
+  if (req.url === '/api/category' && req.method === 'DELETE') {
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const { name } = JSON.parse(body);
+        if (!name || typeof name !== 'string' || name === 'Reminders') {
+          res.writeHead(400); res.end('invalid category name'); return;
+        }
+        const removed = deleteCategory(name);
+        const tasks = parseTodo().map(({ lineNo, descLine, ...t }) => t);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ removed, tasks }));
       } catch (e) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: e.message }));
