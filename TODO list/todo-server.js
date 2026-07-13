@@ -335,7 +335,7 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, 'localhost', () => {
   const url = `http://localhost:${PORT}`;
-  console.log(`  Secondbrain Dashboard → ${url}`);
+  console.log(`  Spinner Questlist Dashboard → ${url}`);
   console.log(`  ToDo.md: ${TODO}`);
   console.log(`  Ctrl+C to stop\n`);
 

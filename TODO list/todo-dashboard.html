@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secondbrain — Task Dashboard</title>
+<title>Spinner Questlist — Task Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -717,7 +717,7 @@
 <body>
 
 <header>
-  <div class="logo">⚡ Secondbrain</div>
+  <div class="logo">⚡ Spinner Questlist</div>
   <div class="header-right">
     <div class="header-stats">
       <div class="stat-chip"><span class="dot red"></span><span id="stat-urgent">— urgent</span></div>
@@ -1465,7 +1465,7 @@ async function submitAddReminder() {
       const eh  = String(endDate.getHours()).padStart(2,'0');
       const emi = String(endDate.getMinutes()).padStart(2,'0');
       const endDt = `${ey}${emo}${ed}T${eh}${emi}00`;
-      const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(text)}&dates=${startDt}/${endDt}&details=${encodeURIComponent('Added from Secondbrain')}`;
+      const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(text)}&dates=${startDt}/${endDt}&details=${encodeURIComponent('Added from Spinner Questlist')}`;
       window.open(calUrl, '_blank');
     }
   } catch (e) {
