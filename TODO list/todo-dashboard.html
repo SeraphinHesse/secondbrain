@@ -363,6 +363,14 @@
   .task-group.group-collapsed .group-items { display: none; }
   .group-empty { padding: 0.35rem 0 0.4rem; color: var(--text-dim); font-size: 0.74rem; opacity: 0.5; }
 
+  /* DRAG & DROP */
+  .task-item.dragging { opacity: 0.35; }
+  .task-group.drop-target {
+    background: rgba(167,139,250,0.06);
+    outline: 1px dashed var(--border2); outline-offset: -1px; border-radius: 6px;
+  }
+  .category-card.drop-target { outline: 1px dashed #a78bfa; outline-offset: -1px; }
+
   /* Collapsed card hides body */
   .category-card.collapsed .progress-bar,
   .category-card.collapsed .task-list,
@@ -1543,6 +1551,7 @@ function renderGrid(withDone) {
 
     const card = document.createElement('div');
     card.className = 'category-card' + (isCollapsed ? ' collapsed' : '');
+    card.dataset.cat = cat;
     card.innerHTML = `
       <div class="card-header">
         <div class="card-title-group">
@@ -1663,6 +1672,7 @@ document.addEventListener('click', e => {
 
   const taskItem = e.target.closest('.task-item');
   if (taskItem) {
+    if (Date.now() < suppressClickUntil) return; // just finished a drag
     if (e.target.closest('.task-checkbox')) {
       toggleDone(taskItem.dataset.key);
     } else {
@@ -1680,6 +1690,75 @@ document.addEventListener('click', e => {
     }
     return;
   }
+});
+
+// --- DRAG & DROP (tasks) ---
+const DND_TASK = 'application/x-sb-task';
+let dragTaskId = null;
+let suppressClickUntil = 0;
+
+function clearDropTargets() {
+  document.querySelectorAll('.drop-target').forEach(el => el.classList.remove('drop-target'));
+}
+
+document.addEventListener('dragstart', e => {
+  const item = e.target.closest ? e.target.closest('.task-item') : null;
+  if (item) {
+    dragTaskId = parseInt(item.dataset.id, 10);
+    e.dataTransfer.setData(DND_TASK, item.dataset.id);
+    e.dataTransfer.effectAllowed = 'move';
+    item.classList.add('dragging');
+  }
+});
+
+document.addEventListener('dragover', e => {
+  if (![...e.dataTransfer.types].includes(DND_TASK)) return;
+  const group = e.target.closest('.task-group');
+  const card  = e.target.closest('.category-card');
+  const target = group || card;
+  if (!target) { clearDropTargets(); return; }
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  if (!target.classList.contains('drop-target')) {
+    clearDropTargets();
+    target.classList.add('drop-target');
+  }
+});
+
+document.addEventListener('drop', async e => {
+  if (![...e.dataTransfer.types].includes(DND_TASK)) return;
+  e.preventDefault();
+  clearDropTargets();
+  const id = parseInt(e.dataTransfer.getData(DND_TASK), 10) || dragTaskId;
+  const t = tasks.find(x => x.id === id);
+  if (!t) return;
+  const group = e.target.closest('.task-group');
+  const card  = e.target.closest('.category-card');
+  if (!card) return;
+  const newCat = card.dataset.cat;
+  // Dropping on the card body (e.g. collapsed card) keeps the task's current group
+  const newMajor = group ? group.dataset.group === 'major' : !!t.major;
+  if (newCat === t.cat && newMajor === !!t.major) return;
+  try {
+    const res = await fetch(API, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, cat: newCat, major: newMajor }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    tasks = await res.json();
+    render();
+    toast(newCat !== t.cat ? `Moved to ${newCat}` : (newMajor ? 'Marked major ◆' : 'Marked minor'));
+  } catch (err) {
+    toast('⚠ Move failed: ' + err.message);
+  }
+});
+
+document.addEventListener('dragend', () => {
+  document.querySelectorAll('.task-item.dragging').forEach(el => el.classList.remove('dragging'));
+  clearDropTargets();
+  dragTaskId = null;
+  suppressClickUntil = Date.now() + 150;
 });
 
 document.addEventListener('keydown', e => {
