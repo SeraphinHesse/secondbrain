@@ -27,6 +27,7 @@
 * !Steam Page Setup
   Complete all admin and implementation steps to get HTBH's Steam store page live. Covers: partner onboarding, AppID creation, tax/banking setup, store page fields, graphical asset uploads (capsules, library hero, screenshots, trailer), content survey / Germany age rating, pricing + regional pricing, SteamPipe build upload, and the two-checklist release process. Done when store page is "Coming Soon" with build approved and the 2-week clock started.
 * !WBS content Timeline
+* x !Art Plan
 
 
 
@@ -44,6 +45,7 @@
 * Come up with more generic upgrades
 * Booster Limits Explanations
 * Economy Proximity Bonuses Ideation
+* Enemy spawning and Pathfinding Ideation
 
 
 
@@ -100,22 +102,35 @@ pygame.error: Cannot set 0 sized SCALED display mode
   Every Feature in the game should be toggleable on or off in a feature toggle section of the GUI
 * Display Updated Cost on shift click
   When numeros items are shift clicked, the cost on the button should increase to reflect that, and there should be a 2x before the name
-* Boss Scaling
-* Raider Scaling
-  Seperate raider scaling in balancing GUI
-* Balancing GUI cleanup
+* x Balancing GUI cleanup
 * x !New Repo
 * x !Engine
 * x !Editor
-* !redesign branch lock protocol
-* !migrate game to drunkenrobot engine - phase 9, First playable
+* redesign branch lock protocol
+* x !migrate game to drunkenrobot engine - phase 9, First playable
 * !vfx editor in engine
-* balancing session history in editor
+* x balancing session history in editor
 * !ui editor in engine
+  10L of migration plan, UI EDITOR, follow UI editor plan md
 * !migrate game to drunkenrobot engine - phase 10, feature layering
-* !Build Shipped balancing GUI
-* !Tile Unlock Lag
+  follow migration plan, phase 10
+* Build Shipped balancing GUI
+  A version of the editor which only carries the selector tree on the right, and the balancing values, and it says (BUILD VERSION, CANNOT BE PUSHED TO GIT), and it gets shipped with the Build
+* x !Tile Unlock Lag
   Tile Unlock Lag
+* x Enemy Spawning Lag
+  Lag for each enemy towards the end of the spawn queue after round 12
+* x Bug: Tile Unlock Cost
+  Tile costs increase as they get further away from the base, if its in the wrong direction
+* x Bug: Enemies walk on background tiles
+* !buttons behind construction screen
+  the pause and the end turn button should be BEHIND the building construction/tileunlocking/building upgrade UI screen, but it is not, those buttons should disappear and not be clickable when those screens are open
+* Lightning Does no Damage
+* Enemy HP bars
+* !Enemy Grouping
+* !Same Time enemy Spawning
+* Lighting and AOE hitboxes
+  Should be elipses to seem like circles on the isometric ground, just like in the old prototype
 
 
 
@@ -131,7 +146,10 @@ pygame.error: Cannot set 0 sized SCALED display mode
 
 ###### Balancing
 
-* Levelling too Fast: Sheets Predictions not accurate
+* x Levelling too Fast: Sheets Predictions not accurate
+* Boss Scaling
+* Raider Scaling
+  Seperate raider scaling in balancing GUI
 
 
 
@@ -185,6 +203,7 @@ pygame.error: Cannot set 0 sized SCALED display mode
 * Set up / authenticate Windsor.ai connector
   One-time auth for the Windsor.ai MCP (Meta/Google Ads data) so reporting + media automation can pull live ad data. Run authenticate → complete_authentication in a Claude session.
 * !Pay chelsea for website
+* Leon Website
 
 
 
