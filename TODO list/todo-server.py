@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
-Secondbrain Todo Dashboard Server (Python fallback)
+Spinner Questlist Dashboard Server (Python fallback)
+STALE: not feature-parity with todo-server.js — the '^' major marker and
+DELETE /api/category are Node-only. Prefer todo-server.js.
 Run: python3 "todo-server.py" from the "TODO list" folder
 Then open: http://localhost:8765
 """

@@ -26,14 +26,19 @@ secondbrain/
 
 ## API
 
-| Method | Endpoint    | Body fields                   | Returns        |
-|--------|-------------|-------------------------------|----------------|
-| GET    | /api/tasks  | —                             | Task[]         |
-| POST   | /api/tasks  | `text, cat, high, desc`       | Task[]         |
-| PATCH  | /api/tasks  | `id, text, cat, high, desc`   | Task[]         |
-| DELETE | /api/tasks  | `id`                          | Task[]         |
+| Method | Endpoint    | Body fields                               | Returns        |
+|--------|-------------|-------------------------------------------|----------------|
+| GET    | /api/tasks  | —                                         | Task[]         |
+| POST   | /api/tasks  | `text, cat, high, major, desc`            | Task[]         |
+| PATCH  | /api/tasks  | `id, text, cat, high, major, desc, done`  | Task[]         |
+| DELETE | /api/tasks  | `id`                                      | Task[]         |
+| DELETE | /api/category | `name` (display name, e.g. `"HTBH / Design"`) | `{ removed, tasks }` |
 
-Task object shape: `{ id, cat, text, high, reminder, desc }`
+Task object shape: `{ id, cat, text, high, major, done, reminder, desc }`
+
+`DELETE /api/category` removes every matching section (duplicates included) and all tasks inside it from `ToDo.md`. Rejects `name: "Reminders"` with 400. Reminders under `Reminders / <cat>` are not touched. `CAT_MAP` stays intact, so adding a task to a deleted built-in category recreates its section.
+
+Task line markers in `ToDo.md`: `x ` = done, `!` = high priority, `^` = major (unmarked = minor). Canonical write order: `* x !^Task text`.
 
 ## Task Description Convention
 
@@ -89,8 +94,9 @@ Or double-click `launch-dashboard.bat`. Server port: **8765**.
 The dashboard is a single self-contained HTML file. No build tooling. Keep it that way.
 
 - All state that needs to survive browser restarts goes in `ToDo.md` (via the server), not `localStorage`.
-- `localStorage` is used only for UI state: collapse states, done timestamps, backlog.
+- `localStorage` is used only for UI state: collapse states (`sb-collapsed`, `sb-group-col`, `sb-urgent-col`, `sb-rem-col`, `sb-rem-zone`), category order (`sb-cat-order`), hidden built-in categories (`sb-hidden-cats`), custom categories (`sb-custom-cats`), reminder pairs (`sb-rem-pairs`).
 - Never store task descriptions in `localStorage` — they live in `ToDo.md`.
+- Drag & drop (tasks between groups/categories, category reorder) is mouse-only HTML5 DnD; on touch devices use the modal's category dropdown instead.
 
 ## Testing Changes
 

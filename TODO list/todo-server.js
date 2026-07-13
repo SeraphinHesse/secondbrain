@@ -57,8 +57,12 @@ function parseTodo() {
       if (!text) continue;
       const done = text.startsWith('x ');
       if (done) text = text.slice(2).trim();
-      const high = text.startsWith('!');
-      if (high) text = text.slice(1).trim();
+      // Flags: '!' = high priority, '^' = major (canonical write order: x !^)
+      let high = false, major = false;
+      while (text[0] === '!' || text[0] === '^') {
+        if (text[0] === '!') high = true; else major = true;
+        text = text.slice(1).trim();
+      }
       const proj = (project || 'General').replace('How to be Human', 'HTBH').replace(/\\&/g, '&');
       const cat  = sub ? `${proj} / ${sub}` : proj;
 
@@ -68,7 +72,7 @@ function parseTodo() {
       const desc     = descMatch ? descMatch[1].trim() : '';
       const descLine = descMatch ? lineNo + 1 : -1;
 
-      tasks.push({ id: id++, cat, text, high, done, reminder: inReminders, lineNo, desc, descLine });
+      tasks.push({ id: id++, cat, text, high, major, done, reminder: inReminders, lineNo, desc, descLine });
     }
   }
   return tasks;
@@ -82,8 +86,9 @@ function updateTask(id, updates) {
   const newText = (updates.text !== undefined && updates.text !== null)
     ? String(updates.text).trim() || task.text
     : task.text;
-  const newHigh = updates.high !== undefined ? !!updates.high : task.high;
-  const newDone = updates.done !== undefined ? !!updates.done : task.done;
+  const newHigh  = updates.high !== undefined ? !!updates.high : task.high;
+  const newMajor = updates.major !== undefined ? !!updates.major : task.major;
+  const newDone  = updates.done !== undefined ? !!updates.done : task.done;
   const newCat  = (updates.cat !== undefined && updates.cat !== null)
     ? updates.cat : task.cat;
   const newDesc = updates.desc !== undefined ? (updates.desc || '').trim() : task.desc;
@@ -94,7 +99,7 @@ function updateTask(id, updates) {
     if (task.descLine >= 0) lines.splice(task.descLine, 1); // desc first (higher index)
     lines.splice(task.lineNo, 1);
     fs.writeFileSync(TODO, lines.join('\n'), 'utf8');
-    addTask(newText, newCat, newHigh, newDesc, newDone);
+    addTask(newText, newCat, newHigh, newDesc, newDone, newMajor);
   } else {
     const lines = fs.readFileSync(TODO, 'utf8').split('\n');
 
@@ -109,17 +114,17 @@ function updateTask(id, updates) {
       lines.splice(task.lineNo + 1, 0, '  ' + newDesc);
     }
 
-    lines[task.lineNo] = '* ' + (newDone ? 'x ' : '') + (newHigh ? '!' : '') + newText;
+    lines[task.lineNo] = '* ' + (newDone ? 'x ' : '') + (newHigh ? '!' : '') + (newMajor ? '^' : '') + newText;
     fs.writeFileSync(TODO, lines.join('\n'), 'utf8');
   }
   return true;
 }
 
-function addTask(text, cat, high, desc, done = false) {
+function addTask(text, cat, high, desc, done = false, major = false) {
   const lines  = fs.readFileSync(TODO, 'utf8').split('\n');
   const entry  = CAT_MAP[cat] || [`##### ${cat}`, null];
   const [parentH, subH] = entry;
-  const newLine = '* ' + (done ? 'x ' : '') + (high ? '!' : '') + text;
+  const newLine = '* ' + (done ? 'x ' : '') + (high ? '!' : '') + (major ? '^' : '') + text;
 
   let targetIdx = -1;
   if (subH) {
@@ -170,6 +175,42 @@ function deleteTask(id) {
   return true;
 }
 
+// Remove every section whose display name matches `name` (duplicates exist),
+// including all task/desc lines inside. Uses the same header normalization as
+// parseTodo — never raw-match headers (escaped \& and the HTBH rename differ).
+function deleteCategory(name) {
+  const lines = fs.readFileSync(TODO, 'utf8').split('\n');
+  const normP = p => (p || 'General').replace('How to be Human', 'HTBH').replace(/\\&/g, '&');
+  const keep = [];
+  let removed = 0;
+  let project = null;
+  let deleting = false, deleteScope = null; // 'top' | 'sub'
+
+  for (const line of lines) {
+    const s = line.trim();
+    if (s.startsWith('##### ') && !s.startsWith('######')) {
+      deleting = false; // a top-level header always ends any deleted range
+      const l = s.slice(6).trim();
+      if (l) project = l;
+      if (normP(project) === name) { deleting = true; deleteScope = 'top'; }
+    } else if (s.startsWith('###### ')) {
+      if (deleting && deleteScope === 'sub') deleting = false;
+      if (!deleting) {
+        const sub = s.slice(7).trim();
+        if (`${normP(project)} / ${sub}` === name) { deleting = true; deleteScope = 'sub'; }
+      }
+    }
+    if (deleting) {
+      if (s.startsWith('* ')) removed++;
+      continue;
+    }
+    keep.push(line);
+  }
+
+  fs.writeFileSync(TODO, keep.join('\n'), 'utf8');
+  return removed;
+}
+
 const BACKLOG = path.join(BASE_DIR, 'backlog.md');
 
 function clearCompleted() {
@@ -190,7 +231,7 @@ function clearCompleted() {
   for (const cat of order) {
     entry += `### ${cat}\n\n`;
     for (const t of groups[cat]) {
-      entry += `* ${t.high ? '!' : ''}${t.text}\n`;
+      entry += `* ${t.high ? '!' : ''}${t.major ? '^' : ''}${t.text}\n`;
       if (t.desc) entry += `  ${t.desc}\n`;
     }
     entry += '\n';
@@ -243,9 +284,9 @@ const server = http.createServer((req, res) => {
     req.on('data', d => body += d);
     req.on('end', () => {
       try {
-        const { id, high, text, cat, desc, done } = JSON.parse(body);
+        const { id, high, major, text, cat, desc, done } = JSON.parse(body);
         if (typeof id !== 'number') { res.writeHead(400); res.end('id required'); return; }
-        updateTask(id, { high, text, cat, desc, done });
+        updateTask(id, { high, major, text, cat, desc, done });
         const tasks = parseTodo().map(({ lineNo, descLine, ...t }) => t);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(tasks));
@@ -262,12 +303,33 @@ const server = http.createServer((req, res) => {
     req.on('data', d => body += d);
     req.on('end', () => {
       try {
-        const { text, cat, high, desc } = JSON.parse(body);
+        const { text, cat, high, major, desc } = JSON.parse(body);
         if (!text || !text.trim()) { res.writeHead(400); res.end('text required'); return; }
-        addTask(text.trim(), cat, !!high, (desc || '').trim());
+        addTask(text.trim(), cat, !!high, (desc || '').trim(), false, !!major);
         const tasks = parseTodo().map(({ lineNo, descLine, ...t }) => t);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(tasks));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
+  if (req.url === '/api/category' && req.method === 'DELETE') {
+    let body = '';
+    req.on('data', d => body += d);
+    req.on('end', () => {
+      try {
+        const { name } = JSON.parse(body);
+        if (!name || typeof name !== 'string' || name === 'Reminders') {
+          res.writeHead(400); res.end('invalid category name'); return;
+        }
+        const removed = deleteCategory(name);
+        const tasks = parseTodo().map(({ lineNo, descLine, ...t }) => t);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ removed, tasks }));
       } catch (e) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: e.message }));
@@ -335,7 +397,7 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, 'localhost', () => {
   const url = `http://localhost:${PORT}`;
-  console.log(`  Secondbrain Dashboard → ${url}`);
+  console.log(`  Spinner Questlist Dashboard → ${url}`);
   console.log(`  ToDo.md: ${TODO}`);
   console.log(`  Ctrl+C to stop\n`);
 

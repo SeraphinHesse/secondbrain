@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secondbrain — Task Dashboard</title>
+<title>Spinner Questlist — Task Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -346,6 +346,47 @@
     flex-shrink: 0; margin-top: 7px; opacity: 0.55;
   }
   .empty-state { padding: 1rem 0; text-align: center; color: var(--text-dim); font-size: 0.8rem; }
+
+  /* MAJOR / MINOR GROUPS */
+  .group-header {
+    display: flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0 0.15rem; cursor: pointer; user-select: none;
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-dim);
+    transition: color 0.15s;
+  }
+  .group-header:hover { color: var(--text-muted); }
+  .group-count {
+    font-weight: 400; color: var(--text-dim); opacity: 0.7;
+    font-size: 0.66rem; letter-spacing: 0;
+  }
+  .task-group.group-collapsed .group-items { display: none; }
+  .group-empty { padding: 0.35rem 0 0.4rem; color: var(--text-dim); font-size: 0.74rem; opacity: 0.5; }
+
+  /* DRAG & DROP */
+  .task-item.dragging { opacity: 0.35; }
+  .task-group.drop-target {
+    background: rgba(167,139,250,0.06);
+    outline: 1px dashed var(--border2); outline-offset: -1px; border-radius: 6px;
+  }
+  .category-card.drop-target { outline: 1px dashed #a78bfa; outline-offset: -1px; }
+  .card-drag-handle {
+    cursor: grab; color: var(--text-dim); font-size: 0.8rem;
+    opacity: 0.45; user-select: none; flex-shrink: 0;
+    transition: opacity 0.15s;
+  }
+  .card-drag-handle:hover { opacity: 1; }
+  .category-card.reorder-target { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .card-delete-btn {
+    background: none; border: 1px solid var(--border);
+    color: var(--text-dim); border-radius: 6px;
+    font-size: 0.7rem; width: 24px; height: 24px; line-height: 1;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.2s, color 0.2s, background 0.2s, opacity 0.2s;
+    flex-shrink: 0; padding: 0; opacity: 0;
+  }
+  .category-card:hover .card-delete-btn { opacity: 1; }
+  .card-delete-btn:hover { border-color: var(--red); color: var(--red); background: rgba(248,113,113,0.08); }
 
   /* Collapsed card hides body */
   .category-card.collapsed .progress-bar,
@@ -717,7 +758,7 @@
 <body>
 
 <header>
-  <div class="logo">⚡ Secondbrain</div>
+  <div class="logo">⚡ Spinner Questlist</div>
   <div class="header-right">
     <div class="header-stats">
       <div class="stat-chip"><span class="dot red"></span><span id="stat-urgent">— urgent</span></div>
@@ -844,12 +885,32 @@
         <span class="toggle-track"></span>
         <span class="toggle-label">High priority</span>
       </label>
+      <label class="priority-toggle" style="padding-bottom:0">
+        <input type="checkbox" id="modal-major">
+        <span class="toggle-track"></span>
+        <span class="toggle-label">Major task</span>
+      </label>
       <button class="btn-done-toggle" id="modal-done-btn" onclick="modalToggleDone()">✓ Mark Done</button>
     </div>
     <div class="modal-footer">
       <button class="btn-danger" style="margin-right:auto" onclick="deleteTaskFromModal()">✕ Delete</button>
       <button class="btn-secondary" onclick="closeModal()">Close</button>
       <button class="btn-primary" onclick="saveModal()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div id="confirm-modal" class="modal-overlay" onclick="handleConfirmOverlayClick(event)">
+  <div class="modal-card" style="max-width:400px">
+    <div class="modal-header">
+      <span class="modal-cat-badge">Confirm</span>
+      <button class="modal-close" onclick="closeConfirmModal()">✕</button>
+    </div>
+    <p id="confirm-message" style="font-size:0.88rem;line-height:1.55;color:var(--text);margin-bottom:1.1rem"></p>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+      <button class="btn-danger" id="confirm-ok-btn">Delete</button>
     </div>
   </div>
 </div>
@@ -861,8 +922,15 @@
       <span class="modal-cat-badge" id="rem-modal-cat"></span>
       <button class="modal-close" onclick="closeReminderModal()">✕</button>
     </div>
-    <div id="rem-modal-time-wrap" style="margin-bottom:0.6rem">
-      <span class="reminder-time" id="rem-modal-time"></span>
+    <div class="add-reminder-row" style="margin-bottom:0.875rem">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" class="modal-input" id="rem-modal-date" />
+      </div>
+      <div class="form-group">
+        <label>Time</label>
+        <input type="time" class="modal-input" id="rem-modal-time-input" />
+      </div>
     </div>
     <div class="form-group" style="margin-bottom:0.875rem">
       <label>Reminder Text</label>
@@ -957,9 +1025,13 @@ const K_URGENT_COL   = 'sb-urgent-col';
 const K_CUSTOM_CATS  = 'sb-custom-cats';
 const K_REM_COL      = 'sb-rem-col';
 const K_REM_ZONE     = 'sb-rem-zone';
+const K_GROUP_COL    = 'sb-group-col';
+const K_CAT_ORDER    = 'sb-cat-order';
+const K_HIDDEN_CATS  = 'sb-hidden-cats';
 
 const BACKLOG_API    = 'http://localhost:8765/api/backlog';
 const CLEAR_API      = 'http://localhost:8765/api/clear-completed';
+const CATEGORY_API   = 'http://localhost:8765/api/category';
 
 // --- Default category metadata ---
 const DEFAULT_CAT_META = {
@@ -985,7 +1057,10 @@ let selectedNewCatColor = CAT_PALETTE[0];
 let CATEGORY_META = {};
 
 function buildCategoryMeta() {
-  CATEGORY_META = { ...DEFAULT_CAT_META };
+  const hidden = getHiddenCats();
+  CATEGORY_META = Object.fromEntries(
+    Object.entries(DEFAULT_CAT_META).filter(([k]) => !hidden.has(k))
+  );
   getCustomCats().forEach(c => {
     CATEGORY_META[c.name] = { icon: c.icon || '📌', color: c.color || '#94a3b8' };
   });
@@ -1004,6 +1079,12 @@ function getRemZoneCollapsed() { return localStorage.getItem(K_REM_ZONE) === '1'
 function setRemZoneCollapsed(v) { localStorage.setItem(K_REM_ZONE, v ? '1' : '0'); }
 function getCustomCats()   { return JSON.parse(localStorage.getItem(K_CUSTOM_CATS) || '[]'); }
 function setCustomCats(a)  { localStorage.setItem(K_CUSTOM_CATS, JSON.stringify(a)); }
+function getGroupCol()     { return new Set(JSON.parse(localStorage.getItem(K_GROUP_COL) || '[]')); }
+function setGroupCol(s)    { localStorage.setItem(K_GROUP_COL, JSON.stringify([...s])); }
+function getCatOrder()     { return JSON.parse(localStorage.getItem(K_CAT_ORDER) || '[]'); }
+function setCatOrder(a)    { localStorage.setItem(K_CAT_ORDER, JSON.stringify(a)); }
+function getHiddenCats()   { return new Set(JSON.parse(localStorage.getItem(K_HIDDEN_CATS) || '[]')); }
+function setHiddenCats(s)  { localStorage.setItem(K_HIDDEN_CATS, JSON.stringify([...s])); }
 
 function doneKey(t)  { return `${t.cat}::${t.text}`; }
 function esc(s) {
@@ -1062,6 +1143,17 @@ async function loadTasks(showSpinner = false) {
     const res = await fetch(API);
     if (!res.ok) throw new Error(res.statusText);
     tasks = await res.json();
+    // Resurrect hidden categories the user re-populated by hand in ToDo.md
+    const hidden = getHiddenCats();
+    let unhid = false;
+    tasks.filter(t => !t.reminder).forEach(t => {
+      if (hidden.delete(t.cat)) unhid = true;
+    });
+    if (unhid) {
+      setHiddenCats(hidden);
+      buildCategoryMeta();
+      populateCategoryDropdown();
+    }
     document.getElementById('error-banner').classList.remove('visible');
     render();
   } catch (e) {
@@ -1298,22 +1390,18 @@ async function clearReminder(id) {
 
 // --- REMINDER MODAL ---
 let currentReminderTaskId = null;
-let currentReminderPrefix = '';
 
 function openReminderModal(id) {
   const t = tasks.find(t => t.id === id);
   if (!t) return;
   currentReminderTaskId = id;
-  const { timeLabel, text } = parseReminderText(t.text);
-  const prefixMatch = t.text.match(/^(\[\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}\]\s*)/);
-  currentReminderPrefix = prefixMatch ? prefixMatch[1] : '';
+  const { text } = parseReminderText(t.text);
   const displayCat = t.cat.replace(/^Reminders\s*\/\s*/, '');
   document.getElementById('rem-modal-cat').textContent = displayCat;
   document.getElementById('rem-modal-title-input').value = text || t.text;
-  const timeEl = document.getElementById('rem-modal-time');
-  const timeWrap = document.getElementById('rem-modal-time-wrap');
-  if (timeLabel) { timeEl.textContent = timeLabel; timeWrap.style.display = ''; }
-  else { timeWrap.style.display = 'none'; }
+  const dtMatch = t.text.match(/^\[(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})\]/);
+  document.getElementById('rem-modal-date').value       = dtMatch ? dtMatch[1] : '';
+  document.getElementById('rem-modal-time-input').value = dtMatch ? dtMatch[2] : '';
   // Use server-side desc; fall back to legacy localStorage for migration
   const lsDesc = localStorage.getItem('sb-desc::rem-' + id) || '';
   document.getElementById('rem-modal-desc').value = t.desc || lsDesc;
@@ -1342,7 +1430,11 @@ async function saveReminderModal() {
   const newTextRaw = document.getElementById('rem-modal-title-input').value.trim();
   const newCat     = document.getElementById('rem-modal-cat-select').value;
   const newHigh    = document.getElementById('rem-modal-high').checked;
-  const newFullText = newTextRaw ? (currentReminderPrefix + newTextRaw) : t.text;
+  const newDate    = document.getElementById('rem-modal-date').value;
+  const newTime    = document.getElementById('rem-modal-time-input').value;
+  const prefix     = newDate ? `[${newDate} ${newTime || '09:00'}] ` : ''; // cleared date removes the timestamp
+  const bareText   = newTextRaw || parseReminderText(t.text).text || t.text;
+  const newFullText = prefix + bareText;
 
   const changed = newFullText !== t.text || newCat !== t.cat || newHigh !== t.high || desc !== (t.desc || '');
   if (changed) {
@@ -1465,7 +1557,7 @@ async function submitAddReminder() {
       const eh  = String(endDate.getHours()).padStart(2,'0');
       const emi = String(endDate.getMinutes()).padStart(2,'0');
       const endDt = `${ey}${emo}${ed}T${eh}${emi}00`;
-      const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(text)}&dates=${startDt}/${endDt}&details=${encodeURIComponent('Added from Secondbrain')}`;
+      const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(text)}&dates=${startDt}/${endDt}&details=${encodeURIComponent('Added from Spinner Questlist')}`;
       window.open(calUrl, '_blank');
     }
   } catch (e) {
@@ -1475,11 +1567,41 @@ async function submitAddReminder() {
   }
 }
 
+function renderTaskGroup(cat, group, groupTasks) {
+  const isCollapsed = getGroupCol().has(`${cat}::${group}`);
+  const label = group === 'major' ? 'Major' : 'Minor';
+  const items = groupTasks.length
+    ? groupTasks.map(t => {
+        const hasDesc = !!(t.desc && t.desc.trim());
+        return `
+        <div class="task-item ${t.done ? 'done' : ''}" draggable="true" data-key="${esc(doneKey(t))}" data-id="${t.id}" data-cat="${esc(cat)}">
+          ${t.high ? '<span class="high-dot"></span>' : ''}
+          <span class="task-checkbox"></span>
+          <span class="task-text">${esc(t.text)}</span>
+          ${hasDesc ? '<span class="desc-indicator" title="Has description"></span>' : ''}
+        </div>`;
+      }).join('')
+    : `<div class="group-empty">No ${label.toLowerCase()} tasks</div>`;
+  return `
+    <div class="task-group ${isCollapsed ? 'group-collapsed' : ''}" data-cat="${esc(cat)}" data-group="${group}">
+      <div class="group-header" data-cat="${esc(cat)}" data-group="${group}">
+        <span class="group-arrow">${isCollapsed ? '▸' : '▾'}</span> ${label}
+        <span class="group-count">${groupTasks.filter(t => !t.done).length}/${groupTasks.length}</span>
+      </div>
+      <div class="group-items">${items}</div>
+    </div>`;
+}
+
 function renderGrid(withDone) {
   const grid = document.getElementById('categories-grid');
   grid.innerHTML = '';
   const catOrder = Object.keys(CATEGORY_META);
   const allCats = [...new Set([...catOrder, ...tasks.filter(t => !t.reminder).map(t => t.cat)])];
+  const savedOrder = getCatOrder();
+  allCats.sort((a, b) => {
+    const ia = savedOrder.indexOf(a), ib = savedOrder.indexOf(b);
+    return (ia < 0 ? Infinity : ia) - (ib < 0 ? Infinity : ib) || 0;
+  });
   const collapsed = getCollapsed();
 
   allCats.forEach(cat => {
@@ -1494,32 +1616,25 @@ function renderGrid(withDone) {
 
     const card = document.createElement('div');
     card.className = 'category-card' + (isCollapsed ? ' collapsed' : '');
+    card.dataset.cat = cat;
     card.innerHTML = `
       <div class="card-header">
         <div class="card-title-group">
+          <span class="card-drag-handle" draggable="true" data-cat="${esc(cat)}" title="Drag to reorder">⠿</span>
           <span class="card-icon">${meta.icon}</span>
           <span class="card-title" style="color:${meta.color}">${esc(cat)}</span>
         </div>
         <div class="card-header-right">
           <span class="card-count">${openN}/${catTasks.length}</span>
+          <button class="card-delete-btn" data-cat="${esc(cat)}" title="Delete category">🗑</button>
           <button class="card-collapse-btn" data-cat="${esc(cat)}" title="${isCollapsed ? 'Expand' : 'Collapse'}">${isCollapsed ? '▸' : '▾'}</button>
           <button class="card-add-toggle" data-cat="${esc(cat)}" title="Add task to this category">+</button>
         </div>
       </div>
       <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
       <div class="task-list">
-        ${catTasks.length
-          ? catTasks.map(t => {
-              const hasDesc = !!(t.desc && t.desc.trim());
-              return `
-              <div class="task-item ${t.done ? 'done' : ''}" data-key="${esc(doneKey(t))}" data-id="${t.id}">
-                ${t.high ? '<span class="high-dot"></span>' : ''}
-                <span class="task-checkbox"></span>
-                <span class="task-text">${esc(t.text)}</span>
-                ${hasDesc ? '<span class="desc-indicator" title="Has description"></span>' : ''}
-              </div>`;
-            }).join('')
-          : '<div class="empty-state">No tasks — add one below</div>'}
+        ${renderTaskGroup(cat, 'major', catTasks.filter(t => t.major))}
+        ${renderTaskGroup(cat, 'minor', catTasks.filter(t => !t.major))}
       </div>
       <div class="card-add-form ${hasOpenForm ? 'open' : ''}" data-cat="${esc(cat)}">
         <input class="card-add-input" type="text" placeholder="New task…" data-cat="${esc(cat)}"
@@ -1580,6 +1695,17 @@ document.addEventListener('click', e => {
     return;
   }
 
+  const deleteCatBtn = e.target.closest('.card-delete-btn');
+  if (deleteCatBtn) {
+    const cat = deleteCatBtn.dataset.cat;
+    const n = tasks.filter(t => t.cat === cat && !t.reminder).length;
+    confirmAction(
+      `Delete category "${cat}" and its ${n} task${n === 1 ? '' : 's'}? This removes them from ToDo.md permanently.`,
+      () => deleteCategoryCard(cat)
+    );
+    return;
+  }
+
   const collapseBtn = e.target.closest('.card-collapse-btn');
   if (collapseBtn) {
     const cat = collapseBtn.dataset.cat;
@@ -1596,6 +1722,22 @@ document.addEventListener('click', e => {
     return;
   }
 
+  const groupHeader = e.target.closest('.group-header');
+  if (groupHeader) {
+    const key = `${groupHeader.dataset.cat}::${groupHeader.dataset.group}`;
+    const s = getGroupCol();
+    s.has(key) ? s.delete(key) : s.add(key);
+    setGroupCol(s);
+    const groupEl = groupHeader.closest('.task-group');
+    if (groupEl) {
+      const isNowCollapsed = s.has(key);
+      groupEl.classList.toggle('group-collapsed', isNowCollapsed);
+      const arrow = groupHeader.querySelector('.group-arrow');
+      if (arrow) arrow.textContent = isNowCollapsed ? '▸' : '▾';
+    }
+    return;
+  }
+
   const addToggle = e.target.closest('.card-add-toggle');
   if (addToggle) { toggleCardAdd(addToggle.dataset.cat); return; }
 
@@ -1608,6 +1750,7 @@ document.addEventListener('click', e => {
 
   const taskItem = e.target.closest('.task-item');
   if (taskItem) {
+    if (Date.now() < suppressClickUntil) return; // just finished a drag
     if (e.target.closest('.task-checkbox')) {
       toggleDone(taskItem.dataset.key);
     } else {
@@ -1627,11 +1770,187 @@ document.addEventListener('click', e => {
   }
 });
 
+// --- CONFIRM MODAL ---
+let confirmCallback = null;
+
+function confirmAction(message, onConfirm) {
+  document.getElementById('confirm-message').textContent = message;
+  confirmCallback = onConfirm;
+  document.getElementById('confirm-modal').classList.add('open');
+}
+
+function closeConfirmModal() {
+  document.getElementById('confirm-modal').classList.remove('open');
+  confirmCallback = null;
+}
+
+function handleConfirmOverlayClick(e) {
+  if (e.target === e.currentTarget) closeConfirmModal();
+}
+
+document.getElementById('confirm-ok-btn').addEventListener('click', () => {
+  const cb = confirmCallback;
+  closeConfirmModal();
+  if (cb) cb();
+});
+
+// --- DELETE CATEGORY ---
+async function deleteCategoryCard(cat) {
+  try {
+    const res = await fetch(CATEGORY_API, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: cat }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const json = await res.json();
+    tasks = json.tasks;
+
+    const customs = getCustomCats();
+    if (customs.some(c => c.name === cat)) {
+      setCustomCats(customs.filter(c => c.name !== cat));
+    } else if (DEFAULT_CAT_META[cat]) {
+      const hidden = getHiddenCats();
+      hidden.add(cat);
+      setHiddenCats(hidden);
+    }
+
+    // Purge UI state tied to the category
+    const col = getCollapsed();
+    if (col.delete(cat)) setCollapsed(col);
+    const grp = getGroupCol();
+    const grpChanged = grp.delete(`${cat}::major`) | grp.delete(`${cat}::minor`);
+    if (grpChanged) setGroupCol(grp);
+    setCatOrder(getCatOrder().filter(c => c !== cat));
+    openAddForms.delete(cat);
+
+    buildCategoryMeta();
+    populateCategoryDropdown();
+    render();
+    toast(`Category "${cat}" deleted (${json.removed} task${json.removed === 1 ? '' : 's'})`);
+  } catch (e) {
+    toast('⚠ Delete failed: ' + e.message);
+  }
+}
+
+// --- DRAG & DROP (tasks + category reorder) ---
+const DND_TASK = 'application/x-sb-task';
+const DND_CAT  = 'application/x-sb-cat';
+let dragTaskId = null;
+let dragCatName = null;
+let suppressClickUntil = 0;
+
+function clearDropTargets() {
+  document.querySelectorAll('.drop-target, .reorder-target')
+    .forEach(el => el.classList.remove('drop-target', 'reorder-target'));
+}
+
+document.addEventListener('dragstart', e => {
+  if (!e.target.closest) return;
+  const handle = e.target.closest('.card-drag-handle');
+  if (handle) {
+    dragCatName = handle.dataset.cat;
+    e.dataTransfer.setData(DND_CAT, dragCatName);
+    e.dataTransfer.effectAllowed = 'move';
+    const card = handle.closest('.category-card');
+    if (card) e.dataTransfer.setDragImage(card, 10, 10);
+    return;
+  }
+  const item = e.target.closest('.task-item');
+  if (item) {
+    dragTaskId = parseInt(item.dataset.id, 10);
+    e.dataTransfer.setData(DND_TASK, item.dataset.id);
+    e.dataTransfer.effectAllowed = 'move';
+    item.classList.add('dragging');
+  }
+});
+
+document.addEventListener('dragover', e => {
+  const types = [...e.dataTransfer.types];
+  if (types.includes(DND_CAT)) {
+    const card = e.target.closest('.category-card');
+    if (!card) { clearDropTargets(); return; }
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (!card.classList.contains('reorder-target')) {
+      clearDropTargets();
+      if (card.dataset.cat !== dragCatName) card.classList.add('reorder-target');
+    }
+    return;
+  }
+  if (!types.includes(DND_TASK)) return;
+  const group = e.target.closest('.task-group');
+  const card  = e.target.closest('.category-card');
+  const target = group || card;
+  if (!target) { clearDropTargets(); return; }
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  if (!target.classList.contains('drop-target')) {
+    clearDropTargets();
+    target.classList.add('drop-target');
+  }
+});
+
+document.addEventListener('drop', async e => {
+  const types = [...e.dataTransfer.types];
+  if (types.includes(DND_CAT)) {
+    e.preventDefault();
+    clearDropTargets();
+    const draggedCat = e.dataTransfer.getData(DND_CAT) || dragCatName;
+    const targetCard = e.target.closest('.category-card');
+    if (!draggedCat || !targetCard || targetCard.dataset.cat === draggedCat) return;
+    const grid = document.getElementById('categories-grid');
+    const order = [...grid.children].map(c => c.dataset.cat).filter(c => c !== draggedCat);
+    const rect = targetCard.getBoundingClientRect();
+    const before = e.clientY < rect.top + rect.height / 2;
+    const idx = order.indexOf(targetCard.dataset.cat);
+    order.splice(before ? idx : idx + 1, 0, draggedCat);
+    setCatOrder(order);
+    renderGrid(tasks);
+    return;
+  }
+  if (!types.includes(DND_TASK)) return;
+  e.preventDefault();
+  clearDropTargets();
+  const id = parseInt(e.dataTransfer.getData(DND_TASK), 10) || dragTaskId;
+  const t = tasks.find(x => x.id === id);
+  if (!t) return;
+  const group = e.target.closest('.task-group');
+  const card  = e.target.closest('.category-card');
+  if (!card) return;
+  const newCat = card.dataset.cat;
+  // Dropping on the card body (e.g. collapsed card) keeps the task's current group
+  const newMajor = group ? group.dataset.group === 'major' : !!t.major;
+  if (newCat === t.cat && newMajor === !!t.major) return;
+  try {
+    const res = await fetch(API, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, cat: newCat, major: newMajor }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    tasks = await res.json();
+    render();
+    toast(newCat !== t.cat ? `Moved to ${newCat}` : (newMajor ? 'Marked major ◆' : 'Marked minor'));
+  } catch (err) {
+    toast('⚠ Move failed: ' + err.message);
+  }
+});
+
+document.addEventListener('dragend', () => {
+  document.querySelectorAll('.task-item.dragging').forEach(el => el.classList.remove('dragging'));
+  clearDropTargets();
+  dragTaskId = null;
+  dragCatName = null;
+  suppressClickUntil = Date.now() + 150;
+});
+
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if (currentModalKey) closeModal();
     if (currentReminderTaskId) closeReminderModal();
     if (document.getElementById('add-reminder-modal').classList.contains('open')) closeAddReminderModal();
+    if (document.getElementById('confirm-modal').classList.contains('open')) closeConfirmModal();
   }
   if (e.key === 'Enter' && document.getElementById('add-reminder-modal').classList.contains('open')) {
     if (e.target.id !== 'ar-save-btn') submitAddReminder();
@@ -1752,6 +2071,7 @@ function openTaskModal(key) {
   const lsDesc = localStorage.getItem('sb-desc::' + key) || '';
   document.getElementById('modal-desc').value            = t.desc || lsDesc;
   document.getElementById('modal-high').checked          = t.high;
+  document.getElementById('modal-major').checked         = !!t.major;
   populateModalCatDropdown(t.cat);
   updateModalDoneBtn();
   document.getElementById('task-modal').classList.add('open');
@@ -1789,16 +2109,17 @@ async function saveModal() {
 
   const desc    = document.getElementById('modal-desc').value.trim();
   const newText = document.getElementById('modal-title-input').value.trim() || t.text;
-  const newCat  = document.getElementById('modal-cat-select').value;
-  const newHigh = document.getElementById('modal-high').checked;
+  const newCat   = document.getElementById('modal-cat-select').value;
+  const newHigh  = document.getElementById('modal-high').checked;
+  const newMajor = document.getElementById('modal-major').checked;
 
-  const changed = newText !== t.text || newCat !== t.cat || newHigh !== t.high || desc !== (t.desc || '');
+  const changed = newText !== t.text || newCat !== t.cat || newHigh !== t.high || newMajor !== !!t.major || desc !== (t.desc || '');
   if (changed) {
     try {
       const res = await fetch(API, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: t.id, text: newText, cat: newCat, high: newHigh, desc }),
+        body: JSON.stringify({ id: t.id, text: newText, cat: newCat, high: newHigh, major: newMajor, desc }),
       });
       if (!res.ok) throw new Error(await res.text());
       tasks = await res.json();
