@@ -26,14 +26,16 @@ secondbrain/
 
 ## API
 
-| Method | Endpoint    | Body fields                   | Returns        |
-|--------|-------------|-------------------------------|----------------|
-| GET    | /api/tasks  | —                             | Task[]         |
-| POST   | /api/tasks  | `text, cat, high, desc`       | Task[]         |
-| PATCH  | /api/tasks  | `id, text, cat, high, desc`   | Task[]         |
-| DELETE | /api/tasks  | `id`                          | Task[]         |
+| Method | Endpoint    | Body fields                               | Returns        |
+|--------|-------------|-------------------------------------------|----------------|
+| GET    | /api/tasks  | —                                         | Task[]         |
+| POST   | /api/tasks  | `text, cat, high, major, desc`            | Task[]         |
+| PATCH  | /api/tasks  | `id, text, cat, high, major, desc, done`  | Task[]         |
+| DELETE | /api/tasks  | `id`                                      | Task[]         |
 
-Task object shape: `{ id, cat, text, high, reminder, desc }`
+Task object shape: `{ id, cat, text, high, major, done, reminder, desc }`
+
+Task line markers in `ToDo.md`: `x ` = done, `!` = high priority, `^` = major (unmarked = minor). Canonical write order: `* x !^Task text`.
 
 ## Task Description Convention
 
