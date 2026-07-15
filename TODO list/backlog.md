@@ -334,3 +334,49 @@
 
 * Background Art
 
+
+## Cleared 2026-07-14 08:16
+
+### HTBH / Claude Build
+
+* Fullscreen Mode
+  Full screen mode is currently broken on various resolutions. Fix it so the game runs correctly at any screen resolution without layout issues, clipping, or scaling errors. Done when full screen works reliably across all tested resolutions.
+* !^migrate game to drunkenrobot engine - phase 10, feature layering
+  follow migration plan, phase 10
+* !buttons behind construction screen
+  the pause and the end turn button should be BEHIND the building construction/tileunlocking/building upgrade UI screen, but it is not, those buttons should disappear and not be clickable when those screens are open
+* !Lightning Does no Damage
+* Enemy HP bars
+* !^Enemy Grouping
+
+### Admin
+
+* Dashboard: Click and drag movable tasks
+* Be able to change time on the reminders
+* !Major Big Tasks and minor tasks
+* !Seperate HtbH Engine and HtbH Claude Art Categories
+
+
+## Cleared 2026-07-15 11:06
+
+### HTBH / Claude Build
+
+* !Close Screens with Right Click
+  Must be able to close the build / unlock tile / upgrade screen by right clicking anywhere
+* !Boss pathfinding fix
+  Enemy Boss gets stuck on water tiles or mountains, and walks weird
+* !^Enemy rework
+* block underleveled buildings
+  If a player unlocks a higher tier of a building, they can no longer place the now underleveled building and must pay a upfront cost for the higher tier version immediately. So if you unlock slinger, you can no longer place a stone thrower, but he immediately spawns as a slinger for a higher upfront cost which should be balanceable, then make the cost in the levelup screen always be the upfront purchase cost of building if it is a higher tier, or the initial purchase cost if it is lower tier
+* reduce enemy height/ fix position of hp bars etc
+
+### HTBH Engin Changes
+
+* !^Redesign Test Suite
+* !^Redesign Skills and Agents
+* Plan doc org
+* Functionality to Reuse Sprites
+* Tickbox to turn off animations, so they revert to the first frame
+* Make Balanceable if a building is unlocked at the start, and set a minimum pool time
+* Engine Settings
+

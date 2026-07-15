@@ -28,6 +28,9 @@
   Complete all admin and implementation steps to get HTBH's Steam store page live. Covers: partner onboarding, AppID creation, tax/banking setup, store page fields, graphical asset uploads (capsules, library hero, screenshots, trailer), content survey / Germany age rating, pricing + regional pricing, SteamPipe build upload, and the two-checklist release process. Done when store page is "Coming Soon" with build approved and the 2-week clock started.
 * !Boss Stuck on terrain
   Boss gets stuck randomly on water or mountain tiles, weird pathfinding overall, should reconfirm intent
+* Market Research
+* Target Audience Analysis
+* Social media setup
 
 
 
@@ -66,9 +69,7 @@ this should be toggleable in balancing gui
 
 
 
-* ^All tileweights balanceable
-* x Fullscreen Mode
-  Full screen mode is currently broken on various resolutions. Fix it so the game runs correctly at any screen resolution without layout issues, clipping, or scaling errors. Done when full screen works reliably across all tested resolutions.
+* !All tileweights balanceable
 
 tried to fix and now gives error: 
 Traceback (most recent call last):
@@ -85,30 +86,25 @@ pygame.error: Cannot set 0 sized SCALED display mode
 
 
 
-* Display Updated Cost on shift click
-  When numeros items are shift clicked, the cost on the button should increase to reflect that, and there should be a 2x before the name
-* x !^migrate game to drunkenrobot engine - phase 10, feature layering
-  follow migration plan, phase 10
-* x !buttons behind construction screen
-  the pause and the end turn button should be BEHIND the building construction/tileunlocking/building upgrade UI screen, but it is not, those buttons should disappear and not be clickable when those screens are open
-* x !Lightning Does no Damage
-* x Enemy HP bars
-* x !^Enemy Grouping
+* Display Updated Cost for construction on shift click, upgrade tiers on shift click
+  When numeros items are shift clicked, the cost on the button should increase to reflect that, and there should be a 2x before the name, also on shift click one should be able to upgrade the tiers of buildings en masse as well
 * !^Same Time enemy Spawning
-* !^Lighting and AOE hitboxes
+* !Lighting and AOE hitboxes
   Should be elipses to seem like circles on the isometric ground, just like in the old prototype
 * !^Call Enemy Animations
-* Loading Screen
+* ^Loading Screen
   add a loading screen and the ability to import art for it
-* !Close Screens with Right Click
-  Must be able to close the build / unlock tile / upgrade screen by right clicking anywhere
 * !Lightning Building
-* Boss stuck in water
-  Enemy Boss gets stuck on water tiles
 * painter option greyout
-  painter should be greyed out when the tile has already been built  in building screen
+  painter should be greyed out when the tile has already been built with a painter in building screen
 * !^Boss enemy rework
-* !^Enemy rework
+  Needs to have stages, and become stationary and become an enemy spawner
+* ^Enemy tile stacking rework
+* ^Tutorial
+* ^Ploppable buildings
+* zoom level should be higher at default
+  Make the current max zoomed in be the default, and make one extra zoom level more zoomed in even than that
+* Bush wall builder unlock broken
 
 
 
@@ -117,9 +113,11 @@ pygame.error: Cannot set 0 sized SCALED display mode
 * Boss Scaling
 * Raider Scaling
   Seperate raider scaling in balancing GUI
-* Fewew Water tiles
+* Fewer Water tiles
 * Mortar more expensive
   Mortar/AOE base cost must be more expensive
+* ^Game Still too hard at start?
+* ^Game still outscalable?
 
 
 
@@ -180,12 +178,8 @@ pygame.error: Cannot set 0 sized SCALED display mode
 
 * Integrate dashboard calendar sync into morning routine
   Set up persistent 6:30am calendar → reminders sync: either configure Windows Task Scheduler to run sync-calendar-reminders.js (requires one-time Google OAuth token setup) or keep a Claude Code session open so the CronCreate job fires. Done when calendar events appear automatically in the dashboard Reminders sidebar every morning without any manual steps.
-* x Dashboard: Click and drag movable tasks
 * Rework Morning Claude Routines
-* x Be able to change time on the reminders
-* x !Major Big Tasks and minor tasks
 * Change Dashboard Logo
-* x !Seperate HtbH Engine and HtbH Claude Art Categories
 
 
 
@@ -237,7 +231,10 @@ pygame.error: Cannot set 0 sized SCALED display mode
 * Balancing GUI: Hover tooltips for each value
   Every config field should show a tooltip on hover explaining what it controls, what effect changing it has, and any constraints. Tooltip content should live in a data file (not hardcoded). Done when all fields have accurate tooltips.
 * !^vfx editor in engine
-* !^ui editor in engine
+  a way to import sprite sheets for different ingame vfx, a way to manipulate those vfx, and way for the engine to call them and delete them,
+* !^ui editor V1 in engine
   10L of migration plan, UI EDITOR, follow UI editor plan md
 * redesign branch lock protocol
 * !^Cutscene Integration
+  Need the functionality to add cutscenes and import mp4s for them.
+* Map maker Keybinds
