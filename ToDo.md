@@ -105,6 +105,7 @@ pygame.error: Cannot set 0 sized SCALED display mode
 * zoom level should be higher at default
   Make the current max zoomed in be the default, and make one extra zoom level more zoomed in even than that
 * Bush wall builder unlock broken
+* Editable Projectile
 
 
 
@@ -238,3 +239,5 @@ pygame.error: Cannot set 0 sized SCALED display mode
 * !^Cutscene Integration
   Need the functionality to add cutscenes and import mp4s for them.
 * Map maker Keybinds
+* !^Scene Editor for Entities
+  be able to set the position of a projectile origin point for def buildings or a projectile endpoint for enemies, or adjust the position of healthbars, directly in the editor
