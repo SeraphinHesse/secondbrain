@@ -69,7 +69,6 @@ this should be toggleable in balancing gui
 
 
 
-* !All tileweights balanceable
 
 tried to fix and now gives error: 
 Traceback (most recent call last):
@@ -106,6 +105,7 @@ pygame.error: Cannot set 0 sized SCALED display mode
   Make the current max zoomed in be the default, and make one extra zoom level more zoomed in even than that
 * Bush wall builder unlock broken
 * Editable Projectile
+* Fullscreen as default
 
 
 
@@ -212,7 +212,7 @@ pygame.error: Cannot set 0 sized SCALED display mode
 
 
 
-##### HTBH / Claude Visuals
+##### HTBH / ART
 
 * ^UI Rework
 * Seasons Art
@@ -221,6 +221,7 @@ pygame.error: Cannot set 0 sized SCALED display mode
 * ^Cutscene - Meet Humans
 * ^Make Map
 * Intro Cutscene Rework
+* Tile Conditions Art
 
 
 ##### HTBH Engin Changes
@@ -241,3 +242,6 @@ pygame.error: Cannot set 0 sized SCALED display mode
 * Map maker Keybinds
 * !^Scene Editor for Entities
   be able to set the position of a projectile origin point for def buildings or a projectile endpoint for enemies, or adjust the position of healthbars, directly in the editor
+* default animation speed 6 frames per sec, should be editable via core balancing
+* Scrolling toolbrush in the Map maker
+* All tileweights balanceable
