@@ -26,8 +26,6 @@
 
 * !^Steam Page Setup
   Complete all admin and implementation steps to get HTBH's Steam store page live. Covers: partner onboarding, AppID creation, tax/banking setup, store page fields, graphical asset uploads (capsules, library hero, screenshots, trailer), content survey / Germany age rating, pricing + regional pricing, SteamPipe build upload, and the two-checklist release process. Done when store page is "Coming Soon" with build approved and the 2-week clock started.
-* !Boss Stuck on terrain
-  Boss gets stuck randomly on water or mountain tiles, weird pathfinding overall, should reconfirm intent
 * Market Research
 * Target Audience Analysis
 * Social media setup
@@ -49,6 +47,7 @@
 * Booster Limits Explanations
 * Economy Proximity Bonuses Ideation
 * !^Enemy spawning and Pathfinding Ideation
+* x !Boss rework
 
 
 
@@ -87,31 +86,36 @@ pygame.error: Cannot set 0 sized SCALED display mode
 
 * Display Updated Cost for construction on shift click, upgrade tiers on shift click
   When numeros items are shift clicked, the cost on the button should increase to reflect that, and there should be a 2x before the name, also on shift click one should be able to upgrade the tiers of buildings en masse as well
-* !^Same Time enemy Spawning
-* !Lighting and AOE hitboxes
+* x !Lighting and AOE hitboxes
   Should be elipses to seem like circles on the isometric ground, just like in the old prototype
-* !^Call Enemy Animations
+* x !^Call Enemy Animations
 * ^Loading Screen
   add a loading screen and the ability to import art for it
-* !Lightning Building
-* painter option greyout
+* x !Lightning Building
+* !painter option greyout
   painter should be greyed out when the tile has already been built with a painter in building screen
-* !^Boss enemy rework
+* x !^Boss enemy rework
   Needs to have stages, and become stationary and become an enemy spawner
 * ^Enemy tile stacking rework
 * ^Tutorial
 * ^Ploppable buildings
 * zoom level should be higher at default
   Make the current max zoomed in be the default, and make one extra zoom level more zoomed in even than that
-* Bush wall builder unlock broken
+* x !Bush wall builder unlock broken
 * Editable Projectile
 * Fullscreen as default
+* x Animated props
+* !Time Speedup
+* x !^Enemy Scaling Rework
+* x !Boss Stuck on terrain
+  Boss gets stuck randomly on water or mountain tiles, weird pathfinding overall, should reconfirm intent
+* x !Fix Meditate and Bushwall Levelups
+  Currently, when you unlock bushwall builder and meditator, they are not available to build, its because
 
 
 
 ###### Balancing
 
-* Boss Scaling
 * Raider Scaling
   Seperate raider scaling in balancing GUI
 * Fewer Water tiles
@@ -232,16 +236,34 @@ pygame.error: Cannot set 0 sized SCALED display mode
   Every Feature in the game should be toggleable on or off in a feature toggle section of the GUI
 * Balancing GUI: Hover tooltips for each value
   Every config field should show a tooltip on hover explaining what it controls, what effect changing it has, and any constraints. Tooltip content should live in a data file (not hardcoded). Done when all fields have accurate tooltips.
-* !^vfx editor in engine
+* x !^vfx editor in engine
   a way to import sprite sheets for different ingame vfx, a way to manipulate those vfx, and way for the engine to call them and delete them,
-* !^ui editor V1 in engine
+* x !^ui editor V1 in engine
   10L of migration plan, UI EDITOR, follow UI editor plan md
 * redesign branch lock protocol
 * !^Cutscene Integration
   Need the functionality to add cutscenes and import mp4s for them.
-* Map maker Keybinds
-* !^Scene Editor for Entities
+* x Map maker Keybinds
+* x !^Scene Editor for Entities
   be able to set the position of a projectile origin point for def buildings or a projectile endpoint for enemies, or adjust the position of healthbars, directly in the editor
-* default animation speed 6 frames per sec, should be editable via core balancing
-* Scrolling toolbrush in the Map maker
-* All tileweights balanceable
+* default animation speed 6 frames
+  default animation speed 6 frames per sec, should be editable via core balancing
+* x Scrolling toolbrush in the Map maker
+* !All tileweights balanceable
+* !Font and Color editing broken in UI editor
+* Setup bat should only have to be run once
+* x !Scrolling changes anim speeds
+  It should be impossible to change the values anywhere in the editor especially the animation speeds via mousewheel. the mousewheel is only there for navigation, not for editing values.
+* x Tilepainting scrollable
+* Execute plan buttons in agent dispatch
+  Buttons which can hust execute the selected plan with an attached message in the summon robot screen
+* Ai-free plan switching
+  one should be able to switch the current plan in plan.md from the editor without  claude
+* Worktree name in the Editor
+* ^Sound Editor
+* Flip horizontal and flip vertical  for any sprite editor
+
+
+##### HTBH / Marketing
+
+* Brand Creation
