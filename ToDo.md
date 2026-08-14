@@ -30,6 +30,12 @@
 * Target Audience Analysis
 * Social media setup
 
+* !Sprint planning: art & design
+  Plan and assign sprint tasks for both the art track and the design track. Done when both tracks have a full, prioritised sprint backlog ready to execute.
+
+* !Vertical slice roadmap & deliverables plan
+  Define the milestone path to vertical slice: (1) a roadmap showing the phases and milestones needed to reach VS, and (2) a deliverables checklist scoped to VS. Done when both documents exist and tasks can be broken out from them.
+
 
 
 ###### Design
