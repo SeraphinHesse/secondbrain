@@ -380,3 +380,194 @@
 * Make Balanceable if a building is unlocked at the start, and set a minimum pool time
 * Engine Settings
 
+
+## Cleared 2026-08-11 15:23
+
+### HTBH / Design
+
+* !Boss rework
+
+### HTBH / Claude Build
+
+* !Lighting and AOE hitboxes
+  Should be elipses to seem like circles on the isometric ground, just like in the old prototype
+* !^Call Enemy Animations
+* !Lightning Building
+* !^Boss enemy rework
+  Needs to have stages, and become stationary and become an enemy spawner
+* !Bush wall builder unlock broken
+* Animated props
+* !Time Speedup
+* !^Enemy Scaling Rework
+* !Boss Stuck on terrain
+  Boss gets stuck randomly on water or mountain tiles, weird pathfinding overall, should reconfirm intent
+* !Fix Meditate and Bushwall Levelups
+  Currently, when you unlock bushwall builder and meditator, they are not available to build, its because
+
+### HTBH Engin Changes
+
+* !^vfx editor in engine
+  a way to import sprite sheets for different ingame vfx, a way to manipulate those vfx, and way for the engine to call them and delete them,
+* !^ui editor V1 in engine
+  10L of migration plan, UI EDITOR, follow UI editor plan md
+* Map maker Keybinds
+* !^Scene Editor for Entities
+  be able to set the position of a projectile origin point for def buildings or a projectile endpoint for enemies, or adjust the position of healthbars, directly in the editor
+* Scrolling toolbrush in the Map maker
+* !Scrolling changes anim speeds
+  It should be impossible to change the values anywhere in the editor especially the animation speeds via mousewheel. the mousewheel is only there for navigation, not for editing values.
+* Tilepainting scrollable
+
+
+## Cleared 2026-08-13 17:26
+
+### HTBH / Claude Build
+
+* !^Bottom of Enemies in middle of Tile they are standing on
+
+### HTBH Engin Changes
+
+* !^Cutscene Integration
+  Need the functionality to add cutscenes and import mp4s for them.
+* !^Test Suite
+* !^Tile Jitter
+
+
+## Cleared 2026-08-14 14:02
+
+### HTBH / Design
+
+* Meditator Building: tier visual design
+  Three-tier economy building. Tier 1 — "The Meditator": looks identical to the Flute Player but seated on a rock. Tier 2 — "The Shaman": seated on a partial temple structure, visibly levitating above it. Tier 3 — "The Sun Priest": god-like figure radiating sunlight with a giant temple beneath. Design all three art directions / sprites before implementation.
+* ^Ideation: More Boss types
+* ^Ideation: More Enemy types
+* Economy Proximity Bonuses Ideation
+* !^Enemy spawning and Pathfinding Ideation
+
+### HTBH / Claude Build
+
+* ^Tutorial
+* !Dragging Anim Integrated
+* !Level Size Limit
+* !^Scaling Rework
+
+### HTBH / ART
+
+* ^Cutscene - Meet Humans
+* ^Make Map
+
+### HTBH Engin Changes
+
+* !^master spritesheets
+* !^Fix Building unlock Timeline
+* !^Engine Backend Rework
+* !Run Testsuite Button
+
+### Klay
+
+* !Meet with Meena
+
+
+## Cleared 2026-08-17 11:50
+
+### HTBH / Producing
+
+* !^Master Spritesheet Implementations
+
+### HTBH / Claude Build
+
+* !^Building Color Changes
+* !Respawn VFX buildings
+* !Adjust Phases, longer phase times
+* !Editable Tile Selector FX
+* !Disable speed buttons In build mode
+
+### HTBH Engin Changes
+
+* !Hendrik Shit
+* !^VFX Editor
+* !Capability to add and remove VFX slots
+* !^master spritesheets: seasons and color changes rework
+
+
+## Cleared 2026-08-18 21:27
+
+### HTBH / Claude Build
+
+* zoom level should be higher at default
+  Make the current max zoomed in be the default, and make one extra zoom level more zoomed in even than that
+* Editable Projectile
+* Fullscreen as default
+* !^Season Changes
+* !Projectile visuals change with building level
+* !building spawn delay
+* !Painter Progressive Paintings on variations
+* !Color switching Automatically active
+* !Disable research cost for tierups
+* !Wall Builder Levels
+* !Rework Tree Spawning
+
+### HTBH Engin Changes
+
+* Balancing GUI: Hover tooltips for each value
+  Every config field should show a tooltip on hover explaining what it controls, what effect changing it has, and any constraints. Tooltip content should live in a data file (not hardcoded). Done when all fields have accurate tooltips.
+* !^UI editor Rework + Alicias Changes
+  Parenting, Info split ups, construction cards, alicias new changes
+* !^Sound Editor
+
+
+## Cleared 2026-09-01 10:11
+
+### HTBH / Producing
+
+* !Settings Menu
+
+### HTBH / Design
+
+* Ideation: life loss display
+  Options: animate the base, or have the enemy path back out of the base
+* Come up with more generic upgrades
+* Booster Limits Explanations
+
+### HTBH / Claude Build
+
+* !Color Adjustments for Building FX
+* !New Names Mortar
+* !mainmenu background anim
+* !Credits
+
+### HTBH / ART
+
+* !^Ui imports
+* !HUD
+* !Main Menu
+* !Pause Menu
+* !Construct Menu
+* !Upgrade Menu
+* !Unlock TIles Menu
+
+### HTBH Engin Changes
+
+* ^Sound Editor
+* !^Y Sorting
+
+
+## Cleared 2026-10-20 13:18
+
+### HTBH / Producing
+
+* !Goldmaster Presentation
+
+### HTBH / Balancing
+
+* ^Game Still too hard at start?
+* !^Game still outscalable?
+* !Balance the Scaling Rework
+
+### Klay
+
+* !Prototype Workstation
+* !Prototype plan
+* !Toolkit Creation and Use Prototype
+* !Waveform manipulation Prototype
+
